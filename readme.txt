@@ -1,5 +1,5 @@
 === SmartMail Assistant ===
-Contributors: your-username
+Contributors: Marco Zagato
 Tags: email, AI, assistant, productivity
 Requires at least: 5.0
 Tested up to: 6.0
