@@ -3,7 +3,7 @@
 Plugin Name: SmartMail Assistant
 Description: An AI-powered email assistant plugin for WordPress integrated with WooCommerce Subscriptions.
 Version: 1.0
-Author: Your Name
+Author: Marco Zagato
 */
 
 if (!defined('ABSPATH')) {
