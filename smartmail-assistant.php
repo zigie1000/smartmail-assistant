@@ -54,3 +54,18 @@ function sma_load_template($template) {
     return $template;
 }
 add_filter('template_include', 'sma_load_template');
+
+// Register custom page template
+function sma_register_admin_template($templates) {
+    $templates['templates/admin-dashboard-page.php'] = 'Admin Dashboard';
+    return $templates;
+}
+add_filter('theme_page_templates', 'sma_register_admin_template');
+
+function sma_load_admin_template($template) {
+    if (get_page_template_slug() == 'templates/admin-dashboard-page.php') {
+        $template = plugin_dir_path(__FILE__) . 'templates/admin-dashboard-page.php';
+    }
+    return $template;
+}
+add_filter('template_include', 'sma_load_admin_template');
