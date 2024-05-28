@@ -34,7 +34,7 @@ function sma_enqueue_scripts() {
 }
 add_action('wp_enqueue_scripts', 'sma_enqueue_scripts');
 
-require 'path/to/plugin-update-checker/plugin-update-checker.php';
+require plugin_dir_path(__FILE__) . 'path/to/plugin-update-checker/plugin-update-checker.php';
 $updateChecker = Puc_v4_Factory::buildUpdateChecker(
     'https://your-git-repo-url/',
     __FILE__,
