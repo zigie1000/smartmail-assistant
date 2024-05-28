@@ -1,48 +1,79 @@
 <?php
+/*
+Plugin Name: SmartMail Assistant
+Description: An AI-powered email assistant plugin for WordPress integrated with WooCommerce Subscriptions.
+Version: 1.0
+Author: Your Name
+*/
 
-function sma_register_settings() {
-    add_option('sma_email_server_incoming', '');
-    add_option('sma_email_server_outgoing', '');
-    add_option('sma_email_username', '');
-    add_option('sma_email_password', '');
-    register_setting('sma_options_group', 'sma_email_server_incoming', 'sanitize_text_field');
-    register_setting('sma_options_group', 'sma_email_server_outgoing', 'sanitize_text_field');
-    register_setting('sma_options_group', 'sma_email_username', 'sanitize_text_field');
-    register_setting('sma_options_group', 'sma_email_password', 'sanitize_text_field');
+if (!defined('ABSPATH')) {
+    exit;
 }
-add_action('admin_init', 'sma_register_settings');
 
-function sma_register_options_page() {
-    add_options_page('SmartMail Settings', 'SmartMail', 'manage_options', 'sma', 'sma_options_page');
+// Include necessary files
+require_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
+require_once plugin_dir_path(__FILE__) . 'includes/api-functions.php';
+require_once plugin_dir_path(__FILE__) . 'includes/subscription-functions.php';
+require_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
+
+// Register activation hook
+function sma_activate() {
+    sma_add_developer_role();
+    update_option('sma_free_features', array('email_categorization', 'priority_inbox'));
+    update_option('sma_pro_features', array('auto_responses', 'email_summarization', 'meeting_scheduler', 'follow_up_reminders', 'sentiment_analysis', 'email_templates'));
 }
-add_action('admin_menu', 'sma_register_options_page');
+register_activation_hook(__FILE__, 'sma_activate');
 
-function sma_options_page() {
-?>
-  <div>
-  <h2>SmartMail Settings</h2>
-  <form method="post" action="options.php">
-  <?php settings_fields('sma_options_group'); ?>
-  <table>
-  <tr valign="top">
-  <th scope="row"><label for="sma_email_server_incoming">Incoming Mail Server</label></th>
-  <td><input type="text" id="sma_email_server_incoming" name="sma_email_server_incoming" value="<?php echo esc_attr(get_option('sma_email_server_incoming')); ?>" /></td>
-  </tr>
-  <tr valign="top">
-  <th scope="row"><label for="sma_email_server_outgoing">Outgoing Mail Server</label></th>
-  <td><input type="text" id="sma_email_server_outgoing" name="sma_email_server_outgoing" value="<?php echo esc_attr(get_option('sma_email_server_outgoing')); ?>" /></td>
-  </tr>
-  <tr valign="top">
-  <th scope="row"><label for="sma_email_username">Email Username</label></th>
-  <td><input type="text" id="sma_email_username" name="sma_email_username" value="<?php echo esc_attr(get_option('sma_email_username')); ?>" /></td>
-  </tr>
-  <tr valign="top">
-  <th scope="row"><label for="sma_email_password">Email Password</label></th>
-  <td><input type="password" id="sma_email_password" name="sma_email_password" value="<?php echo esc_attr(get_option('sma_email_password')); ?>" /></td>
-  </tr>
-  </table>
-  <?php submit_button(); ?>
-  </form>
-  </div>
-<?php
+// Register deactivation hook
+function sma_deactivate() {
+    delete_option('sma_free_features');
+    delete_option('sma_pro_features');
+}
+register_deactivation_hook(__FILE__, 'sma_deactivate');
+
+// Enqueue scripts and styles
+function sma_enqueue_scripts() {
+    wp_enqueue_style('sma-styles', plugin_dir_url(__FILE__) . 'assets/css/style.css');
+    wp_enqueue_script('sma-scripts', plugin_dir_url(__FILE__) . 'assets/js/script.js', array('jquery'), null, true);
+}
+add_action('wp_enqueue_scripts', 'sma_enqueue_scripts');
+
+// Register custom page templates
+function sma_register_templates($templates) {
+    $templates['templates/admin-dashboard-page.php'] = 'Admin Dashboard';
+    $templates['templates/test-page.php'] = 'Test Page';
+    return $templates;
+}
+add_filter('theme_page_templates', 'sma_register_templates');
+
+function sma_load_template($template) {
+    if (get_page_template_slug() == 'templates/admin-dashboard-page.php') {
+        $template = plugin_dir_path(__FILE__) . 'templates/admin-dashboard-page.php';
+    } elseif (get_page_template_slug() == 'templates/test-page.php') {
+        $template = plugin_dir_path(__FILE__) . 'templates/test-page.php';
+    }
+    return $template;
+}
+add_filter('template_include', 'sma_load_template');
+
+// Add Developer Role
+function sma_add_developer_role() {
+    add_role('developer', 'Developer', array(
+        'read' => true,
+        'manage_options' => true,
+    ));
+}
+register_activation_hook(__FILE__, 'sma_add_developer_role');
+
+// Update checker setup (if applicable)
+// require 'path/to/plugin-update-checker/plugin-update-checker.php';
+// $updateChecker = Puc_v4_Factory::buildUpdateChecker(
+//     'https://your-git-repo-url/',
+//     __FILE__,
+//     'smartmail-assistant'
+// );
+
+// Include WooCommerce compatibility
+if (class_exists('WooCommerce')) {
+    require_once plugin_dir_path(__FILE__) . 'includes/class-wc-gateway-pi.php';
 }
