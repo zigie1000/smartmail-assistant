@@ -40,3 +40,17 @@ $updateChecker = Puc_v4_Factory::buildUpdateChecker(
     __FILE__,
     'smartmail-assistant'
 );
+// Register custom page template
+function sma_register_template($templates) {
+    $templates['templates/smartmail-page.php'] = 'SmartMail Page';
+    return $templates;
+}
+add_filter('theme_page_templates', 'sma_register_template');
+
+function sma_load_template($template) {
+    if (get_page_template_slug() == 'templates/smartmail-page.php') {
+        $template = plugin_dir_path(__FILE__) . 'templates/smartmail-page.php';
+    }
+    return $template;
+}
+add_filter('template_include', 'sma_load_template');
