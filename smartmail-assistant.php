@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: SmartMail Assistant
-Description: An AI-powered email assistant plugin for WordPress integrated with WooCommerce Subscriptions.
+Description: AI-powered email assistant with WooCommerce subscriptions.
 Version: 1.0
 Author: Your Name
 */
@@ -35,8 +35,3 @@ function sma_enqueue_scripts() {
     wp_enqueue_script('sma-scripts', plugin_dir_url(__FILE__) . 'assets/js/script.js', array('jquery'), null, true);
 }
 add_action('wp_enqueue_scripts', 'sma_enqueue_scripts');
-
-// Include WooCommerce compatibility
-if (class_exists('WooCommerce')) {
-    require_once plugin_dir_path(__FILE__) . 'includes/class-wc-gateway-pi.php';
-}
