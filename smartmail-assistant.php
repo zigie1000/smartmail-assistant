@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: SmartMail Assistant
-Description: AI-powered email assistant with WooCommerce subscriptions.
+Description: AI-powered email assistant for end users.
 Version: 1.0
 Author: Your Name
 */
