@@ -3,7 +3,7 @@
 Plugin Name: SmartMail Assistant
 Description: AI-powered email assistant for end users.
 Version: 1.0
-Author: Marco Z
+Author: Marco Zagato
 */
 
 if (!defined('ABSPATH')) {
