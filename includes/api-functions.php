@@ -1,36 +1,54 @@
 <?php
+// API Functions for SmartMail Assistant Plugin
 
-// Prevent direct access
-if (!defined('ABSPATH')) {
+// Validate API Key
+function validate_api_key($api_key) {
+    // Ensure the key is available in the environment variables or configuration
+    $valid_api_key = getenv('SMARTMAIL_API_KEY');
+    if (!$valid_api_key) {
+        // Fallback or handle missing configuration
+        $valid_api_key = 'your_fallback_api_key';
+    }
+
+    return hash_equals($valid_api_key, $api_key);
+}
+
+// Handle Errors
+function handle_error($error_message) {
+    error_log($error_message);
+    header('Content-Type: application/json');
+    echo json_encode(['error' => $error_message]);
     exit;
 }
 
-function sma_get_email_summary($email_content) {
-    $api_key = get_option('sma_api_key');
-    $endpoint = 'https://api.openai.com/v1/engines/davinci-codex/completions';
-    
-    $args = array(
-        'body' => json_encode(array(
-            'prompt' => 'Summarize the following email:\n\n' . sanitize_text_field($email_content),
-            'max_tokens' => 100
-        )),
-        'headers' => array(
-            'Authorization' => 'Bearer ' . esc_attr($api_key),
-            'Content-Type' => 'application/json'
-        ),
-        'timeout' => 15,
-    );
+// Handle Request
+function handle_request() {
+    $api_key = $_SERVER['HTTP_X_API_KEY'] ?? '';
 
-    $response = wp_remote_post($endpoint, $args);
-
-    if (is_wp_error($response)) {
-        return 'Error: ' . esc_html($response->get_error_message());
+    if (!validate_api_key($api_key)) {
+        handle_error('Invalid API Key');
     }
 
-    $body = json_decode(wp_remote_retrieve_body($response), true);
-    if (isset($body['choices'][0]['text'])) {
-        return esc_html($body['choices'][0]['text']);
-    }
+    // Process the request
+    // Example: Fetch some data
+    $response_data = fetch_data();
 
-    return 'Error: Invalid response from API.';
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'data' => $response_data]);
 }
+
+// Example Function to Fetch Data
+function fetch_data() {
+    // Implement your data fetching logic here
+    return [
+        'example_data' => 'This is some example data.'
+    ];
+}
+
+// Additional API Functions as needed
+// ...
+
+// Entry point for API requests
+handle_request();
+
+?>
