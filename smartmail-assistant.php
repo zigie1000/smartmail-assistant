@@ -3,8 +3,8 @@
 Plugin Name: SmartMail Assistant
 Description: Main plugin for SmartMail Assistant
 Version: 1.0
-Author: Your Name
-Author URI: https://yourwebsite.com
+Author: Marco Zagato
+Author URI: https://smartmail.store
 */
 
 if (!defined('ABSPATH')) {
