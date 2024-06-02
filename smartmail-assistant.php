@@ -3,8 +3,8 @@
 Plugin Name: SmartMail Assistant
 Description: Main plugin for SmartMail Assistant
 Version: 1.0
-Author: Marco Zagato
-Author URI: https://smartmail.store
+Author: Your Name
+Author URI: https://yourwebsite.com
 */
 
 if (!defined('ABSPATH')) {
@@ -32,6 +32,7 @@ function smartmail_deactivate() {
 register_deactivation_hook(__FILE__, 'smartmail_deactivate');
 
 // Admin menu
+add_action('admin_menu', 'smartmail_admin_menu');
 function smartmail_admin_menu() {
     add_menu_page(
         'SmartMail Assistant',
@@ -40,10 +41,9 @@ function smartmail_admin_menu() {
         'smartmail',
         'smartmail_admin_page',
         'dashicons-admin-generic',
-        90
+        6
     );
 }
-add_action('admin_menu', 'smartmail_admin_menu');
 
 function smartmail_admin_page() {
     ?>
@@ -61,14 +61,13 @@ function smartmail_admin_page() {
 }
 
 // Register settings
+add_action('admin_init', 'smartmail_register_settings');
 function smartmail_register_settings() {
     register_setting('smartmail_settings', 'smartmail_api_key');
     add_settings_section('smartmail_section', 'API Settings', null, 'smartmail');
     add_settings_field('smartmail_api_key', 'API Key', 'smartmail_api_key_callback', 'smartmail', 'smartmail_section');
 }
-add_action('admin_init', 'smartmail_register_settings');
 
-// API Key field callback
 function smartmail_api_key_callback() {
     $api_key = get_option('smartmail_api_key');
     echo '<input type="text" name="smartmail_api_key" value="' . esc_attr($api_key) . '" class="regular-text">';
