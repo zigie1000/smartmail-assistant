@@ -3,9 +3,9 @@
  * Plugin Name: SmartMail Assistant
  * Description: A WordPress plugin for SmartMail Assistant functionality.
  * Version: 1.0.0
- * Author: Your Name
- * Author URI: https://example.com
- * Plugin URI: https://example.com
+ * Author: Marco Zagato
+ * Author URI: https://smartmail.store
+ * Plugin URI: https://smartmail.store
  */
 
 // Prevent direct access to the file
