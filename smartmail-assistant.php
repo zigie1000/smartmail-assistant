@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: SmartMail Assistant
- * Plugin URI: https://example.com
+ * Plugin URI: https://smartmail.store
  * Description: A plugin to manage SmartMail functionality.
  * Version: 1.0.0
  * Author: Marco Zagato
