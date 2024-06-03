@@ -1,96 +1,112 @@
 <?php
-// WooCommerce Gateway Pi for SmartMail Assistant
+// WC_Gateway_Pi class file for SmartMail Assistant
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
 
-add_filter('woocommerce_payment_gateways', 'smartmail_add_gateway_class');
-function smartmail_add_gateway_class($gateways) {
-    $gateways[] = 'WC_Gateway_Pi';
-    return $gateways;
+// Ensure WooCommerce is active
+if ( ! in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+    return;
 }
 
-add_action('plugins_loaded', 'smartmail_init_gateway_class');
-function smartmail_init_gateway_class() {
-    class WC_Gateway_Pi extends WC_Payment_Gateway {
-        public function __construct() {
-            $this->id = 'pi_gateway';
-            $this->icon = '';
-            $this->has_fields = true;
-            $this->method_title = 'Pi Gateway';
-            $this->method_description = 'Description of Pi Gateway';
-            
-            // Load the settings.
-            $this->init_form_fields();
-            $this->init_settings();
+class WC_Gateway_Pi extends WC_Payment_Gateway {
+    public function __construct() {
+        $this->id                 = 'pi';
+        $this->icon               = apply_filters('woocommerce_gateway_icon', '');
+        $this->has_fields         = false;
+        $this->method_title       = __( 'Pi Payment', 'woocommerce' );
+        $this->method_description = __( 'Allows payments with Pi.', 'woocommerce' );
 
-            // Define user set variables
-            $this->title = $this->get_option('title');
-            $this->description = $this->get_option('description');
-            $this->instructions = $this->get_option('instructions');
+        // Load the settings.
+        $this->init_form_fields();
+        $this->init_settings();
 
-            // Actions
-            add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
-            add_action('woocommerce_thankyou_' . $this->id, array($this, 'thankyou_page'));
+        // Define user set variables
+        $this->title        = $this->get_option( 'title' );
+        $this->description  = $this->get_option( 'description' );
 
-            // Customer Emails
-            add_action('woocommerce_email_before_order_table', array($this, 'email_instructions'), 10, 3);
-        }
+        // Actions
+        add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
+        add_action( 'woocommerce_receipt_' . $this->id, array( $this, 'receipt_page' ) );
+        add_action( 'woocommerce_api_wc_gateway_' . $this->id, array( $this, 'check_response' ) );
+    }
 
-        public function init_form_fields() {
-            $this->form_fields = array(
-                'enabled' => array(
-                    'title'   => 'Enable/Disable',
-                    'type'    => 'checkbox',
-                    'label'   => 'Enable Pi Gateway',
-                    'default' => 'yes'
-                ),
-                'title' => array(
-                    'title'       => 'Title',
-                    'type'        => 'text',
-                    'description' => 'This controls the title which the user sees during checkout.',
-                    'default'     => 'Pi Gateway',
-                    'desc_tip'    => true,
-                ),
-                'description' => array(
-                    'title'       => 'Description
+    public function init_form_fields() {
+        $this->form_fields = apply_filters( 'wc_pi_form_fields', array(
+            'enabled' => array(
+                'title'   => __( 'Enable/Disable', 'woocommerce' ),
+                'type'    => 'checkbox',
+                'label'   => __( 'Enable Pi Payment', 'woocommerce' ),
+                'default' => 'yes'
+            ),
+            'title' => array(
+                'title'       => __( 'Title', 'woocommerce' ),
+                'type'        => 'text',
+                'description' => __( 'This controls the title which the user sees during checkout.', 'woocommerce' ),
+                'default'     => __( 'Pi Payment', 'woocommerce' ),
+                'desc_tip'    => true,
+            ),
+            'description' => array(
+                'title'       => __( 'Description', 'woocommerce' ),
+                'type'        => 'textarea',
+                'description' => __( 'This controls the description which the user sees during checkout.', 'woocommerce' ),
+                'default'     => __( 'Pay with Pi.', 'woocommerce' ),
+                'desc_tip'    => true,
+            ),
+        ) );
+    }
 
-',
-                    'type'        => 'textarea',
-                    'description' => 'This controls the description which the user sees during checkout.',
-                    'default'     => 'Pay securely using Pi.',
-                ),
-                'instructions' => array(
-                    'title'       => 'Instructions',
-                    'type'        => 'textarea',
-                    'description' => 'Instructions that will be added to the thank you page and emails.',
-                    'default'     => 'Pay securely using Pi.',
-                ),
-            );
-        }
+    public function admin_options() {
+        ?>
+        <h2><?php _e( 'Pi Payment', 'woocommerce' ); ?></h2>
+        <table class="form-table">
+            <?php $this->generate_settings_html(); ?>
+        </table>
+        <?php
+    }
 
-        public function process_payment($order_id) {
-            $order = wc_get_order($order_id);
-            $order->payment_complete();
-            $order->reduce_order_stock();
-            wc_empty_cart();
-            return array(
-                'result' => 'success',
-                'redirect' => $this->get_return_url($order),
-            );
-        }
-
-        public function thankyou_page() {
-            if ($this->instructions) {
-                echo wpautop($this->instructions);
-            }
-        }
-
-        public function email_instructions($order, $sent_to_admin, $plain_text = false) {
-            if ($this->instructions && ! $sent_to_admin && 'pi_gateway' === $order->get_payment_method()) {
-                echo wpautop($this->instructions);
-            }
+    public function payment_fields() {
+        if ( $this->description ) {
+            echo wpautop( wp_kses_post( $this->description ) );
         }
     }
+
+    public function validate_fields() {
+        return true;
+    }
+
+    public function process_payment( $order_id ) {
+        $order = wc_get_order( $order_id );
+
+        // Mark as on-hold (we're awaiting the payment)
+        $order->update_status( 'on-hold', __( 'Awaiting Pi payment', 'woocommerce' ) );
+
+        // Reduce stock levels
+        wc_reduce_stock_levels( $order_id );
+
+        // Remove cart
+        WC()->cart->empty_cart();
+
+        // Return thankyou redirect
+        return array(
+            'result'   => 'success',
+            'redirect' => $this->get_return_url( $order )
+        );
+    }
+
+    public function receipt_page( $order_id ) {
+        echo '<p>' . __( 'Thank you for your order, please make payment with Pi to complete your purchase.', 'woocommerce' ) . '</p>';
+    }
+
+    public function check_response() {
+        // Handle the payment response here
+    }
 }
+
+function wc_add_pi_gateway( $methods ) {
+    $methods[] = 'WC_Gateway_Pi';
+    return $methods;
+}
+
+add_filter( 'woocommerce_payment_gateways', 'wc_add_pi_gateway' );
