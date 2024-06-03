@@ -1,4 +1,9 @@
 <?php
+// Subscription functions file for SmartMail Assistant
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly.
+}
 
 function sma_check_subscription() {
     $user_id = get_current_user_id();
