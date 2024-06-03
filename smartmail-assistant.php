@@ -4,8 +4,8 @@
  * Plugin URI: https://example.com
  * Description: A plugin to manage SmartMail functionality.
  * Version: 1.0.0
- * Author: Your Name
- * Author URI: https://example.com
+ * Author: Marco Zagato
+ * Author URI: https://smartmail.store
  * License: MIT
  */
 
