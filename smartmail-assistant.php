@@ -1,16 +1,16 @@
 <?php
 /**
  * Plugin Name: SmartMail Assistant
- * Description: A WordPress plugin for SmartMail Assistant functionality.
+ * Plugin URI: https://example.com
+ * Description: A plugin to manage SmartMail functionality.
  * Version: 1.0.0
  * Author: Marco Zagato
  * Author URI: https://smartmail.store
- * Plugin URI: https://smartmail.store
+ * License: MIT
  */
 
-// Prevent direct access to the file
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly.
 }
 
 // Define plugin constants
@@ -20,6 +20,9 @@ define('SMARTMAIL_PLUGIN_URL', plugin_dir_url(__FILE__));
 // Include necessary files
 require_once SMARTMAIL_PLUGIN_PATH . 'includes/admin-settings.php';
 require_once SMARTMAIL_PLUGIN_PATH . 'includes/api-functions.php';
+require_once SMARTMAIL_PLUGIN_PATH . 'includes/class-wc-gateway-pi.php';
+require_once SMARTMAIL_PLUGIN_PATH . 'includes/shortcodes.php';
+require_once SMARTMAIL_PLUGIN_PATH . 'includes/subscription-functions.php';
 
 // Activation hook
 function smartmail_activate() {
@@ -47,33 +50,35 @@ function smartmail_admin_menu() {
 }
 add_action('admin_menu', 'smartmail_admin_menu');
 
-// Admin page callback
+// Admin page content
 function smartmail_admin_page() {
-    echo '<div class="wrap">';
-    echo '<h1>SmartMail Assistant</h1>';
-    echo '<form method="post" action="options.php">';
-    settings_fields('smartmail_options_group');
-    do_settings_sections('smartmail');
-    submit_button();
-    echo '</form>';
-    echo '</div>';
+    ?>
+    <div class="wrap">
+        <h1>SmartMail Assistant</h1>
+        <form method="post" action="options.php">
+            <?php
+            settings_fields('smartmail_options_group');
+            do_settings_sections('smartmail');
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
 }
 
 // Register settings
 function smartmail_register_settings() {
-    register_setting('smartmail_options_group', 'smartmail_options');
-    add_settings_section('smartmail_main_section', 'Main Settings', 'smartmail_section_callback', 'smartmail');
-    add_settings_field('smartmail_field', 'API Key', 'smartmail_field_callback', 'smartmail', 'smartmail_main_section');
+    register_setting('smartmail_options_group', 'smartmail_option_name');
+    add_settings_section('smartmail_main_section', 'Main Settings', 'smartmail_main_section_cb', 'smartmail');
+    add_settings_field('smartmail_option_name', 'Option Name', 'smartmail_option_name_cb', 'smartmail', 'smartmail_main_section');
 }
 add_action('admin_init', 'smartmail_register_settings');
 
-// Section callback
-function smartmail_section_callback() {
-    echo 'Enter your settings below:';
+function smartmail_main_section_cb() {
+    echo '<p>Main description of this section here.</p>';
 }
 
-// Field callback
-function smartmail_field_callback() {
-    $options = get_option('smartmail_options');
-    echo '<input type="text" name="smartmail_options[api_key]" value="' . esc_attr($options['api_key']) . '">';
+function smartmail_option_name_cb() {
+    $setting = get_option('smartmail_option_name');
+    echo "<input type='text' name='smartmail_option_name' value='" . esc_attr($setting) . "'>";
 }
