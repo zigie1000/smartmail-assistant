@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SmartMail Assistant
  * Plugin URI: https://smartmail.store
- * Description: Core functionalities for SmartMail Assistant, including email categorization, priority inbox, and email summarization.
+ * Description: Core functionalities for SmartMail Assistant, including email categorization, priority inbox, email summarization, and sentiment analysis.
  * Version: 1.0.0
  * Author: Marco Zagato
  * Author URI: https://smartmail.store
@@ -24,7 +24,8 @@ $includes = [
     'includes/admin-settings.php',
     'includes/api-functions.php',
     'includes/shortcodes.php',
-    'includes/subscription-functions.php'
+    'includes/subscription-functions.php',
+    'includes/pi-functions.php'
 ];
 
 foreach ($includes as $file) {
