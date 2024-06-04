@@ -9,7 +9,7 @@
  * License: MIT
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
@@ -20,7 +20,6 @@ define('SMARTMAIL_PLUGIN_URL', plugin_dir_url(__FILE__));
 // Include necessary files
 require_once SMARTMAIL_PLUGIN_PATH . 'includes/admin-settings.php';
 require_once SMARTMAIL_PLUGIN_PATH . 'includes/api-functions.php';
-require_once SMARTMAIL_PLUGIN_PATH . 'includes/class-wc-gateway-pi.php';
 require_once SMARTMAIL_PLUGIN_PATH . 'includes/shortcodes.php';
 require_once SMARTMAIL_PLUGIN_PATH . 'includes/subscription-functions.php';
 
@@ -44,7 +43,7 @@ function smartmail_admin_menu() {
         'manage_options',
         'smartmail',
         'smartmail_admin_page',
-        'dashicons-email',
+        'dashicons-admin-generic',
         6
     );
 }
