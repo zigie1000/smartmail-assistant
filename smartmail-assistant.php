@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SmartMail Assistant
  * Plugin URI: https://smartmail.store
- * Description: Core functionalities for SmartMail Assistant.
+ * Description: Core functionalities for SmartMail Assistant, including email categorization, priority inbox, and email summarization.
  * Version: 1.0.0
  * Author: Marco Zagato
  * Author URI: https://smartmail.store
