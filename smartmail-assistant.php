@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SmartMail Assistant
  * Plugin URI: https://smartmail.store
- * Description: A comprehensive assistant for managing your SmartMail.
+ * Description: A comprehensive assistant for managing your SmartMail, including AI-driven features.
  * Version: 1.0.0
  * Author: Marco Zagato
  * Author URI: https://smartmail.store
@@ -43,6 +43,7 @@ require_once SMARTMAIL_PLUGIN_PATH . 'includes/api-functions.php';
 require_once SMARTMAIL_PLUGIN_PATH . 'includes/class-wc-gateway-pi.php';
 require_once SMARTMAIL_PLUGIN_PATH . 'includes/shortcodes.php';
 require_once SMARTMAIL_PLUGIN_PATH . 'includes/subscription-functions.php';
+require_once SMARTMAIL_PLUGIN_PATH . 'includes/ai-functions.php';  // AI-specific functions
 
 // Activation hook
 function smartmail_activate() {
@@ -142,4 +143,156 @@ function smartmail_option_name_cb() {
     $setting = get_option('smartmail_option_name');
     echo "<input type='text' name='smartmail_option_name' value='" . esc_attr($setting) . "'>";
 }
+
+// Adding user menu and service page
+function smartmail_user_menu() {
+    add_menu_page(
+        'SmartMail Services',
+        'SmartMail Services',
+        'read',
+        'smartmail-services',
+        'smartmail_user_page',
+        'dashicons-email-alt2',
+        6
+    );
+}
+add_action('admin_menu', 'smartmail_user_menu');
+
+function smartmail_user_page() {
+    ?>
+    <div class="wrap">
+        <h1>SmartMail Services</h1>
+        <p>Welcome to SmartMail Services. Here you can manage your email settings and subscriptions.</p>
+        <h2>Services</h2>
+        <ul>
+            <li><a href="<?php echo admin_url('admin.php?page=smartmail-subscription-management'); ?>">Email Subscription Management</a></li>
+            <li><a href="<?php echo admin_url('admin.php?page=smartmail-email-settings'); ?>">Email Settings</a></li>
+            <li><a href="<?php echo admin_url('admin.php?page=smartmail-profile-management'); ?>">Profile Management</a></li>
+            <li><a href="<?php echo admin_url('admin.php?page=smartmail-email-history'); ?>">Email History</a></li>
+            <li><a href="<?php echo admin_url('admin.php?page=smartmail-feedback-support'); ?>">Feedback and Support</a></li>
+            <li><a href="<?php echo admin_url('admin.php?page=smartmail-newsletter-archives'); ?>">Newsletter Archives</a></li>
+            <li><a href="<?php echo admin_url('admin.php?page=smartmail-custom-templates'); ?>">Custom Email Templates</a></li>
+            <li><a href="<?php echo admin_url('admin.php?page=smartmail-email-analytics'); ?>">Email Analytics</a></li>
+        </ul>
+        <!-- Add more content or functionalities here -->
+    </div>
+    <?php
+}
+
+// AI functions for various services
+require_once SMARTMAIL_PLUGIN_PATH . 'includes/ai-functions.php';
+
+// Email Subscription Management Page
+function smartmail_subscription_management_page() {
+    ?>
+    <div class="wrap">
+        <h1>Email Subscription Management</h1>
+        <p>Manage your email subscriptions here.</p>
+        <!-- Subscription management functionalities -->
+    </div>
+    <?php
+}
+add_action('admin_menu', function() {
+    add_submenu_page('smartmail-services', 'Subscription Management', 'Subscription Management', 'read', 'smartmail-subscription-management', 'smartmail_subscription_management_page');
+});
+
+// Email Settings Page
+function smartmail_email_settings_page() {
+    ?>
+    <div class="wrap">
+        <h1>Email Settings</h1>
+        <p>Update your email settings here.</p>
+        <!-- Email settings functionalities -->
+    </div>
+    <?php
+}
+add_action('admin_menu', function() {
+    add_submenu_page('smartmail-services', 'Email Settings', 'Email Settings', 'read', 'smartmail-email-settings', 'smartmail_email_settings_page');
+});
+
+// Profile Management Page
+function smartmail_profile_management_page() {
+    ?>
+    <div class="wrap">
+        <h1>Profile Management</h1>
+        <p>Update your profile information here.</p>
+        <!-- Profile management functionalities -->
+    </div>
+    <?php
+}
+add_action('admin_menu', function() {
+    add_submenu_page('smartmail-services', 'Profile Management', 'Profile Management', 'read', 'smartmail-profile-management', 'smartmail_profile_management_page');
+});
+
+// Email History Page
+function smartmail_email_history_page() {
+    ?>
+    <div class="wrap">
+        <h1>Email History</h1>
+        <p>View your email history here.</p>
+        <!-- Email history functionalities -->
+    </div>
+    <?php
+}
+add_action('admin_menu', function() {
+    add_submenu_page('smartmail-services', 'Email History', 'Email History', 'read', 'smartmail-email-history', 'smartmail_email_history_page');
+});
+
+// Feedback and Support Page
+function smartmail_feedback_support_page() {
+    ?>
+    <div class="wrap">
+        <h1>Feedback and Support</h1>
+        <p>Send feedback or contact support here.</p>
+        <!-- Feedback and support functionalities -->
+    </div>
+    <?php
+}
+add_action('admin_menu', function() {
+    add_submenu_page('smartmail
+
+-services', 'Feedback and Support', 'Feedback and Support', 'read', 'smartmail-feedback-support', 'smartmail_feedback_support_page');
+});
+
+// Newsletter Archives Page
+function smartmail_newsletter_archives_page() {
+    ?>
+    <div class="wrap">
+        <h1>Newsletter Archives</h1>
+        <p>View past newsletters here.</p>
+        <!-- Newsletter archives functionalities -->
+    </div>
+    <?php
+}
+add_action('admin_menu', function() {
+    add_submenu_page('smartmail-services', 'Newsletter Archives', 'Newsletter Archives', 'read', 'smartmail-newsletter-archives', 'smartmail_newsletter_archives_page');
+});
+
+// Custom Email Templates Page
+function smartmail_custom_templates_page() {
+    ?>
+    <div class="wrap">
+        <h1>Custom Email Templates</h1>
+        <p>Customize your email templates here.</p>
+        <!-- Custom email templates functionalities -->
+    </div>
+    <?php
+}
+add_action('admin_menu', function() {
+    add_submenu_page('smartmail-services', 'Custom Email Templates', 'Custom Email Templates', 'read', 'smartmail-custom-templates', 'smartmail_custom_templates_page');
+});
+
+// Email Analytics Page
+function smartmail_email_analytics_page() {
+    ?>
+    <div class="wrap">
+        <h1>Email Analytics</h1>
+        <p>View email analytics here.</p>
+        <!-- Email analytics functionalities -->
+    </div>
+    <?php
+}
+add_action('admin_menu', function() {
+    add_submenu_page('smartmail-services', 'Email Analytics', 'Email Analytics', 'read', 'smartmail-email-analytics', 'smartmail_email_analytics_page');
+});
 ?>
