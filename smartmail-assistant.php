@@ -223,8 +223,6 @@ add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Email Settings', 'Email Settings', 'read', 'smartmail-email-settings', 'smartmail_email_settings_page');
 });
 
-
-
 // Profile Management Page
 function smartmail_profile_management_page() {
     ?>
@@ -237,6 +235,9 @@ function smartmail_profile_management_page() {
 add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Profile Management', 'Profile Management', 'read', 'smartmail-profile-management', 'smartmail_profile_management_page');
 });
+
+
+
 
 // Email History Page
 function smartmail_email_history_page() {
@@ -303,3 +304,4 @@ add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Email Analytics', 'Email Analytics', 'read', 'smartmail-email-analytics', 'smartmail_email_analytics_page');
 });
 ?>
+                     
