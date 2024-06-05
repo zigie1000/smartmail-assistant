@@ -255,12 +255,13 @@ function smartmail_newsletter_archives_page() {
     </div>
     <?php
 }
+
+                     
 add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Newsletter Archives', 'Newsletter Archives', 'read', 'smartmail-newsletter-archives', 'smartmail_newsletter_archives_page');
 });
 
 // Custom Email Templates Page
-
 function smartmail_custom_templates_page() {
     ?>
     <div class="wrap">
