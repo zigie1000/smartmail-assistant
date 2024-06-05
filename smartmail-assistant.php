@@ -60,13 +60,24 @@ add_action('admin_init', 'smartmail_check_dependencies');
 
 // Include necessary files
 function smartmail_include_files() {
-    require_once SMARTMAIL_PLUGIN_PATH . 'includes/admin-settings.php';
-    require_once SMARTMAIL_PLUGIN_PATH . 'includes/api-functions.php';
-    require_once SMARTMAIL_PLUGIN_PATH . 'includes/class-wc-gateway-pi.php';
-    require_once SMARTMAIL_PLUGIN_PATH . 'includes/shortcodes.php';
-    require_once SMARTMAIL_PLUGIN_PATH . 'includes/subscription-functions.php';
-    require_once SMARTMAIL_PLUGIN_PATH . 'includes/ai-functions.php';
-    smartmail_log('Included all necessary files.');
+    $files = [
+        'includes/admin-settings.php',
+        'includes/api-functions.php',
+        'includes/class-wc-gateway-pi.php',
+        'includes/shortcodes.php',
+        'includes/subscription-functions.php',
+        'includes/ai-functions.php'
+    ];
+
+    foreach ($files as $file) {
+        $file_path = SMARTMAIL_PLUGIN_PATH . $file;
+        if (file_exists($file_path)) {
+            require_once $file_path;
+            smartmail_log("Included file: $file");
+        } else {
+            smartmail_log("Missing file: $file");
+        }
+    }
 }
 add_action('plugins_loaded', 'smartmail_include_files');
 
@@ -96,18 +107,21 @@ function smartmail_deactivate() {
 }
 register_deactivation_hook(__FILE__, 'smartmail_deactivate');
 
-// Admin menu
-function smartmail_admin_menu() {
-    add_menu_page(
-        'SmartMail Assistant',
-        'SmartMail',
-        'manage_options',
-        'smartmail',
-        'smartmail_admin_page',
-        'dashicons-email-alt2',
-        6
-    );
-    smartmail_log('Admin menu added.');
+// Check if the function exists before declaring it
+if (!function_exists('smartmail_admin_menu')) {
+    // Admin menu
+    function smartmail_admin_menu() {
+        add_menu_page(
+            'SmartMail Assistant',
+            'SmartMail',
+            'manage_options',
+            'smartmail',
+            'smartmail_admin_page',
+            'dashicons-email-alt2',
+            6
+        );
+        smartmail_log('Admin menu added.');
+    }
 }
 add_action('admin_menu', 'smartmail_admin_menu');
 
@@ -183,17 +197,19 @@ function smartmail_bypass_dependencies_cb() {
 }
 
 // Adding user menu and service page
-function smartmail_user_menu() {
-    add_menu_page(
-        'SmartMail Services',
-        'SmartMail Services',
-        'read',
-        'smartmail-services',
-        'smartmail_user_page',
-        'dashicons-email-alt2',
-        6
-    );
-    smartmail_log('User menu added.');
+if (!function_exists('smartmail_user_menu')) {
+    function smartmail_user_menu() {
+        add_menu_page(
+            'SmartMail Services',
+            'SmartMail Services',
+            'read',
+            'smartmail-services',
+            'smartmail_user_page',
+            'dashicons-email-alt2',
+            6
+        );
+        smartmail_log('User menu added.');
+    }
 }
 add_action('admin_menu', 'smartmail_user_menu');
 
@@ -225,6 +241,7 @@ smartmail_log('AI functions included.');
 function smartmail_subscription_management_page() {
     ?>
     <div class="wrap">
+
         <h1>Email Subscription Management</h1>
         <p>Manage your email subscriptions here.</p>
     </div>
@@ -245,7 +262,7 @@ function smartmail_email_settings_page() {
     <?php
 }
 add_action('admin_menu', function() {
-      add_submenu_page('smartmail-services', 'Email Settings', 'Email Settings', 'read', 'smartmail-email-settings', 'smartmail_email_settings_page');
+    add_submenu_page('smartmail-services', 'Email Settings', 'Email Settings', 'read', 'smartmail-email-settings', 'smartmail_email_settings_page');
     smartmail_log('Email Settings page added.');
 });
 
@@ -332,10 +349,5 @@ add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Email Analytics', 'Email Analytics', 'read', 'smartmail-email-analytics', 'smartmail_email_analytics_page');
     smartmail_log('Email Analytics page added.');
 });
-?>                   
-
-
-
-                     
-
-                     
+?>
+    
