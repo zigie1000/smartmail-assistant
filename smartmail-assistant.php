@@ -174,7 +174,6 @@ function smartmail_user_page() {
             <li><a href="<?php echo admin_url('admin.php?page=smartmail-custom-templates'); ?>">Custom Email Templates</a></li>
             <li><a href="<?php echo admin_url('admin.php?page=smartmail-email-analytics'); ?>">Email Analytics</a></li>
         </ul>
-        <!-- Add more content or functionalities here -->
     </div>
     <?php
 }
@@ -188,7 +187,6 @@ function smartmail_subscription_management_page() {
     <div class="wrap">
         <h1>Email Subscription Management</h1>
         <p>Manage your email subscriptions here.</p>
-        <!-- Subscription management functionalities -->
     </div>
     <?php
 }
@@ -202,7 +200,6 @@ function smartmail_email_settings_page() {
     <div class="wrap">
         <h1>Email Settings</h1>
         <p>Update your email settings here.</p>
-        <!-- Email settings functionalities -->
     </div>
     <?php
 }
@@ -216,7 +213,6 @@ function smartmail_profile_management_page() {
     <div class="wrap">
         <h1>Profile Management</h1>
         <p>Update your profile information here.</p>
-        <!-- Profile management functionalities -->
     </div>
     <?php
 }
@@ -230,7 +226,6 @@ function smartmail_email_history_page() {
     <div class="wrap">
         <h1>Email History</h1>
         <p>View your email history here.</p>
-        <!-- Email history functionalities -->
     </div>
     <?php
 }
@@ -244,14 +239,11 @@ function smartmail_feedback_support_page() {
     <div class="wrap">
         <h1>Feedback and Support</h1>
         <p>Send feedback or contact support here.</p>
-        <!-- Feedback and support functionalities -->
     </div>
     <?php
 }
 add_action('admin_menu', function() {
-    add_submenu_page('smartmail
-
--services', 'Feedback and Support', 'Feedback and Support', 'read', 'smartmail-feedback-support', 'smartmail_feedback_support_page');
+    add_submenu_page('smartmail-services', 'Feedback and Support', 'Feedback and Support', 'read', 'smartmail-feedback-support', 'smartmail_feedback_support_page');
 });
 
 // Newsletter Archives Page
@@ -260,7 +252,6 @@ function smartmail_newsletter_archives_page() {
     <div class="wrap">
         <h1>Newsletter Archives</h1>
         <p>View past newsletters here.</p>
-        <!-- Newsletter archives functionalities -->
     </div>
     <?php
 }
@@ -269,12 +260,12 @@ add_action('admin_menu', function() {
 });
 
 // Custom Email Templates Page
+
 function smartmail_custom_templates_page() {
     ?>
     <div class="wrap">
         <h1>Custom Email Templates</h1>
         <p>Customize your email templates here.</p>
-        <!-- Custom email templates functionalities -->
     </div>
     <?php
 }
@@ -288,7 +279,6 @@ function smartmail_email_analytics_page() {
     <div class="wrap">
         <h1>Email Analytics</h1>
         <p>View email analytics here.</p>
-        <!-- Email analytics functionalities -->
     </div>
     <?php
 }
