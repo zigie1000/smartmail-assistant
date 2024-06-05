@@ -235,8 +235,6 @@ add_action('admin_menu', function() {
     smartmail_log('Subscription Management page added.');
 });
 
-
-
 // Email Settings Page
 function smartmail_email_settings_page() {
     ?>
@@ -247,7 +245,7 @@ function smartmail_email_settings_page() {
     <?php
 }
 add_action('admin_menu', function() {
-    add_submenu_page('smartmail-services', 'Email Settings', 'Email Settings', 'read', 'smartmail-email-settings', 'smartmail_email_settings_page');
+      add_submenu_page('smartmail-services', 'Email Settings', 'Email Settings', 'read', 'smartmail-email-settings', 'smartmail_email_settings_page');
     smartmail_log('Email Settings page added.');
 });
 
@@ -334,7 +332,10 @@ add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Email Analytics', 'Email Analytics', 'read', 'smartmail-email-analytics', 'smartmail_email_analytics_page');
     smartmail_log('Email Analytics page added.');
 });
-?>
+?>                   
 
 
-                  
+
+                     
+
+                     
