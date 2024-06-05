@@ -1,38 +1,18 @@
 <?php
-// Subscription functions file for SmartMail Assistant
+// Functions for managing subscriptions
 
-// Prevent direct access
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
-
-function sma_check_subscription() {
-    $user_id = get_current_user_id();
-    $response = wp_remote_get("https://smartmail.store/api/check-subscription?user_id={$user_id}");
-
-    if (is_wp_error($response)) {
-        return false;
+if (!function_exists('smartmail_handle_subscription')) {
+    function smartmail_handle_subscription($user_id, $plan) {
+        // Handle subscription logic here
+        update_user_meta($user_id, 'smartmail_subscription_plan', $plan);
     }
-
-    $body = wp_remote_retrieve_body($response);
-    $data = json_decode($body, true);
-
-    return isset($data['active']) && $data['active'] === true;
 }
 
-function sma_subscribe_user($email) {
-    $response = wp_remote_post('https://smartmail.store/api/subscribe', array(
-        'body' => array(
-            'email' => $email
-        )
-    ));
-
-    if (is_wp_error($response)) {
-        return false;
+if (!function_exists('smartmail_check_subscription_status')) {
+    function smartmail_check_subscription_status($user_id) {
+        // Check subscription status logic here
+        $plan = get_user_meta($user_id, 'smartmail_subscription_plan', true);
+        return $plan ? $plan : 'free';
     }
-
-    $body = wp_remote_retrieve_body($response);
-    $data = json_decode($body, true);
-
-    return isset($data['success']) && $data['success'] === true;
 }
+?>
