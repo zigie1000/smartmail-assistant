@@ -1,32 +1,41 @@
-<?php
-// Shortcodes file for SmartMail Assistant
-
-// Prevent direct access
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+// Shortcode for Email Categorization
+function sma_email_categorization_shortcode() {
+    return '<p>Email Categorization Content</p>';
 }
+add_shortcode('sma_email_categorization', 'sma_email_categorization_shortcode');
 
-function sma_display_email_categorization() {
-    if (current_user_can('sma_use_pro_features')) {
-        return '<div class="sma-feature">Email Categorization is enabled for Pro users.</div>';
-    }
-    return '<div class="sma-feature">Email Categorization is available for Pro users only. <a href="/subscribe">Subscribe now</a></div>';
+// Shortcode for Priority Inbox
+function sma_priority_inbox_shortcode() {
+    return '<p>Priority Inbox Content</p>';
 }
-add_shortcode('sma_email_categorization', 'sma_display_email_categorization');
+add_shortcode('sma_priority_inbox', 'sma_priority_inbox_shortcode');
 
-function sma_display_priority_inbox() {
-    if (current_user_can('sma_use_pro_features')) {
-        return '<div class="sma-feature">Priority Inbox is enabled for Pro users.</div>';
-    }
-    return '<div class="sma-feature">Priority Inbox is available for Pro users only. <a href="/subscribe">Subscribe now</a></div>';
+// Shortcode for Email Summarization
+function sma_email_summarization_shortcode() {
+    return '<p>Email Summarization Content</p>';
 }
-add_shortcode('sma_priority_inbox', 'sma_display_priority_inbox');
+add_shortcode('sma_email_summarization', 'sma_email_summarization_shortcode');
 
-function sma_display_email_summarization($atts, $content = null) {
-    if (current_user_can('sma_use_pro_features')) {
-        $summary = sma_get_email_summary($content);
-        return '<div class="sma-feature">Email Summary: ' . esc_html($summary) . '</div>';
-    }
-    return '<div class="sma-feature">Email Summarization is available for Pro users only. <a href="/subscribe">Subscribe now</a></div>';
+// Shortcode for Meeting Scheduler
+function sma_meeting_scheduler_shortcode() {
+    return '<p>Meeting Scheduler Content</p>';
 }
-add_shortcode('sma_email_summarization', 'sma_display_email_summarization');
+add_shortcode('sma_meeting_scheduler', 'sma_meeting_scheduler_shortcode');
+
+// Shortcode for Follow-up Reminders
+function sma_follow_up_reminders_shortcode() {
+    return '<p>Follow-up Reminders Content</p>';
+}
+add_shortcode('sma_follow_up_reminders', 'sma_follow_up_reminders_shortcode');
+
+// Shortcode for Sentiment Analysis
+function sma_sentiment_analysis_shortcode() {
+    return '<p>Sentiment Analysis Content</p>';
+}
+add_shortcode('sma_sentiment_analysis', 'sma_sentiment_analysis_shortcode');
+
+// Shortcode for Email Templates
+function sma_email_templates_shortcode() {
+    return '<p>Email Templates Content</p>';
+}
+add_shortcode('sma_email_templates', 'sma_email_templates_shortcode');
