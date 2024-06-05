@@ -13,16 +13,27 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+// Function to log messages to a custom debug log file
+function smartmail_log($message) {
+    if (defined('SMARTMAIL_DEBUG_LOG')) {
+        error_log($message . PHP_EOL, 3, SMARTMAIL_DEBUG_LOG);
+    }
+}
+
 // Define plugin constants
 define('SMARTMAIL_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('SMARTMAIL_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('SMARTMAIL_DEBUG_LOG', SMARTMAIL_PLUGIN_PATH . 'debug.log');
+
+// Example usage of logging
+smartmail_log('SmartMail Assistant plugin loaded.');
 
 // Check for required dependencies
 function smartmail_check_dependencies() {
     $bypass_dependencies = get_option('smartmail_bypass_dependencies', 'no');
 
     if ($bypass_dependencies === 'yes') {
+        smartmail_log('Bypassing dependency checks.');
         return;
     }
 
@@ -30,16 +41,18 @@ function smartmail_check_dependencies() {
 
     if (!function_exists('wp_remote_get')) {
         $missing_dependencies[] = 'wp_remote_get function (WordPress core)';
+        smartmail_log('Missing wp_remote_get function.');
     }
 
     if (!class_exists('WooCommerce')) {
         $missing_dependencies[] = 'WooCommerce';
+        smartmail_log('WooCommerce is not installed or activated.');
     }
 
     if (!empty($missing_dependencies)) {
         deactivate_plugins(plugin_basename(__FILE__));
         $message = 'The following dependencies are missing: ' . implode(', ', $missing_dependencies);
-        error_log($message, 3, SMARTMAIL_DEBUG_LOG);
+        smartmail_log($message);
         wp_die($message);
     }
 }
@@ -52,7 +65,8 @@ function smartmail_include_files() {
     require_once SMARTMAIL_PLUGIN_PATH . 'includes/class-wc-gateway-pi.php';
     require_once SMARTMAIL_PLUGIN_PATH . 'includes/shortcodes.php';
     require_once SMARTMAIL_PLUGIN_PATH . 'includes/subscription-functions.php';
-    require_once SMARTMAIL_PLUGIN_PATH . 'includes/ai-functions.php';  // AI-specific functions
+    require_once SMARTMAIL_PLUGIN_PATH . 'includes/ai-functions.php';
+    smartmail_log('Included all necessary files.');
 }
 add_action('plugins_loaded', 'smartmail_include_files');
 
@@ -60,10 +74,10 @@ add_action('plugins_loaded', 'smartmail_include_files');
 function smartmail_activate() {
     try {
         // Add activation code here
-        error_log('SmartMail Assistant plugin activated successfully.', 3, SMARTMAIL_DEBUG_LOG);
+        smartmail_log('SmartMail Assistant plugin activated successfully.');
     } catch (Exception $e) {
         $error_message = 'SmartMail Assistant activation error: ' . $e->getMessage();
-        error_log($error_message, 3, SMARTMAIL_DEBUG_LOG);
+        smartmail_log($error_message);
         wp_die($error_message);
     }
 }
@@ -73,10 +87,10 @@ register_activation_hook(__FILE__, 'smartmail_activate');
 function smartmail_deactivate() {
     try {
         // Add deactivation code here
-        error_log('SmartMail Assistant plugin deactivated successfully.', 3, SMARTMAIL_DEBUG_LOG);
+        smartmail_log('SmartMail Assistant plugin deactivated successfully.');
     } catch (Exception $e) {
         $error_message = 'SmartMail Assistant deactivation error: ' . $e->getMessage();
-        error_log($error_message, 3, SMARTMAIL_DEBUG_LOG);
+        smartmail_log($error_message);
         wp_die($error_message);
     }
 }
@@ -93,6 +107,7 @@ function smartmail_admin_menu() {
         'dashicons-email-alt2',
         6
     );
+    smartmail_log('Admin menu added.');
 }
 add_action('admin_menu', 'smartmail_admin_menu');
 
@@ -178,6 +193,7 @@ function smartmail_user_menu() {
         'dashicons-email-alt2',
         6
     );
+    smartmail_log('User menu added.');
 }
 add_action('admin_menu', 'smartmail_user_menu');
 
@@ -203,6 +219,7 @@ function smartmail_user_page() {
 
 // AI functions for various services
 require_once SMARTMAIL_PLUGIN_PATH . 'includes/ai-functions.php';
+smartmail_log('AI functions included.');
 
 // Email Subscription Management Page
 function smartmail_subscription_management_page() {
@@ -215,7 +232,10 @@ function smartmail_subscription_management_page() {
 }
 add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Subscription Management', 'Subscription Management', 'read', 'smartmail-subscription-management', 'smartmail_subscription_management_page');
+    smartmail_log('Subscription Management page added.');
 });
+
+
 
 // Email Settings Page
 function smartmail_email_settings_page() {
@@ -228,6 +248,7 @@ function smartmail_email_settings_page() {
 }
 add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Email Settings', 'Email Settings', 'read', 'smartmail-email-settings', 'smartmail_email_settings_page');
+    smartmail_log('Email Settings page added.');
 });
 
 // Profile Management Page
@@ -241,9 +262,8 @@ function smartmail_profile_management_page() {
 }
 add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Profile Management', 'Profile Management', 'read', 'smartmail-profile-management', 'smartmail_profile_management_page');
+    smartmail_log('Profile Management page added.');
 });
-
-
 
 // Email History Page
 function smartmail_email_history_page() {
@@ -256,6 +276,7 @@ function smartmail_email_history_page() {
 }
 add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Email History', 'Email History', 'read', 'smartmail-email-history', 'smartmail_email_history_page');
+    smartmail_log('Email History page added.');
 });
 
 // Feedback and Support Page
@@ -269,6 +290,7 @@ function smartmail_feedback_support_page() {
 }
 add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Feedback and Support', 'Feedback and Support', 'read', 'smartmail-feedback-support', 'smartmail_feedback_support_page');
+    smartmail_log('Feedback and Support page added.');
 });
 
 // Newsletter Archives Page
@@ -282,6 +304,7 @@ function smartmail_newsletter_archives_page() {
 }
 add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Newsletter Archives', 'Newsletter Archives', 'read', 'smartmail-newsletter-archives', 'smartmail_newsletter_archives_page');
+    smartmail_log('Newsletter Archives page added.');
 });
 
 // Custom Email Templates Page
@@ -295,6 +318,7 @@ function smartmail_custom_templates_page() {
 }
 add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Custom Email Templates', 'Custom Email Templates', 'read', 'smartmail-custom-templates', 'smartmail_custom_templates_page');
+    smartmail_log('Custom Email Templates page added.');
 });
 
 // Email Analytics Page
@@ -308,5 +332,9 @@ function smartmail_email_analytics_page() {
 }
 add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Email Analytics', 'Email Analytics', 'read', 'smartmail-email-analytics', 'smartmail_email_analytics_page');
+    smartmail_log('Email Analytics page added.');
 });
 ?>
+
+
+                  
