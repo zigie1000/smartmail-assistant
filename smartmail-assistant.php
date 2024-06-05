@@ -16,6 +16,7 @@ if (!defined('ABSPATH')) {
 // Define plugin constants
 define('SMARTMAIL_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('SMARTMAIL_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('SMARTMAIL_DEBUG_LOG', SMARTMAIL_PLUGIN_PATH . 'debug.log');
 
 // Check for required dependencies
 function smartmail_check_dependencies() {
@@ -38,27 +39,32 @@ function smartmail_check_dependencies() {
     if (!empty($missing_dependencies)) {
         deactivate_plugins(plugin_basename(__FILE__));
         $message = 'The following dependencies are missing: ' . implode(', ', $missing_dependencies);
+        error_log($message, 3, SMARTMAIL_DEBUG_LOG);
         wp_die($message);
     }
 }
 add_action('admin_init', 'smartmail_check_dependencies');
 
 // Include necessary files
-require_once SMARTMAIL_PLUGIN_PATH . 'includes/admin-settings.php';
-require_once SMARTMAIL_PLUGIN_PATH . 'includes/api-functions.php';
-require_once SMARTMAIL_PLUGIN_PATH . 'includes/class-wc-gateway-pi.php';
-require_once SMARTMAIL_PLUGIN_PATH . 'includes/shortcodes.php';
-require_once SMARTMAIL_PLUGIN_PATH . 'includes/subscription-functions.php';
-require_once SMARTMAIL_PLUGIN_PATH . 'includes/ai-functions.php';  // AI-specific functions
+function smartmail_include_files() {
+    require_once SMARTMAIL_PLUGIN_PATH . 'includes/admin-settings.php';
+    require_once SMARTMAIL_PLUGIN_PATH . 'includes/api-functions.php';
+    require_once SMARTMAIL_PLUGIN_PATH . 'includes/class-wc-gateway-pi.php';
+    require_once SMARTMAIL_PLUGIN_PATH . 'includes/shortcodes.php';
+    require_once SMARTMAIL_PLUGIN_PATH . 'includes/subscription-functions.php';
+    require_once SMARTMAIL_PLUGIN_PATH . 'includes/ai-functions.php';  // AI-specific functions
+}
+add_action('plugins_loaded', 'smartmail_include_files');
 
 // Activation hook
 function smartmail_activate() {
     try {
         // Add activation code here
-        error_log('SmartMail Assistant plugin activated successfully.');
+        error_log('SmartMail Assistant plugin activated successfully.', 3, SMARTMAIL_DEBUG_LOG);
     } catch (Exception $e) {
-        error_log('SmartMail Assistant activation error: ' . $e->getMessage());
-        wp_die('SmartMail Assistant activation error: ' . $e->getMessage());
+        $error_message = 'SmartMail Assistant activation error: ' . $e->getMessage();
+        error_log($error_message, 3, SMARTMAIL_DEBUG_LOG);
+        wp_die($error_message);
     }
 }
 register_activation_hook(__FILE__, 'smartmail_activate');
@@ -67,10 +73,11 @@ register_activation_hook(__FILE__, 'smartmail_activate');
 function smartmail_deactivate() {
     try {
         // Add deactivation code here
-        error_log('SmartMail Assistant plugin deactivated successfully.');
+        error_log('SmartMail Assistant plugin deactivated successfully.', 3, SMARTMAIL_DEBUG_LOG);
     } catch (Exception $e) {
-        error_log('SmartMail Assistant deactivation error: ' . $e->getMessage());
-        wp_die('SmartMail Assistant deactivation error: ' . $e->getMessage());
+        $error_message = 'SmartMail Assistant deactivation error: ' . $e->getMessage();
+        error_log($error_message, 3, SMARTMAIL_DEBUG_LOG);
+        wp_die($error_message);
     }
 }
 register_deactivation_hook(__FILE__, 'smartmail_deactivate');
@@ -238,7 +245,6 @@ add_action('admin_menu', function() {
 
 
 
-
 // Email History Page
 function smartmail_email_history_page() {
     ?>
@@ -304,4 +310,3 @@ add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Email Analytics', 'Email Analytics', 'read', 'smartmail-email-analytics', 'smartmail_email_analytics_page');
 });
 ?>
-                     
