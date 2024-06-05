@@ -241,7 +241,6 @@ smartmail_log('AI functions included.');
 function smartmail_subscription_management_page() {
     ?>
     <div class="wrap">
-
         <h1>Email Subscription Management</h1>
         <p>Manage your email subscriptions here.</p>
     </div>
@@ -261,6 +260,9 @@ function smartmail_email_settings_page() {
     </div>
     <?php
 }
+
+
+
 add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Email Settings', 'Email Settings', 'read', 'smartmail-email-settings', 'smartmail_email_settings_page');
     smartmail_log('Email Settings page added.');
@@ -350,4 +352,4 @@ add_action('admin_menu', function() {
     smartmail_log('Email Analytics page added.');
 });
 ?>
-    
+           
