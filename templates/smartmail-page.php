@@ -2,33 +2,45 @@
 /*
 Template Name: SmartMail Page
 */
-
 get_header(); ?>
 
 <div class="smartmail-container">
-    <h1>SmartMail Assistant</h1>
-    <p>Welcome to the SmartMail Assistant page. Here you can access all the features provided by the plugin.</p>
+    <div class="smartmail-header">
+        <h1>SmartMail Assistant</h1>
+        <p>Welcome to the SmartMail Assistant page. Here you can access all the features provided by SmartMail Assistant.</p>
+    </div>
 
-    <!-- Email Categorization -->
-    <div id="email-categorization">
+    <div class="smartmail-section">
         <h2>Email Categorization</h2>
-        <?php echo do_shortcode('[sma_email_categorization]'); ?>
+        <div class="smartmail-feature">
+            <?php echo do_shortcode('[sma_email_categorization]'); ?>
+        </div>
     </div>
 
-    <!-- Priority Inbox -->
-    <div id="priority-inbox">
+    <div class="smartmail-section">
         <h2>Priority Inbox</h2>
-        <?php echo do_shortcode('[sma_priority_inbox]'); ?>
+        <div class="smartmail-feature">
+            <?php echo do_shortcode('[sma_priority_inbox]'); ?>
+        </div>
     </div>
 
-    <!-- Additional functionalities -->
-    <div id="additional-features">
-        <h2>Other Features</h2>
-        <?php echo do_shortcode('[sma_email_summarization]'); ?>
-        <?php echo do_shortcode('[sma_meeting_scheduler]'); ?>
-        <?php echo do_shortcode('[sma_follow_up_reminders]'); ?>
-        <?php echo do_shortcode('[sma_sentiment_analysis]'); ?>
-        <?php echo do_shortcode('[sma_email_templates]'); ?>
+    <div class="smartmail-section">
+        <h2>Additional Features</h2>
+        <div class="smartmail-feature">
+            <?php echo do_shortcode('[sma_email_summarization]'); ?>
+        </div>
+        <div class="smartmail-feature">
+            <?php echo do_shortcode('[sma_meeting_scheduler]'); ?>
+        </div>
+        <div class="smartmail-feature">
+            <?php echo do_shortcode('[sma_follow_up_reminders]'); ?>
+        </div>
+        <div class="smartmail-feature">
+            <?php echo do_shortcode('[sma_sentiment_analysis]'); ?>
+        </div>
+        <div class="smartmail-feature">
+            <?php echo do_shortcode('[sma_email_templates]'); ?>
+        </div>
     </div>
 </div>
 
