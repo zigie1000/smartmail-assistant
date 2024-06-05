@@ -18,7 +18,8 @@ get_header(); ?>
     </div>
 
     <div class="smartmail-section">
-        <h2>Priority Inbox</h2>
+        <h2>Priority
+    Inbox</h2>
         <div class="smartmail-feature">
             <?php echo do_shortcode('[sma_priority_inbox]'); ?>
         </div>
