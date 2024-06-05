@@ -257,12 +257,9 @@ function smartmail_email_settings_page() {
     <div class="wrap">
         <h1>Email Settings</h1>
         <p>Update your email settings here.</p>
-    </div>
+ </div>
     <?php
 }
-
-
-
 add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Email Settings', 'Email Settings', 'read', 'smartmail-email-settings', 'smartmail_email_settings_page');
     smartmail_log('Email Settings page added.');
@@ -273,7 +270,7 @@ function smartmail_profile_management_page() {
     ?>
     <div class="wrap">
         <h1>Profile Management</h1>
-        <p>Update your profile information here.</p>
+        <p>Manage your profile settings here.</p>
     </div>
     <?php
 }
@@ -301,7 +298,7 @@ function smartmail_feedback_support_page() {
     ?>
     <div class="wrap">
         <h1>Feedback and Support</h1>
-        <p>Send feedback or contact support here.</p>
+        <p>Get support and provide feedback here.</p>
     </div>
     <?php
 }
@@ -329,7 +326,7 @@ function smartmail_custom_templates_page() {
     ?>
     <div class="wrap">
         <h1>Custom Email Templates</h1>
-        <p>Customize your email templates here.</p>
+        <p>Create and manage custom email templates here.</p>
     </div>
     <?php
 }
@@ -352,4 +349,3 @@ add_action('admin_menu', function() {
     smartmail_log('Email Analytics page added.');
 });
 ?>
-           
