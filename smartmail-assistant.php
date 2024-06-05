@@ -126,10 +126,6 @@ function smartmail_check_all_dependencies() {
         $missing_dependencies[] = 'wp_remote_get function (WordPress core)';
     }
 
-    if (!function_exists('add_action')) {
-        $missing_dependencies[] = 'add_action function (WordPress core)';
-    }
-
     if (!class_exists('WooCommerce')) {
         $missing_dependencies[] = 'WooCommerce';
     }
@@ -227,7 +223,7 @@ add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Email Settings', 'Email Settings', 'read', 'smartmail-email-settings', 'smartmail_email_settings_page');
 });
 
-                   
+
 
 // Profile Management Page
 function smartmail_profile_management_page() {
