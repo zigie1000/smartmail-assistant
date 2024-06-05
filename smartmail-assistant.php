@@ -254,10 +254,12 @@ add_action('admin_menu', function() {
 // Email Settings Page
 function smartmail_email_settings_page() {
     ?>
-    <div class="wrap">
+    <
+
+div class="wrap">
         <h1>Email Settings</h1>
         <p>Update your email settings here.</p>
- </div>
+    </div>
     <?php
 }
 add_action('admin_menu', function() {
