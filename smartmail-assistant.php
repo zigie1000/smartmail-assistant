@@ -19,6 +19,12 @@ define('SMARTMAIL_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 // Check for required dependencies
 function smartmail_check_dependencies() {
+    $bypass_dependencies = get_option('smartmail_bypass_dependencies', 'no');
+
+    if ($bypass_dependencies === 'yes') {
+        return;
+    }
+
     $missing_dependencies = array();
 
     if (!function_exists('wp_remote_get')) {
@@ -120,6 +126,10 @@ function smartmail_check_all_dependencies() {
         $missing_dependencies[] = 'wp_remote_get function (WordPress core)';
     }
 
+    if (!function_exists('add_action')) {
+        $missing_dependencies[] = 'add_action function (WordPress core)';
+    }
+
     if (!class_exists('WooCommerce')) {
         $missing_dependencies[] = 'WooCommerce';
     }
@@ -130,8 +140,10 @@ function smartmail_check_all_dependencies() {
 // Register settings
 function smartmail_register_settings() {
     register_setting('smartmail_options_group', 'smartmail_option_name');
+    register_setting('smartmail_options_group', 'smartmail_bypass_dependencies');
     add_settings_section('smartmail_main_section', 'Main Settings', 'smartmail_main_section_cb', 'smartmail');
     add_settings_field('smartmail_option_name', 'Option Name', 'smartmail_option_name_cb', 'smartmail', 'smartmail_main_section');
+    add_settings_field('smartmail_bypass_dependencies', 'Bypass Dependency Checks', 'smartmail_bypass_dependencies_cb', 'smartmail', 'smartmail_main_section');
 }
 add_action('admin_init', 'smartmail_register_settings');
 
@@ -142,6 +154,14 @@ function smartmail_main_section_cb() {
 function smartmail_option_name_cb() {
     $setting = get_option('smartmail_option_name');
     echo "<input type='text' name='smartmail_option_name' value='" . esc_attr($setting) . "'>";
+}
+
+function smartmail_bypass_dependencies_cb() {
+    $setting = get_option('smartmail_bypass_dependencies', 'no');
+    ?>
+    <input type="checkbox" name="smartmail_bypass_dependencies" value="yes" <?php checked('yes', $setting); ?> />
+    <label for="smartmail_bypass_dependencies">Check this box to bypass dependency checks</label>
+    <?php
 }
 
 // Adding user menu and service page
@@ -207,6 +227,8 @@ add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Email Settings', 'Email Settings', 'read', 'smartmail-email-settings', 'smartmail_email_settings_page');
 });
 
+                   
+
 // Profile Management Page
 function smartmail_profile_management_page() {
     ?>
@@ -255,8 +277,6 @@ function smartmail_newsletter_archives_page() {
     </div>
     <?php
 }
-
-                     
 add_action('admin_menu', function() {
     add_submenu_page('smartmail-services', 'Newsletter Archives', 'Newsletter Archives', 'read', 'smartmail-newsletter-archives', 'smartmail_newsletter_archives_page');
 });
