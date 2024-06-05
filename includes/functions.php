@@ -1,5 +1,4 @@
 <?php
-
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
@@ -14,31 +13,39 @@ function sma_admin_notice() {
 }
 add_action('admin_notices', 'sma_admin_notice');
 
-// Function to categorize emails based on user settings
+// Add other necessary functions here
+
+/**
+ * Function to categorize emails based on user settings
+ */
 function sma_categorize_email($email) {
-    // Email categorization logic here
+    return smartmail_email_categorization($email);
 }
 
-// Function to prioritize inbox emails based on user settings
+/**
+ * Function to prioritize inbox emails based on user settings
+ */
 function sma_prioritize_inbox($emails) {
-    // Priority inbox logic here
+    return smartmail_priority_inbox($emails);
 }
 
-// Function to summarize emails for the user
+/**
+ * Function to summarize emails for the user
+ */
 function sma_summarize_email($email_content) {
-    // Email summarization logic here
-    return 'Summary of the email';
+    return smartmail_email_summarization($email_content);
 }
 
-// Function to analyze sentiment of an email
+/**
+ * Function to analyze sentiment of an email
+ */
 function sma_analyze_sentiment($email_content) {
-    // Sentiment analysis logic here
-    // For example, we could use an API call to a sentiment analysis service
-    $sentiment = 'Neutral'; // Placeholder for actual sentiment analysis result
-    return $sentiment;
+    return smartmail_sentiment_analysis($email_content);
 }
 
-// Function to display categorization result
+/**
+ * Function to display categorization result
+ */
 function sma_display_categorization_result() {
     echo '<div class="sma-feature">Email categorization result here.</div>';
 }
