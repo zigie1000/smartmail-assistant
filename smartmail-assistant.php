@@ -13,118 +13,119 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-// Function to log messages to a custom debug log file
+// Define constants
+define('SMARTMAIL_PLUGIN_PATH', plugin_dir_path(__FILE__));
+define('SMARTMAIL_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('SMARTMAIL_DEBUG_LOG', SMARTMAIL_PLUGIN_PATH . 'debug.log');
+
+// Function to log messages
 function smartmail_log($message) {
     if (defined('SMARTMAIL_DEBUG_LOG')) {
         error_log($message . PHP_EOL, 3, SMARTMAIL_DEBUG_LOG);
     }
 }
-
-// Define plugin constants
-define('SMARTMAIL_PLUGIN_PATH', plugin_dir_path(__FILE__));
-define('SMARTMAIL_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('SMARTMAIL_DEBUG_LOG', SMARTMAIL_PLUGIN_PATH . 'debug.log');
-
-// Example usage of logging
 smartmail_log('SmartMail Assistant plugin loaded.');
 
-// Check for required dependencies
+// Check dependencies
 function smartmail_check_dependencies() {
-    $bypass_dependencies = get_option('smartmail_bypass_dependencies', 'no');
-
-    if ($bypass_dependencies === 'yes') {
-        smartmail_log('Bypassing dependency checks.');
-        return;
-    }
-
-    $missing_dependencies = array();
-
     if (!function_exists('wp_remote_get')) {
-        $missing_dependencies[] = 'wp_remote_get function (WordPress core)';
-        smartmail_log('Missing wp_remote_get function.');
+        wp_die('Missing wp_remote_get function.');
     }
 
     if (!class_exists('WooCommerce')) {
-        $missing_dependencies[] = 'WooCommerce';
-        smartmail_log('WooCommerce is not installed or activated.');
-    }
-
-    if (!empty($missing_dependencies)) {
-        deactivate_plugins(plugin_basename(__FILE__));
-        $message = 'The following dependencies are missing: ' . implode(', ', $missing_dependencies);
-        smartmail_log($message);
-        wp_die($message);
+        wp_die('WooCommerce is not installed or activated.');
     }
 }
 add_action('admin_init', 'smartmail_check_dependencies');
 
 // Include necessary files
-function smartmail_include_files() {
-    $files = [
-        'includes/admin-settings.php',
-        'includes/api-functions.php',
-        'includes/class-wc-gateway-pi.php',
-        'includes/functions.php',
-        'includes/shortcodes.php',
-        'includes/subscription-functions.php',
-        'includes/ai-functions.php'
-    ];
+$files = [
+    'includes/admin-settings.php',
+    'includes/api-functions.php',
+    'includes/class-wc-gateway-pi.php',
+    'includes/functions.php',
+    'includes/shortcodes.php',
+    'includes/subscription-functions.php',
+    'includes/ai-functions.php'
+];
 
-    foreach ($files as $file) {
-        $file_path = SMARTMAIL_PLUGIN_PATH . $file;
-        if (file_exists($file_path)) {
-            require_once $file_path;
-            smartmail_log("Included file: $file");
-        } else {
-            smartmail_log("Missing file: $file");
-        }
+foreach ($files as $file) {
+    require_once SMARTMAIL_PLUGIN_PATH . $file;
+    smartmail_log("Included file: $file");
+}
+
+// Activation and deactivation hooks
+register_activation_hook(__FILE__, function() {
+    update_option('smartmail_plugin_activated', true);
+    smartmail_log('SmartMail Assistant plugin activated successfully.');
+});
+
+register_deactivation_hook(__FILE__, function() {
+    delete_option('smartmail_plugin_activated');
+    smartmail_log('SmartMail Assistant plugin deactivated successfully.');
+});
+
+// Add admin menu for user settings
+if (!function_exists('smartmail_admin_menu')) {
+    function smartmail_admin_menu() {
+        add_menu_page(
+            'SmartMail Assistant',
+            'SmartMail',
+            'manage_options',
+            'smartmail',
+            'smartmail_admin_page',
+            'dashicons-email-alt2',
+            6
+        );
+        smartmail_log('Admin menu added.');
     }
 }
-add_action('plugins_loaded', 'smartmail_include_files');
+add_action('admin_menu', 'smartmail_admin_menu');
 
-// Activation hook
-function smartmail_activate() {
-    try {
-        // Add activation code here
-        update_option('smartmail_plugin_activated', true);
-        smartmail_log('SmartMail Assistant plugin activated successfully.');
-    } catch (Exception $e) {
-        $error_message = 'SmartMail Assistant activation error: ' . $e->getMessage();
-        smartmail_log($error_message);
-        wp_die($error_message);
+function smartmail_admin_page() {
+    ?>
+    <div class="wrap">
+        <h1>SmartMail Assistant Settings</h1>
+        <form method="post" action="options.php">
+            <?php
+            settings_fields('smartmail_options_group');
+            do_settings_sections('smartmail');
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
+}
+
+// Ensure the AI functions are included
+if (!function_exists('smartmail_email_categorization')) {
+    function smartmail_email_categorization($email_content) {
+        // AI logic for categorizing emails
+        return "Categorized email content: $email_content";
     }
 }
-register_activation_hook(__FILE__, 'smartmail_activate');
 
-// Deactivation hook
-function smartmail_deactivate() {
-    try {
-        // Add deactivation code here
-        delete_option('smartmail_plugin_activated');
-        smartmail_log('SmartMail Assistant plugin deactivated successfully.');
-    } catch (Exception $e) {
-        $error_message = 'SmartMail Assistant deactivation error: ' . $e->getMessage();
-        smartmail_log($error_message);
-        wp_die($error_message);
+if (!function_exists('smartmail_priority_inbox')) {
+    function smartmail_priority_inbox($email_content) {
+        // AI logic for priority inbox
+        return "Priority inbox content: $email_content";
     }
 }
-register_deactivation_hook(__FILE__, 'smartmail_deactivate');
 
-// Ensure compatibility with WooCommerce
-function smartmail_woocommerce_compatibility_check() {
-    if (class_exists('WooCommerce')) {
-        smartmail_log('WooCommerce is active.');
-    } else {
-        deactivate_plugins(plugin_basename(__FILE__));
-        $message = 'SmartMail Assistant requires WooCommerce to be installed and activated.';
-        smartmail_log($message);
-        wp_die($message);
+if (!function_exists('smartmail_automated_responses')) {
+    function smartmail_automated_responses($email_content) {
+        // AI logic for automated responses
+        return "Automated response for email: $email_content";
     }
 }
-add_action('plugins_loaded', 'smartmail_woocommerce_compatibility_check', 11);
 
-// Include admin settings
-include_once SMARTMAIL_PLUGIN_PATH
+if (!function_exists('smartmail_email_summarization')) {
+    function smartmail_email_summarization($email_content) {
+        // AI logic for email summarization
+        return "Summary of the email: $email_content";
+    }
+}
+
 if (!function_exists('smartmail_meeting_scheduler')) {
     function smartmail_meeting_scheduler($email_content) {
         // AI logic for meeting scheduling
@@ -195,8 +196,3 @@ function smartmail_email_templates_shortcode($atts, $content = null) {
     return smartmail_email_templates();
 }
 ?>
-
-
-
-
-    
