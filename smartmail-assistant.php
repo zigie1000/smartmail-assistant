@@ -19,14 +19,20 @@ define('SMARTMAIL_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 // Check for required dependencies
 function smartmail_check_dependencies() {
+    $missing_dependencies = array();
+
     if (!function_exists('wp_remote_get')) {
-        deactivate_plugins(plugin_basename(__FILE__));
-        wp_die('This plugin requires the "wp_remote_get" function. Please ensure your WordPress installation is up to date.');
+        $missing_dependencies[] = 'wp_remote_get function (WordPress core)';
     }
 
     if (!class_exists('WooCommerce')) {
+        $missing_dependencies[] = 'WooCommerce';
+    }
+
+    if (!empty($missing_dependencies)) {
         deactivate_plugins(plugin_basename(__FILE__));
-        wp_die('This plugin requires WooCommerce to be installed and activated.');
+        $message = 'The following dependencies are missing: ' . implode(', ', $missing_dependencies);
+        wp_die($message);
     }
 }
 add_action('admin_init', 'smartmail_check_dependencies');
@@ -88,8 +94,36 @@ function smartmail_admin_page() {
             submit_button();
             ?>
         </form>
+        <h2>Dependency Check</h2>
+        <?php
+        $dependencies = smartmail_check_all_dependencies();
+        if (empty($dependencies)) {
+            echo '<p>All dependencies are met.</p>';
+        } else {
+            echo '<p>Missing dependencies:</p><ul>';
+            foreach ($dependencies as $dependency) {
+                echo '<li>' . esc_html($dependency) . '</li>';
+            }
+            echo '</ul>';
+        }
+        ?>
     </div>
     <?php
+}
+
+// Check all dependencies function
+function smartmail_check_all_dependencies() {
+    $missing_dependencies = array();
+
+    if (!function_exists('wp_remote_get')) {
+        $missing_dependencies[] = 'wp_remote_get function (WordPress core)';
+    }
+
+    if (!class_exists('WooCommerce')) {
+        $missing_dependencies[] = 'WooCommerce';
+    }
+
+    return $missing_dependencies;
 }
 
 // Register settings
