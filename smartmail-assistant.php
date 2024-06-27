@@ -257,4 +257,4 @@ function smartmail_email_templates_shortcode($atts, $content = null) {
     smartmail_log('Email templates shortcode called.');
     return smartmail_email_templates();
 }
-?>                                                 
+?>
