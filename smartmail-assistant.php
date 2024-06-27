@@ -127,19 +127,21 @@ if (!function_exists('smartmail_admin_menu')) {
 }
 add_action('admin_menu', 'smartmail_admin_menu');
 
-function smartmail_admin_page() {
-    ?>
-    <div class="wrap">
-        <h1>SmartMail Assistant Settings</h1>
-        <form method="post" action="options.php">
-            <?php
-            settings_fields('smartmail_options_group');
-            do_settings_sections('smartmail');
-            submit_button();
-            ?>
-        </form>
-    </div>
-    <?php
+if (!function_exists('smartmail_admin_page')) {
+    function smartmail_admin_page() {
+        ?>
+        <div class="wrap">
+            <h1>SmartMail Assistant Settings</h1>
+            <form method="post" action="options.php">
+                <?php
+                settings_fields('smartmail_options_group');
+                do_settings_sections('smartmail');
+                submit_button();
+                ?>
+            </form>
+        </div>
+        <?php
+    }
 }
 
 // Ensure the AI functions are included with logging
@@ -232,7 +234,7 @@ function smartmail_automated_responses_shortcode($atts, $content = null) {
     return smartmail_automated_responses($content);
 }
 
-function smartmail_email_summarization_shortcode($atts, $content = null) {
+ function smartmail_email_summarization_shortcode($atts, $content = null) {
     smartmail_log('Email summarization shortcode called.');
     return smartmail_email_summarization($content);
 }
@@ -256,3 +258,4 @@ function smartmail_email_templates_shortcode($atts, $content = null) {
     smartmail_log('Email templates shortcode called.');
     return smartmail_email_templates();
 }
+?>
