@@ -118,123 +118,40 @@ function smartmail_admin_page() {
     <?php
 }
 
-// Ensure the AI functions are included
-if (!function_exists('smartmail_email_categorization')) {
-    function smartmail_email_categorization($email_content) {
-        smartmail_log('Email categorization function called.');
-        // AI logic for categorizing emails
-        return "Categorized email content: $email_content";
+// AI functions for various services
+require_once SMARTMAIL_PLUGIN_PATH . 'includes/ai-functions.php';
+
+// Shortcodes for AI functions
+require_once SMARTMAIL_PLUGIN_PATH . 'includes/shortcodes.php';
+
+// Include the OpenAI PHP Client via Composer
+require_once SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php';
+use OpenAI\Client as OpenAIClient;
+
+function get_openai_client() {
+    static $client = null;
+    if ($client === null) {
+        $api_key = get_option('smartmail_openai_api_key');
+        if (!$api_key) {
+            wp_die('OpenAI API key is missing. Please configure it in the SmartMail settings.');
+        }
+        $client = OpenAIClient::create($api_key);
     }
+    return $client;
 }
 
-if (!function_exists('smartmail_priority_inbox')) {
-    function smartmail_priority_inbox($email_content) {
-        smartmail_log('Priority inbox function called.');
-        // AI logic for priority inbox
-        return "Priority inbox content: $email_content";
+function smartmail_forensic_analysis($email_content) {
+    $client = get_openai_client();
+    try {
+        $response = $client->completions()->create([
+            'model' => 'text-davinci-003',
+            'prompt' => "Perform a forensic analysis of the following email content:\n\n" . $email_content,
+            'max_tokens' => 150
+        ]);
+        return $response['choices'][0]['text'];
+    } catch (Exception $e) {
+        smartmail_log('OpenAI error: ' . $e->getMessage());
+        return 'Error performing forensic analysis.';
     }
-}
-
-if (!function_exists('smartmail_automated_responses')) {
-    function smartmail_automated_responses($email_content) {
-        smartmail_log('Automated responses function called.');
-        // AI logic for automated responses
-        return "Automated response for email: $email_content";
-    }
-}
-
-if (!function_exists('smartmail_email_summarization')) {
-    function smartmail_email_summarization($email_content) {
-        smartmail_log('Email summarization function called.');
-        // AI logic for email summarization
-        return "Summary of the email: $email_content";
-    }
-}
-
-if (!function_exists('smartmail_meeting_scheduler')) {
-    function smartmail_meeting_scheduler($email_content) {
-        smartmail_log('Meeting scheduler function called.');
-        // AI logic for meeting scheduling
-        return "Scheduled meeting details: $email_content";
-    }
-}
-
-if (!function_exists('smartmail_follow_up_reminders')) {
-    function smartmail_follow_up_reminders($email_content) {
-        smartmail_log('Follow-up reminders function called.');
-        // AI logic for follow-up reminders
-        return "Follow-up reminder for email: $email_content";
-    }
-}
-
-if (!function_exists('smartmail_sentiment_analysis')) {
-    function smartmail_sentiment_analysis($email_content) {
-        smartmail_log('Sentiment analysis function called.');
-        // AI logic for sentiment analysis
-        return "Sentiment analysis result: Neutral for email: $email_content";
-    }
-}
-
-if (!function_exists('smartmail_email_templates')) {
-    function smartmail_email_templates() {
-        smartmail_log('Email templates function called.');
-        // AI logic for email templates
-        return "Email templates generated";
-    }
-}
-
-// Shortcodes to use AI functions in posts or pages
-if (!function_exists('smartmail_register_shortcodes')) {
-    function smartmail_register_shortcodes() {
-        add_shortcode('smartmail_email_categorization', 'smartmail_email_categorization_shortcode');
-        add_shortcode('smartmail_priority_inbox', 'smartmail_priority_inbox_shortcode');
-        add_shortcode('smartmail_automated_responses', 'smartmail_automated_responses_shortcode');
-        add_shortcode('smartmail_email_summarization', 'smartmail_email_summarization_shortcode');
-        add_shortcode('smartmail_meeting_scheduler', 'smartmail_meeting_scheduler_shortcode');
-        add_shortcode('smartmail_follow_up_reminders', 'smartmail_follow_up_reminders_shortcode');
-        add_shortcode('smartmail_sentiment_analysis', 'smartmail_sentiment_analysis_shortcode');
-        add_shortcode('smartmail_email_templates', 'smartmail_email_templates_shortcode');
-    }
-}
-add_action('init', 'smartmail_register_shortcodes');
-
-function smartmail_email_categorization_shortcode($atts, $content = null) {
-    smartmail_log('Email categorization shortcode called.');
-    return smartmail_email_categorization($content);
-}
-
-function smartmail_priority_inbox_shortcode($atts, $content = null) {
-    smartmail_log('Priority inbox shortcode called.');
-    return smartmail_priority_inbox($content);
-}
-
-function smartmail_automated_responses_shortcode($atts, $content = null) {
-    smartmail_log('Automated responses shortcode called.');
-    return smartmail_automated_responses($content);
-}
-
-function smartmail_email_summarization_shortcode($atts, $content = null) {
-    smartmail_log('Email summarization shortcode called.');
-    return smartmail_email_summarization($content);
-}
-
-function smartmail_meeting_scheduler_shortcode($atts, $content = null) {
-    smartmail_log('Meeting scheduler shortcode called.');
-    return smartmail_meeting_scheduler($content);
-}
-
-function smartmail_follow_up_reminders_shortcode($atts, $content = null) {
-    smartmail_log('Follow-up reminders shortcode called.');
-    return smartmail_follow_up_reminders($content);
-}
-
-function smartmail_sentiment_analysis_shortcode($atts, $content = null) {
-    smartmail_log('Sentiment analysis shortcode called.');
-    return smartmail_sentiment_analysis($content);
-}
-
-function smartmail_email_templates_shortcode($atts, $content = null) {
-    smartmail_log('Email templates shortcode called.');
-    return smartmail_email_templates();
 }
 ?>
