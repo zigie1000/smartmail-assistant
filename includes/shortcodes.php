@@ -1,3 +1,4 @@
+<?php
 // Shortcodes for displaying content
 
 if (!function_exists('smartmail_register_shortcodes')) {
