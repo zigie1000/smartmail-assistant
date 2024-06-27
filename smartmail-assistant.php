@@ -21,7 +21,7 @@ define('SMARTMAIL_DEBUG_LOG', SMARTMAIL_PLUGIN_PATH . 'debug.log');
 // Function to log messages
 function smartmail_log($message) {
     if (defined('SMARTMAIL_DEBUG_LOG')) {
-        error_log(date('[Y-m-d H:i:s] ') . $message . PHP_EOL, 3, SMARTMAIL_DEBUG_LOG);
+        error_log($message . PHP_EOL, 3, SMARTMAIL_DEBUG_LOG);
     }
 }
 smartmail_log('SmartMail Assistant plugin loaded.');
@@ -29,35 +29,20 @@ smartmail_log('SmartMail Assistant plugin loaded.');
 // Check dependencies
 function smartmail_check_dependencies() {
     smartmail_log('Checking dependencies.');
-    $dependencies_met = true;
-
     if (!function_exists('wp_remote_get')) {
         smartmail_log('Missing wp_remote_get function.');
-        add_action('admin_notices', function() {
-            echo '<div class="notice notice-error"><p>SmartMail Assistant requires the wp_remote_get function. Please ensure it is available.</p></div>';
-        });
-        $dependencies_met = false;
+        wp_die('Missing wp_remote_get function.');
     }
 
     if (!class_exists('WooCommerce')) {
         smartmail_log('WooCommerce is not installed or activated.');
-        add_action('admin_notices', function() {
-            echo '<div class="notice notice-error"><p>SmartMail Assistant requires WooCommerce. Please install and activate WooCommerce.</p></div>';
-        });
-        $dependencies_met = false;
+        wp_die('WooCommerce is not installed or activated.');
     }
-
-    if (!$dependencies_met) {
-        smartmail_log('Dependencies not met.');
-        return false;
-    }
-
     smartmail_log('All dependencies are met.');
-    return true;
 }
 add_action('admin_init', 'smartmail_check_dependencies');
 
-// Include necessary files with error handling
+// Include necessary files
 $files = [
     'includes/admin-settings.php',
     'includes/api-functions.php',
@@ -75,21 +60,12 @@ foreach ($files as $file) {
         smartmail_log("Included file: $file");
     } else {
         smartmail_log("Missing file: $file");
-        add_action('admin_notices', function() use ($file) {
-            echo '<div class="notice notice-error"><p>Required file missing: ' . esc_html($file) . '</p></div>';
-        });
-        return false; // Stop execution if a critical file is missing
     }
 }
 
-// Activation and deactivation hooks with detailed error handling
+// Activation and deactivation hooks
 register_activation_hook(__FILE__, function() {
     try {
-        if (!smartmail_check_dependencies()) {
-            deactivate_plugins(plugin_basename(__FILE__));
-            wp_die('SmartMail Assistant activation failed due to unmet dependencies. Check the admin notices for more details.');
-        }
-
         update_option('smartmail_plugin_activated', true);
         smartmail_log('SmartMail Assistant plugin activated successfully.');
     } catch (Exception $e) {
@@ -127,24 +103,22 @@ if (!function_exists('smartmail_admin_menu')) {
 }
 add_action('admin_menu', 'smartmail_admin_menu');
 
-if (!function_exists('smartmail_admin_page')) {
-    function smartmail_admin_page() {
-        ?>
-        <div class="wrap">
-            <h1>SmartMail Assistant Settings</h1>
-            <form method="post" action="options.php">
-                <?php
-                settings_fields('smartmail_options_group');
-                do_settings_sections('smartmail');
-                submit_button();
-                ?>
-            </form>
-        </div>
-        <?php
-    }
+function smartmail_admin_page() {
+    ?>
+    <div class="wrap">
+        <h1>SmartMail Assistant Settings</h1>
+        <form method="post" action="options.php">
+            <?php
+            settings_fields('smartmail_options_group');
+            do_settings_sections('smartmail');
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
 }
 
-// Ensure the AI functions are included with logging
+// Ensure the AI functions are included
 if (!function_exists('smartmail_email_categorization')) {
     function smartmail_email_categorization($email_content) {
         smartmail_log('Email categorization function called.');
@@ -210,14 +184,19 @@ if (!function_exists('smartmail_email_templates')) {
 }
 
 // Shortcodes to use AI functions in posts or pages
-add_shortcode('smartmail_email_categorization', 'smartmail_email_categorization_shortcode');
-add_shortcode('smartmail_priority_inbox', 'smartmail_priority_inbox_shortcode');
-add_shortcode('smartmail_automated_responses', 'smartmail_automated_responses_shortcode');
-add_shortcode('smartmail_email_summarization', 'smartmail_email_summarization_shortcode');
-add_shortcode('smartmail_meeting_scheduler', 'smartmail_meeting_scheduler_shortcode');
-add_shortcode('smartmail_follow_up_reminders', 'smartmail_follow_up_reminders_shortcode');
-add_shortcode('smartmail_sentiment_analysis', 'smartmail_sentiment_analysis_shortcode');
-add_shortcode('smartmail_email_templates', 'smartmail_email_templates_shortcode');
+if (!function_exists('smartmail_register_shortcodes')) {
+    function smartmail_register_shortcodes() {
+        add_shortcode('smartmail_email_categorization', 'smartmail_email_categorization_shortcode');
+        add_shortcode('smartmail_priority_inbox', 'smartmail_priority_inbox_shortcode');
+        add_shortcode('smartmail_automated_responses', 'smartmail_automated_responses_shortcode');
+        add_shortcode('smartmail_email_summarization', 'smartmail_email_summarization_shortcode');
+        add_shortcode('smartmail_meeting_scheduler', 'smartmail_meeting_scheduler_shortcode');
+        add_shortcode('smartmail_follow_up_reminders', 'smartmail_follow_up_reminders_shortcode');
+        add_shortcode('smartmail_sentiment_analysis', 'smartmail_sentiment_analysis_shortcode');
+        add_shortcode('smartmail_email_templates', 'smartmail_email_templates_shortcode');
+    }
+}
+add_action('init', 'smartmail_register_shortcodes');
 
 function smartmail_email_categorization_shortcode($atts, $content = null) {
     smartmail_log('Email categorization shortcode called.');
@@ -234,7 +213,7 @@ function smartmail_automated_responses_shortcode($atts, $content = null) {
     return smartmail_automated_responses($content);
 }
 
- function smartmail_email_summarization_shortcode($atts, $content = null) {
+function smartmail_email_summarization_shortcode($atts, $content = null) {
     smartmail_log('Email summarization shortcode called.');
     return smartmail_email_summarization($content);
 }
@@ -258,4 +237,3 @@ function smartmail_email_templates_shortcode($atts, $content = null) {
     smartmail_log('Email templates shortcode called.');
     return smartmail_email_templates();
 }
-?>
