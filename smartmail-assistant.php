@@ -13,6 +13,9 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
+// Start output buffering
+ob_start();
+
 // Define constants
 define('SMARTMAIL_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('SMARTMAIL_PLUGIN_URL', plugin_dir_url(__FILE__));
@@ -239,4 +242,7 @@ function smartmail_email_templates_shortcode($atts, $content = null) {
     smartmail_log('Email templates shortcode called.');
     return smartmail_email_templates();
 }
+
+// End output buffering and clean output buffer
+ob_end_clean();
 ?>
