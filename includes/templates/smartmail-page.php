@@ -2,7 +2,6 @@
 /*
 Template Name: SmartMail Page
 */
-
 get_header(); ?>
 
 <div class="smartmail-container">
@@ -47,7 +46,7 @@ get_header(); ?>
     </div>
 
     <div class="smartmail-section">
-        <h2>Follow-Up Reminders</h2>
+        <h2>Follow-up Reminders</h2>
         <div class="smartmail-feature">
             <?php echo do_shortcode('[sma_follow_up_reminders]'); ?>
         </div>
@@ -64,6 +63,13 @@ get_header(); ?>
         <h2>Email Templates</h2>
         <div class="smartmail-feature">
             <?php echo do_shortcode('[sma_email_templates]'); ?>
+        </div>
+    </div>
+
+    <div class="smartmail-section">
+        <h2>Forensic Analysis</h2>
+        <div class="smartmail-feature">
+            <?php echo do_shortcode('[sma_forensic_analysis]'); ?>
         </div>
     </div>
 </div>
