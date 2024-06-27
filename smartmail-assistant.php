@@ -57,7 +57,7 @@ function smartmail_check_dependencies() {
 }
 add_action('admin_init', 'smartmail_check_dependencies');
 
-// Include necessary files
+// Include necessary files with error handling
 $files = [
     'includes/admin-settings.php',
     'includes/api-functions.php',
@@ -78,10 +78,12 @@ foreach ($files as $file) {
         add_action('admin_notices', function() use ($file) {
             echo '<div class="notice notice-error"><p>Required file missing: ' . esc_html($file) . '</p></div>';
         });
+        // Immediately return false to prevent further execution if a critical file is missing
+        return false;
     }
 }
 
-// Activation and deactivation hooks
+// Activation and deactivation hooks with detailed error handling
 register_activation_hook(__FILE__, function() {
     try {
         if (!smartmail_check_dependencies()) {
@@ -141,7 +143,7 @@ function smartmail_admin_page() {
     <?php
 }
 
-// Ensure the AI functions are included
+// Ensure the AI functions are included with logging
 if (!function_exists('smartmail_email_categorization')) {
     function smartmail_email_categorization($email_content) {
         smartmail_log('Email categorization function called.');
@@ -226,4 +228,33 @@ function smartmail_priority_inbox_shortcode($atts, $content = null) {
     return smartmail_priority_inbox($content);
 }
 
-function smartmail_automated_responses_shortcode
+function smartmail_automated_responses_shortcode($atts, $content = null) {
+    smartmail_log('Automated responses shortcode called.');
+    return smartmail_automated_responses($content);
+}
+
+function smartmail_email_summarization_shortcode($atts, $content = null) {
+    smartmail_log('Email summarization shortcode called.');
+    return smartmail_email_summarization($content);
+}
+
+function smartmail_meeting_scheduler_shortcode($atts, $content = null) {
+    smartmail_log('Meeting scheduler shortcode called.');
+    return smartmail_meeting_scheduler($content);
+}
+
+function smartmail_follow_up_reminders_shortcode($atts, $content = null) {
+    smartmail_log('Follow-up reminders shortcode called.');
+    return smartmail_follow_up_reminders($content);
+}
+
+function smartmail_sentiment_analysis_shortcode($atts, $content = null) {
+    smartmail_log('Sentiment analysis shortcode called.');
+    return smartmail_sentiment_analysis($content);
+}
+
+function smartmail_email_templates_shortcode($atts, $content = null) {
+    smartmail_log('Email templates shortcode called.');
+    return smartmail_email_templates();
+}
+?>                                                 
