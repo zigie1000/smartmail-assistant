@@ -21,7 +21,7 @@ define('SMARTMAIL_DEBUG_LOG', SMARTMAIL_PLUGIN_PATH . 'debug.log');
 // Function to log messages
 function smartmail_log($message) {
     if (defined('SMARTMAIL_DEBUG_LOG')) {
-        error_log($message . PHP_EOL, 3, SMARTMAIL_DEBUG_LOG);
+        error_log(date('[Y-m-d H:i:s] ') . $message . PHP_EOL, 3, SMARTMAIL_DEBUG_LOG);
     }
 }
 smartmail_log('SmartMail Assistant plugin loaded.');
@@ -29,16 +29,31 @@ smartmail_log('SmartMail Assistant plugin loaded.');
 // Check dependencies
 function smartmail_check_dependencies() {
     smartmail_log('Checking dependencies.');
+    $dependencies_met = true;
+
     if (!function_exists('wp_remote_get')) {
         smartmail_log('Missing wp_remote_get function.');
-        wp_die('Missing wp_remote_get function.');
+        add_action('admin_notices', function() {
+            echo '<div class="notice notice-error"><p>SmartMail Assistant requires the wp_remote_get function. Please ensure it is available.</p></div>';
+        });
+        $dependencies_met = false;
     }
 
     if (!class_exists('WooCommerce')) {
         smartmail_log('WooCommerce is not installed or activated.');
-        wp_die('WooCommerce is not installed or activated.');
+        add_action('admin_notices', function() {
+            echo '<div class="notice notice-error"><p>SmartMail Assistant requires WooCommerce. Please install and activate WooCommerce.</p></div>';
+        });
+        $dependencies_met = false;
     }
+
+    if (!$dependencies_met) {
+        smartmail_log('Dependencies not met.');
+        return false;
+    }
+
     smartmail_log('All dependencies are met.');
+    return true;
 }
 add_action('admin_init', 'smartmail_check_dependencies');
 
@@ -60,12 +75,20 @@ foreach ($files as $file) {
         smartmail_log("Included file: $file");
     } else {
         smartmail_log("Missing file: $file");
+        add_action('admin_notices', function() use ($file) {
+            echo '<div class="notice notice-error"><p>Required file missing: ' . esc_html($file) . '</p></div>';
+        });
     }
 }
 
 // Activation and deactivation hooks
 register_activation_hook(__FILE__, function() {
     try {
+        if (!smartmail_check_dependencies()) {
+            deactivate_plugins(plugin_basename(__FILE__));
+            wp_die('SmartMail Assistant activation failed due to unmet dependencies. Check the admin notices for more details.');
+        }
+
         update_option('smartmail_plugin_activated', true);
         smartmail_log('SmartMail Assistant plugin activated successfully.');
     } catch (Exception $e) {
@@ -203,33 +226,4 @@ function smartmail_priority_inbox_shortcode($atts, $content = null) {
     return smartmail_priority_inbox($content);
 }
 
-function smartmail_automated_responses_shortcode($atts, $content = null) {
-    smartmail_log('Automated responses shortcode called.');
-    return smartmail_automated_responses($content);
-}
-
-function smartmail_email_summarization_shortcode($atts, $content = null) {
-    smartmail_log('Email summarization shortcode called.');
-    return smartmail_email_summarization($content);
-}
-
-function smartmail_meeting_scheduler_shortcode($atts, $content = null) {
-    smartmail_log('Meeting scheduler shortcode called.');
-    return smartmail_meeting_scheduler($content);
-}
-
-function smartmail_follow_up_reminders_shortcode($atts, $content = null) {
-    smartmail_log('Follow-up reminders shortcode called.');
-    return smartmail_follow_up_reminders($content);
-}
-
-function smartmail_sentiment_analysis_shortcode($atts, $content = null) {
-    smartmail_log('Sentiment analysis shortcode called.');
-    return smartmail_sentiment_analysis($content);
-}
-
-function smartmail_email_templates_shortcode($atts, $content = null) {
-    smartmail_log('Email templates shortcode called.');
-    return smartmail_email_templates();
-}
-?>
+function smartmail_automated_responses_shortcode
