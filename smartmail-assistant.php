@@ -78,8 +78,7 @@ foreach ($files as $file) {
         add_action('admin_notices', function() use ($file) {
             echo '<div class="notice notice-error"><p>Required file missing: ' . esc_html($file) . '</p></div>';
         });
-        // Immediately return false to prevent further execution if a critical file is missing
-        return false;
+        return false; // Stop execution if a critical file is missing
     }
 }
 
@@ -257,4 +256,3 @@ function smartmail_email_templates_shortcode($atts, $content = null) {
     smartmail_log('Email templates shortcode called.');
     return smartmail_email_templates();
 }
-?>
