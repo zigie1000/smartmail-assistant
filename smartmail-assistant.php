@@ -19,11 +19,9 @@ define('SMARTMAIL_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('SMARTMAIL_DEBUG_LOG', SMARTMAIL_PLUGIN_PATH . 'debug.log');
 
 // Function to log messages
-if (!function_exists('smartmail_log')) {
-    function smartmail_log($message) {
-        if (defined('SMARTMAIL_DEBUG_LOG')) {
-            error_log($message . PHP_EOL, 3, SMARTMAIL_DEBUG_LOG);
-        }
+function smartmail_log($message) {
+    if (defined('SMARTMAIL_DEBUG_LOG')) {
+        error_log($message . PHP_EOL, 3, SMARTMAIL_DEBUG_LOG);
     }
 }
 smartmail_log('SmartMail Assistant plugin loaded.');
@@ -120,80 +118,123 @@ function smartmail_admin_page() {
     <?php
 }
 
-// Register and define the settings
-add_action('admin_init', 'smartmail_register_settings');
-function smartmail_register_settings() {
-    register_setting('smartmail_options_group', 'smartmail_openai_api_key');
-    
-    add_settings_section(
-        'smartmail_settings_section', 
-        'SmartMail Assistant Settings', 
-        'smartmail_settings_section_callback', 
-        'smartmail'
-    );
-
-    add_settings_field(
-        'smartmail_openai_api_key', 
-        'OpenAI API Key', 
-        'smartmail_openai_api_key_callback', 
-        'smartmail', 
-        'smartmail_settings_section'
-    );
+// Ensure the AI functions are included
+if (!function_exists('smartmail_email_categorization')) {
+    function smartmail_email_categorization($email_content) {
+        smartmail_log('Email categorization function called.');
+        // AI logic for categorizing emails
+        return "Categorized email content: $email_content";
+    }
 }
 
-function smartmail_settings_section_callback() {
-    echo '<p>Enter your settings for the SmartMail Assistant below:</p>';
+if (!function_exists('smartmail_priority_inbox')) {
+    function smartmail_priority_inbox($email_content) {
+        smartmail_log('Priority inbox function called.');
+        // AI logic for priority inbox
+        return "Priority inbox content: $email_content";
+    }
 }
 
-function smartmail_openai_api_key_callback() {
-    $apiKey = get_option('smartmail_openai_api_key');
-    echo '<input type="text" id="smartmail_openai_api_key" name="smartmail_openai_api_key" value="' . esc_attr($apiKey) . '" />';
+if (!function_exists('smartmail_automated_responses')) {
+    function smartmail_automated_responses($email_content) {
+        smartmail_log('Automated responses function called.');
+        // AI logic for automated responses
+        return "Automated response for email: $email_content";
+    }
+}
+
+if (!function_exists('smartmail_email_summarization')) {
+    function smartmail_email_summarization($email_content) {
+        smartmail_log('Email summarization function called.');
+        // AI logic for email summarization
+        return "Summary of the email: $email_content";
+    }
+}
+
+if (!function_exists('smartmail_meeting_scheduler')) {
+    function smartmail_meeting_scheduler($email_content) {
+        smartmail_log('Meeting scheduler function called.');
+        // AI logic for meeting scheduling
+        return "Scheduled meeting details: $email_content";
+    }
+}
+
+if (!function_exists('smartmail_follow_up_reminders')) {
+    function smartmail_follow_up_reminders($email_content) {
+        smartmail_log('Follow-up reminders function called.');
+        // AI logic for follow-up reminders
+        return "Follow-up reminder for email: $email_content";
+    }
+}
+
+if (!function_exists('smartmail_sentiment_analysis')) {
+    function smartmail_sentiment_analysis($email_content) {
+        smartmail_log('Sentiment analysis function called.');
+        // AI logic for sentiment analysis
+        return "Sentiment analysis result: Neutral for email: $email_content";
+    }
+}
+
+if (!function_exists('smartmail_email_templates')) {
+    function smartmail_email_templates() {
+        smartmail_log('Email templates function called.');
+        // AI logic for email templates
+        return "Email templates generated";
+    }
 }
 
 // Shortcodes to use AI functions in posts or pages
 if (!function_exists('smartmail_register_shortcodes')) {
     function smartmail_register_shortcodes() {
-        add_shortcode('sma_email_categorization', 'smartmail_email_categorization_shortcode');
-        add_shortcode('sma_priority_inbox', 'smartmail_priority_inbox_shortcode');
-        add_shortcode('sma_automated_responses', 'smartmail_automated_responses_shortcode');
-        add_shortcode('sma_email_summarization', 'smartmail_email_summarization_shortcode');
-        add_shortcode('sma_meeting_scheduler', 'smartmail_meeting_scheduler_shortcode');
-        add_shortcode('sma_follow_up_reminders', 'smartmail_follow_up_reminders_shortcode');
-        add_shortcode('sma_sentiment_analysis', 'smartmail_sentiment_analysis_shortcode');
-        add_shortcode('sma_email_templates', 'smartmail_email_templates_shortcode');
+        add_shortcode('smartmail_email_categorization', 'smartmail_email_categorization_shortcode');
+        add_shortcode('smartmail_priority_inbox', 'smartmail_priority_inbox_shortcode');
+        add_shortcode('smartmail_automated_responses', 'smartmail_automated_responses_shortcode');
+        add_shortcode('smartmail_email_summarization', 'smartmail_email_summarization_shortcode');
+        add_shortcode('smartmail_meeting_scheduler', 'smartmail_meeting_scheduler_shortcode');
+        add_shortcode('smartmail_follow_up_reminders', 'smartmail_follow_up_reminders_shortcode');
+        add_shortcode('smartmail_sentiment_analysis', 'smartmail_sentiment_analysis_shortcode');
+        add_shortcode('smartmail_email_templates', 'smartmail_email_templates_shortcode');
     }
 }
 add_action('init', 'smartmail_register_shortcodes');
 
 function smartmail_email_categorization_shortcode($atts, $content = null) {
+    smartmail_log('Email categorization shortcode called.');
     return smartmail_email_categorization($content);
 }
 
 function smartmail_priority_inbox_shortcode($atts, $content = null) {
+    smartmail_log('Priority inbox shortcode called.');
     return smartmail_priority_inbox($content);
 }
 
 function smartmail_automated_responses_shortcode($atts, $content = null) {
+    smartmail_log('Automated responses shortcode called.');
     return smartmail_automated_responses($content);
 }
 
 function smartmail_email_summarization_shortcode($atts, $content = null) {
+    smartmail_log('Email summarization shortcode called.');
     return smartmail_email_summarization($content);
 }
 
 function smartmail_meeting_scheduler_shortcode($atts, $content = null) {
+    smartmail_log('Meeting scheduler shortcode called.');
     return smartmail_meeting_scheduler($content);
 }
 
 function smartmail_follow_up_reminders_shortcode($atts, $content = null) {
+    smartmail_log('Follow-up reminders shortcode called.');
     return smartmail_follow_up_reminders($content);
 }
 
 function smartmail_sentiment_analysis_shortcode($atts, $content = null) {
+    smartmail_log('Sentiment analysis shortcode called.');
     return smartmail_sentiment_analysis($content);
 }
 
 function smartmail_email_templates_shortcode($atts, $content = null) {
+    smartmail_log('Email templates shortcode called.');
     return smartmail_email_templates();
 }
 ?>
