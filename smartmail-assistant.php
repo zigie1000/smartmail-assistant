@@ -52,7 +52,7 @@ $files = [
     'includes/api-functions.php',
     'includes/class-wc-gateway-pi.php',
     'includes/functions.php',
-    'includes/shortcodes.php',  // Shortcode functions and registration
+    'includes/shortcodes.php',
     'includes/subscription-functions.php',
     'includes/ai-functions.php'
 ];
@@ -71,6 +71,7 @@ foreach ($files as $file) {
 register_activation_hook(__FILE__, function() {
     try {
         update_option('smartmail_plugin_activated', true);
+        smartmail_create_pages(); // Ensure pages are created on activation
         smartmail_log('SmartMail Assistant plugin activated successfully.');
     } catch (Exception $e) {
         $error_message = 'SmartMail Assistant activation error: ' . $e->getMessage();
@@ -90,7 +91,7 @@ register_deactivation_hook(__FILE__, function() {
     }
 });
 
-// Add settings page
+// Add admin menu for user settings
 if (!function_exists('smartmail_admin_menu')) {
     function smartmail_admin_menu() {
         add_menu_page(
@@ -156,27 +157,42 @@ if (!function_exists('smartmail_settings_page')) {
     }
 }
 
-if (!function_exists('smartmail_dashboard_template')) {
-    function smartmail_dashboard_template() {
-        if (is_user_logged_in() && current_user_can('manage_options')) {
-            include plugin_dir_path(__FILE__) . 'templates/admin-dashboard.php';
-        } else {
-            wp_die('You do not have sufficient permissions to access this page.');
+// Automatic page creation
+if (!function_exists('smartmail_create_pages')) {
+    function smartmail_create_pages() {
+        $pages = [
+            [
+                'title' => 'SmartMail Dashboard',
+                'content' => '[sma_dashboard]',
+            ],
+            [
+                'title' => 'SmartMail Assistant',
+                'content' => '[sma_email_categorization][sma_priority_inbox][sma_automated_responses][sma_email_summarization][sma_meeting_scheduler][sma_follow_up_reminders][sma_sentiment_analysis][sma_email_templates][sma_forensic_analysis]',
+            ],
+        ];
+
+        foreach ($pages as $page) {
+            if (!get_page_by_title($page['title'])) {
+                wp_insert_post([
+                    'post_title' => $page['title'],
+                    'post_content' => $page['content'],
+                    'post_status' => 'publish',
+                    'post_type' => 'page',
+                ]);
+            }
         }
     }
 }
-add_action('admin_menu', 'smartmail_dashboard_menu');
 
-if (!function_exists('smartmail_dashboard_menu')) {
-    function smartmail_dashboard_menu() {
-        add_submenu_page(
-            'smartmail',
-            'SmartMail Dashboard',
-            'Dashboard',
-            'manage_options',
-            'smartmail-dashboard',
-            'smartmail_dashboard_template'
-        );
+// Get OpenAI client
+if (!function_exists('get_openai_client')) {
+    function get_openai_client() {
+        require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
+        $api_key = get_option('smartmail_openai_api_key');
+        if (!$api_key) {
+            throw new Exception('OpenAI API key is missing.');
+        }
+        return OpenAI\Client::factory(['api_key' => $api_key]);
     }
 }
 
@@ -217,43 +233,14 @@ if (!function_exists('smartmail_openai_api_key_render')) {
     }
 }
 
-// Automatic page creation
-if (!function_exists('smartmail_create_pages')) {
-    function smartmail_create_pages() {
-        $pages = [
-            [
-                'title' => 'SmartMail Dashboard',
-                'content' => '[sma_dashboard]',
-            ],
-            [
-                'title' => 'SmartMail Assistant',
-                'content' => '[sma_email_categorization][sma_priority_inbox][sma_automated_responses][sma_email_summarization][sma_meeting_scheduler][sma_follow_up_reminders][sma_sentiment_analysis][sma_email_templates][sma_forensic_analysis]',
-            ],
-        ];
-
-        foreach ($pages as $page) {
-            if (!get_page_by_title($page['title'])) {
-                wp_insert_post([
-                    'post_title' => $page['title'],
-                    'post_content' => $page['content'],
-                    'post_status' => 'publish',
-                    'post_type' => 'page',
-                ]);
-            }
+// Function to display the dashboard template
+if (!function_exists('smartmail_dashboard_template')) {
+    function smartmail_dashboard_template() {
+        if (is_user_logged_in() && current_user_can('manage_options')) {
+            include plugin_dir_path(__FILE__) . 'includes/templates/admin-dashboard.php';
+        } else {
+            wp_die('You do not have sufficient permissions to access this page.');
         }
-    }
-}
-register_activation_hook(__FILE__, 'smartmail_create_pages');
-
-// Get OpenAI client
-if (!function_exists('get_openai_client')) {
-    function get_openai_client() {
-        require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
-        $api_key = get_option('smartmail_openai_api_key');
-        if (!$api_key) {
-            throw new Exception('OpenAI API key is missing.');
-        }
-        return OpenAI\Client::factory(['api_key' => $api_key]);
     }
 }
 ?>
