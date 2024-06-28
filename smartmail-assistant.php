@@ -80,7 +80,7 @@ register_deactivation_hook(__FILE__, function() {
         delete_option('smartmail_plugin_activated');
         smartmail_log('SmartMail Assistant plugin deactivated successfully.');
     } catch (Exception $e) {
-        $error_message = 'SmartMail Assistant deactivation error: ' . $e->getMessage());
+        $error_message = 'SmartMail Assistant deactivation error: ' . $e->getMessage();
         smartmail_log($error_message);
         wp_die($error_message);
     }
@@ -154,4 +154,4 @@ function smartmail_forensic_analysis($email_content) {
         return 'Error performing forensic analysis.';
     }
 }
-?>                                                   
+?>
