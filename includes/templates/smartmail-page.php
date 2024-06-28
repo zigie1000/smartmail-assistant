@@ -1,51 +1,27 @@
-<?php
-/*
-Template Name: SmartMail Page
-*/
-get_header(); ?>
-
-<div class="smartmail-container">
-    <div class="smartmail-header">
-        <h1>SmartMail Assistant</h1>
-        <p>Welcome to the SmartMail Assistant page. Here you can access all the features provided by SmartMail Assistant.</p>
-    </div>
-
-    <div class="smartmail-section">
-        <h2>Email Categorization</h2>
-        <div class="smartmail-feature">
-            <?php echo do_shortcode('[sma_email_categorization]'); ?>
+            <?php echo do_shortcode('[sma_follow_up_reminders]'); ?>
         </div>
     </div>
 
     <div class="smartmail-section">
-        <h2>Priority Inbox</h2>
+        <h2>Sentiment Analysis</h2>
         <div class="smartmail-feature">
-            <?php echo do_shortcode('[sma_priority_inbox]'); ?>
+            <?php echo do_shortcode('[sma_sentiment_analysis]'); ?>
         </div>
     </div>
 
     <div class="smartmail-section">
-        <h2>Automated Responses</h2>
+        <h2>Email Templates</h2>
         <div class="smartmail-feature">
-            <?php echo do_shortcode('[sma_automated_responses]'); ?>
+            <?php echo do_shortcode('[sma_email_templates]'); ?>
         </div>
     </div>
 
     <div class="smartmail-section">
-        <h2>Email Summarization</h2>
+        <h2>Forensic Analysis</h2>
         <div class="smartmail-feature">
-            <?php echo do_shortcode('[sma_email_summarization]'); ?>
+            <?php echo do_shortcode('[sma_forensic_analysis]'); ?>
         </div>
     </div>
+</div>
 
-    <div class="smartmail-section">
-        <h2>Meeting Scheduler</h2>
-        <div class="smartmail-feature">
-            <?php echo do_shortcode('[sma_meeting_scheduler]'); ?>
-        </div>
-    </div>
-
-    <div class="smartmail-section">
-        <h2>Follow-up Reminders</h2>
-        <div class="smartmail-feature">
-            <?php echo do_shortcode('[sma_follow_up_rem
+<?php get_footer(); ?>
