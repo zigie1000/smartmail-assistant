@@ -1,5 +1,5 @@
 <?php
-// Shortcodes to use AI functions in posts or pages
+// Shortcodes for displaying content
 
 if (!function_exists('smartmail_register_shortcodes')) {
     function smartmail_register_shortcodes() {
@@ -17,38 +17,47 @@ if (!function_exists('smartmail_register_shortcodes')) {
 add_action('init', 'smartmail_register_shortcodes');
 
 function smartmail_email_categorization_shortcode($atts, $content = null) {
+    smartmail_log('Email categorization shortcode called.');
     return smartmail_email_categorization($content);
 }
 
 function smartmail_priority_inbox_shortcode($atts, $content = null) {
+    smartmail_log('Priority inbox shortcode called.');
     return smartmail_priority_inbox($content);
 }
 
 function smartmail_automated_responses_shortcode($atts, $content = null) {
+    smartmail_log('Automated responses shortcode called.');
     return smartmail_automated_responses($content);
 }
 
 function smartmail_email_summarization_shortcode($atts, $content = null) {
+    smartmail_log('Email summarization shortcode called.');
     return smartmail_email_summarization($content);
 }
 
 function smartmail_meeting_scheduler_shortcode($atts, $content = null) {
+    smartmail_log('Meeting scheduler shortcode called.');
     return smartmail_meeting_scheduler($content);
 }
 
 function smartmail_follow_up_reminders_shortcode($atts, $content = null) {
+    smartmail_log('Follow-up reminders shortcode called.');
     return smartmail_follow_up_reminders($content);
 }
 
 function smartmail_sentiment_analysis_shortcode($atts, $content = null) {
+    smartmail_log('Sentiment analysis shortcode called.');
     return smartmail_sentiment_analysis($content);
 }
 
 function smartmail_email_templates_shortcode($atts, $content = null) {
+    smartmail_log('Email templates shortcode called.');
     return smartmail_email_templates();
 }
 
 function smartmail_forensic_analysis_shortcode($atts, $content = null) {
+    smartmail_log('Forensic analysis shortcode called.');
     return smartmail_forensic_analysis($content);
 }
 ?>
