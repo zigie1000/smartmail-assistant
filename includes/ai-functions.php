@@ -1,10 +1,12 @@
 <?php
 // AI functions for various services
 
+// Check if function smartmail_email_categorization is already defined
 if (!function_exists('smartmail_email_categorization')) {
     function smartmail_email_categorization($email_content) {
         $client = get_openai_client();
         try {
+            // Create a completion using OpenAI API
             $response = $client->completions()->create([
                 'model' => 'text-davinci-003',
                 'prompt' => "Categorize the following email content:\n\n" . $email_content,
@@ -17,6 +19,8 @@ if (!function_exists('smartmail_email_categorization')) {
         }
     }
 }
+
+// Repeat similar functions for priority inbox, automated responses, email summarization, meeting scheduler, follow-up reminders, sentiment analysis, email templates, and forensic analysis
 
 if (!function_exists('smartmail_priority_inbox')) {
     function smartmail_priority_inbox($email_content) {
@@ -92,7 +96,7 @@ if (!function_exists('smartmail_follow_up_reminders')) {
         try {
             $response = $client->completions()->create([
                 'model' => 'text-davinci-003',
-                  'prompt' => "Generate follow-up reminders for the following email content:\n\n" . $email_content,
+                'prompt' => "Generate follow-up reminders for the following email content:\n\n" . $email_content,
                 'max_tokens' => 150
             ]);
             return trim($response['choices'][0]['text']);
@@ -154,6 +158,7 @@ if (!function_exists('smartmail_forensic_analysis')) {
     }
 }
 
+// Function to get OpenAI client
 function get_openai_client() {
     require_once SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php';
     $client = OpenAI::client('your-api-key');
