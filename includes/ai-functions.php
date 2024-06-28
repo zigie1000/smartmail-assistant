@@ -92,7 +92,7 @@ if (!function_exists('smartmail_follow_up_reminders')) {
         try {
             $response = $client->completions()->create([
                 'model' => 'text-davinci-003',
-                'prompt' => "Generate follow-up reminders for the following email content:\n\n" . $email_content,
+                  'prompt' => "Generate follow-up reminders for the following email content:\n\n" . $email_content,
                 'max_tokens' => 150
             ]);
             return trim($response['choices'][0]['text']);
@@ -152,5 +152,11 @@ if (!function_exists('smartmail_forensic_analysis')) {
             return 'Error performing forensic analysis.';
         }
     }
+}
+
+function get_openai_client() {
+    require_once SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php';
+    $client = OpenAI::client('your-api-key');
+    return $client;
 }
 ?>
