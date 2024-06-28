@@ -49,6 +49,7 @@ $files = [
     'includes/class-wc-gateway-pi.php',
     'includes/functions.php',
     'includes/shortcodes.php',
+    'includes/subscription-functions.php',
     'includes/ai-functions.php'
 ];
 
@@ -67,9 +68,8 @@ register_activation_hook(__FILE__, function() {
     try {
         update_option('smartmail_plugin_activated', true);
         smartmail_log('SmartMail Assistant plugin activated successfully.');
-        // Create required pages
-        smartmail_create_required_pages();
-       } catch (Exception $e) {
+        smartmail_create_pages(); // Function to create the necessary pages
+    } catch (Exception $e) {
         $error_message = 'SmartMail Assistant activation error: ' . $e->getMessage();
         smartmail_log($error_message);
         wp_die($error_message);
@@ -87,6 +87,37 @@ register_deactivation_hook(__FILE__, function() {
     }
 });
 
+// Create necessary pages
+function smartmail_create_pages() {
+    $pages = [
+        'smartmail-dashboard' => [
+            'title' => 'SmartMail Dashboard',
+            'content' => '[smartmail_dashboard_shortcode]'
+        ],
+        'smartmail-ebooks' => [
+            'title' => 'SmartMail Ebooks',
+            'content' => '[smartmail_ebooks_shortcode]'
+        ],
+        'smartmail-software' => [
+            'title' => 'SmartMail Software',
+            'content' => '[smartmail_software_shortcode]'
+        ],
+        // Add other pages as needed
+    ];
+
+    foreach ($pages as $slug => $page) {
+        if (!get_page_by_path($slug)) {
+            wp_insert_post([
+                'post_name' => $slug,
+                'post_title' => $page['title'],
+                'post_content' => $page['content'],
+                'post_status' => 'publish',
+                'post_type' => 'page'
+            ]);
+        }
+    }
+}
+
 // Add admin menu for user settings
 if (!function_exists('smartmail_admin_menu')) {
     function smartmail_admin_menu() {
@@ -98,6 +129,14 @@ if (!function_exists('smartmail_admin_menu')) {
             'smartmail_admin_page',
             'dashicons-email-alt2',
             6
+        );
+        add_submenu_page(
+            'smartmail',
+            'Dashboard',
+            'Dashboard',
+            'manage_options',
+            'smartmail-dashboard',
+            'smartmail_dashboard_template'
         );
         smartmail_log('Admin menu added.');
     }
@@ -119,10 +158,18 @@ function smartmail_admin_page() {
     <?php
 }
 
+// Dashboard template
+function smartmail_dashboard_template() {
+    if (is_user_logged_in() && current_user_can('manage_options')) {
+        include plugin_dir_path(__FILE__) . 'includes/templates/admin-dashboard.php';
+    } else {
+        wp_die('You do not have sufficient permissions to access this page.');
+    }
+}
+
 // Ensure the AI functions are included
 if (!function_exists('smartmail_email_categorization')) {
     function smartmail_email_categorization($email_content) {
-        smartmail_log('Email categorization function called.');
         $client = get_openai_client();
         try {
             $response = $client->completions()->create([
@@ -140,7 +187,6 @@ if (!function_exists('smartmail_email_categorization')) {
 
 if (!function_exists('smartmail_priority_inbox')) {
     function smartmail_priority_inbox($email_content) {
-        smartmail_log('Priority inbox function called.');
         $client = get_openai_client();
         try {
             $response = $client->completions()->create([
@@ -158,7 +204,6 @@ if (!function_exists('smartmail_priority_inbox')) {
 
 if (!function_exists('smartmail_automated_responses')) {
     function smartmail_automated_responses($email_content) {
-        smartmail_log('Automated responses function called.');
         $client = get_openai_client();
         try {
             $response = $client->completions()->create([
@@ -176,7 +221,6 @@ if (!function_exists('smartmail_automated_responses')) {
 
 if (!function_exists('smartmail_email_summarization')) {
     function smartmail_email_summarization($email_content) {
-        smartmail_log('Email summarization function called.');
         $client = get_openai_client();
         try {
             $response = $client->completions()->create([
@@ -194,7 +238,6 @@ if (!function_exists('smartmail_email_summarization')) {
 
 if (!function_exists('smartmail_meeting_scheduler')) {
     function smartmail_meeting_scheduler($email_content) {
-        smartmail_log('Meeting scheduler function called.');
         $client = get_openai_client();
         try {
             $response = $client->completions()->create([
@@ -212,7 +255,6 @@ if (!function_exists('smartmail_meeting_scheduler')) {
 
 if (!function_exists('smartmail_follow_up_reminders')) {
     function smartmail_follow_up_reminders($email_content) {
-        smartmail_log('Follow-up reminders function called.');
         $client = get_openai_client();
         try {
             $response = $client->completions()->create([
@@ -230,7 +272,6 @@ if (!function_exists('smartmail_follow_up_reminders')) {
 
 if (!function_exists('smartmail_sentiment_analysis')) {
     function smartmail_sentiment_analysis($email_content) {
-        smartmail_log('Sentiment analysis function called.');
         $client = get_openai_client();
         try {
             $response = $client->completions()->create([
@@ -248,7 +289,6 @@ if (!function_exists('smartmail_sentiment_analysis')) {
 
 if (!function_exists('smartmail_email_templates')) {
     function smartmail_email_templates() {
-        smartmail_log('Email templates function called.');
         $client = get_openai_client();
         try {
             $response = $client->completions()->create([
@@ -266,7 +306,6 @@ if (!function_exists('smartmail_email_templates')) {
 
 if (!function_exists('smartmail_forensic_analysis')) {
     function smartmail_forensic_analysis($email_content) {
-        smartmail_log('Forensic analysis function called.');
         $client = get_openai_client();
         try {
             $response = $client->completions()->create([
@@ -282,58 +321,55 @@ if (!function_exists('smartmail_forensic_analysis')) {
     }
 }
 
-// Function to create required pages
-function smartmail_create_required_pages() {
-    $pages = [
-        'SmartMail Dashboard' => [
-            'post_title' => 'SmartMail Dashboard',
-            'post_content' => '[smartmail_dashboard]',
-            'post_status' => 'publish',
-            'post_type' => 'page',
-            'meta_input' => [
-                '_wp_page_template' => 'templates/admin-dashboard.php'
-            ]
-        ],
-        'SmartMail Assistant' => [
-            'post_title' => 'SmartMail Assistant',
-            'post_content' => '[smartmail_assistant]',
-            'post_status' => 'publish',
-            'post_type' => 'page',
-            'meta_input' => [
-                '_wp_page_template' => 'templates/smartmail-page.php'
-            ]
-        ]
-    ];
-
-    foreach ($pages as $slug => $page_data) {
-        if (!get_page_by_path($slug)) {
-            $page_id = wp_insert_post($page_data);
-            if (!is_wp_error($page_id)) {
-                update_post_meta($page_id, '_wp_page_template', $page_data['meta_input']['_wp_page_template']);
-            }
-        }
+// Shortcodes to use AI functions in posts or pages
+if (!function_exists('smartmail_register_shortcodes')) {
+    function smartmail_register_shortcodes() {
+        add_shortcode('sma_email_categorization', 'smartmail_email_categorization_shortcode');
+        add_shortcode('sma_priority_inbox', 'smartmail_priority_inbox_shortcode');
+        add_shortcode('sma_automated_responses', 'smartmail_automated_responses_shortcode');
+        add_shortcode('sma_email_summarization', 'smartmail_email_summarization_shortcode');
+        add_shortcode('sma_meeting_scheduler', 'smartmail_meeting_scheduler_shortcode');
+        add_shortcode('sma_follow_up_reminders', 'smartmail_follow_up_reminders_shortcode');
+        add_shortcode('sma_sentiment_analysis', 'smartmail_sentiment_analysis_shortcode');
+        add_shortcode('sma_email_templates', 'smartmail_email_templates_shortcode');
+        add_shortcode('sma_forensic_analysis', 'smartmail_forensic_analysis_shortcode');
     }
 }
-?>          
-// Function to display the dashboard template
-function smartmail_dashboard_template() {
-    // Check if the user is logged in and has the required capability
-    if (is_user_logged_in() && current_user_can('manage_options')) {
-        include plugin_dir_path(__FILE__) . 'includes/templates/admin-dashboard.php';
-    } else {
-        wp_die('You do not have sufficient permissions to access this page.');
-    }
-}
-add_action('admin_menu', 'smartmail_dashboard_menu');
+add_action('init', 'smartmail_register_shortcodes');
 
-function smartmail_dashboard_menu() {
-    add_submenu_page(
-        'smartmail',
-        'SmartMail Dashboard',
-        'Dashboard',
-        'manage_options',
-        'smartmail-dashboard',
-        'smartmail_dashboard_template'
-    );
+function smartmail_email_categorization_shortcode($atts, $content = null) {
+    return smartmail_email_categorization($content);
 }
-?>
+
+function smartmail_priority_inbox_shortcode($atts, $content = null) {
+    return smartmail_priority_inbox($content);
+}
+
+function smartmail_automated_responses_shortcode($atts, $content = null) {
+    return smartmail_automated_responses($content);
+}
+
+function smartmail_email_summarization_shortcode($atts, $content = null) {
+    return smartmail_email_summarization($content);
+}
+
+function smartmail_meeting_scheduler_shortcode($atts, $content = null) {
+    return smartmail_meeting_scheduler($content);
+}
+
+function smartmail_follow_up_reminders_shortcode($atts, $content = null) {
+    return smartmail_follow_up_reminders($content);
+}
+
+function smartmail_sentiment_analysis_shortcode($atts, $content = null) {
+    return smartmail_sentiment_analysis($content);
+}
+
+function smartmail_email_templates_shortcode($atts, $content = null) {
+    return smartmail_email_templates();
+}
+
+function smartmail_forensic_analysis_shortcode($atts, $content = null) {
+    return smartmail_forensic_analysis($content);
+}
+?>                
