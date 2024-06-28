@@ -68,7 +68,6 @@ register_activation_hook(__FILE__, function() {
     try {
         update_option('smartmail_plugin_activated', true);
         smartmail_log('SmartMail Assistant plugin activated successfully.');
-        smartmail_create_pages();
     } catch (Exception $e) {
         $error_message = 'SmartMail Assistant activation error: ' . $e->getMessage();
         smartmail_log($error_message);
@@ -119,49 +118,54 @@ function smartmail_admin_page() {
     <?php
 }
 
-// Ensure the AI functions are included
-// Move the AI functions to a separate file and include it here
-
-require_once SMARTMAIL_PLUGIN_PATH . 'includes/ai-functions.php';
-
-// Shortcodes are registered in the shortcodes.php file to avoid duplication
-
-// Function to create pages automatically
-function smartmail_create_pages() {
-    $pages = [
-        'SmartMail Dashboard' => [
-            'post_content' => '[smartmail_dashboard]',
-            'post_title' => 'SmartMail Dashboard',
-            'post_type' => 'page',
-            'post_status' => 'publish',
-            'post_name' => 'smartmail-dashboard'
-        ],
-        'SmartMail Page' => [
-            'post_content' => '[smartmail_page]',
-            'post_title' => 'SmartMail Page',
-            'post_type' => 'page',
-            'post_status' => 'publish',
-            'post_name' => 'smartmail-page'
-        ]
-    ];
-
-    foreach ($pages as $slug => $page) {
-        if (!get_page_by_path($slug)) {
-            wp_insert_post($page);
-        }
+// Shortcodes for displaying content
+if (!function_exists('smartmail_register_shortcodes')) {
+    function smartmail_register_shortcodes() {
+        add_shortcode('sma_email_categorization', 'smartmail_email_categorization_shortcode');
+        add_shortcode('sma_priority_inbox', 'smartmail_priority_inbox_shortcode');
+        add_shortcode('sma_automated_responses', 'smartmail_automated_responses_shortcode');
+        add_shortcode('sma_email_summarization', 'smartmail_email_summarization_shortcode');
+        add_shortcode('sma_meeting_scheduler', 'smartmail_meeting_scheduler_shortcode');
+        add_shortcode('sma_follow_up_reminders', 'smartmail_follow_up_reminders_shortcode');
+        add_shortcode('sma_sentiment_analysis', 'smartmail_sentiment_analysis_shortcode');
+        add_shortcode('sma_email_templates', 'smartmail_email_templates_shortcode');
+        add_shortcode('sma_forensic_analysis', 'smartmail_forensic_analysis_shortcode');
     }
 }
+add_action('init', 'smartmail_register_shortcodes');
 
-// Register shortcodes for the pages
-add_shortcode('smartmail_dashboard', function() {
-    ob_start();
-    include SMARTMAIL_PLUGIN_PATH . 'includes/templates/admin-dashboard.php';
-    return ob_get_clean();
-});
+function smartmail_email_categorization_shortcode($atts, $content = null) {
+    return smartmail_email_categorization($content);
+}
 
-add_shortcode('smartmail_page', function() {
-    ob_start();
-    include SMARTMAIL_PLUGIN_PATH . 'includes/templates/smartmail-page.php';
-    return ob_get_clean();
-});
-?>
+function smartmail_priority_inbox_shortcode($atts, $content = null) {
+    return smartmail_priority_inbox($content);
+}
+
+function smartmail_automated_responses_shortcode($atts, $content = null) {
+    return smartmail_automated_responses($content);
+}
+
+function smartmail_email_summarization_shortcode($atts, $content = null) {
+    return smartmail_email_summarization($content);
+}
+
+function smartmail_meeting_scheduler_shortcode($atts, $content = null) {
+    return smartmail_meeting_scheduler($content);
+}
+
+function smartmail_follow_up_reminders_shortcode($atts, $content = null) {
+    return smartmail_follow_up_reminders($content);
+}
+
+function smartmail_sentiment_analysis_shortcode($atts, $content = null) {
+    return smartmail_sentiment_analysis($content);
+}
+
+function smartmail_email_templates_shortcode($atts, $content = null) {
+    return smartmail_email_templates();
+}
+
+function smartmail_forensic_analysis_shortcode($atts, $content = null) {
+    return smartmail_forensic_analysis($content);
+}
