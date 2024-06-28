@@ -80,7 +80,7 @@ register_deactivation_hook(__FILE__, function() {
         delete_option('smartmail_plugin_activated');
         smartmail_log('SmartMail Assistant plugin deactivated successfully.');
     } catch (Exception $e) {
-        $error_message = 'SmartMail Assistant deactivation error: ' . $e->getMessage();
+        $error_message = 'SmartMail Assistant deactivation error: ' . $e->getMessage());
         smartmail_log($error_message);
         wp_die($error_message);
     }
@@ -148,10 +148,10 @@ function smartmail_forensic_analysis($email_content) {
             'prompt' => "Perform a forensic analysis of the following email content:\n\n" . $email_content,
             'max_tokens' => 150
         ]);
-        return $response['choices'][0]['text'];
+        return trim($response['choices'][0]['text']);
     } catch (Exception $e) {
         smartmail_log('OpenAI error: ' . $e->getMessage());
         return 'Error performing forensic analysis.';
     }
 }
-?>
+?>                                                   
