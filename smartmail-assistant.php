@@ -52,7 +52,7 @@ $files = [
     'includes/api-functions.php',
     'includes/class-wc-gateway-pi.php',
     'includes/functions.php',
-    'includes/shortcodes.php',
+    'includes/shortcodes.php',  // Shortcode functions and registration
     'includes/subscription-functions.php',
     'includes/ai-functions.php'
 ];
