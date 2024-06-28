@@ -118,19 +118,9 @@ function smartmail_admin_page() {
     <?php
 }
 
-// AI functions for various services
-require_once SMARTMAIL_PLUGIN_PATH . 'includes/ai-functions.php';
-
-// Shortcodes for AI functions
-require_once SMARTMAIL_PLUGIN_PATH . 'includes/shortcodes.php';
-
-// Include the OpenAI PHP Client via Composer
-$autoload_path = SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php';
-if (file_exists($autoload_path)) {
-    require_once $autoload_path;
-} else {
-    wp_die('Composer dependencies are missing. Please run "composer install" in the plugin directory.');
-}
+// Manually include the OpenAI PHP client
+require_once SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php';
+require_once SMARTMAIL_PLUGIN_PATH . 'vendor/OpenAI/Client.php';
 
 use OpenAI\Client as OpenAIClient;
 
@@ -141,7 +131,7 @@ function get_openai_client() {
         if (!$api_key) {
             wp_die('OpenAI API key is missing. Please configure it in the SmartMail settings.');
         }
-        $client = OpenAIClient::create($api_key);
+        $client = new OpenAIClient($api_key);
     }
     return $client;
 }
