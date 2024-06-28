@@ -40,15 +40,4 @@ function smartmail_follow_up_reminders_shortcode($atts, $content = null) {
     return smartmail_follow_up_reminders($content);
 }
 
-function smartmail_sentiment_analysis_shortcode($atts, $content = null) {
-    return smartmail_sentiment_analysis($content);
-}
-
-function smartmail_email_templates_shortcode($atts, $content = null) {
-    return smartmail_email_templates();
-}
-
-function smartmail_forensic_analysis_shortcode($atts, $content = null) {
-    return smartmail_forensic_analysis($content);
-}
-?>
+function smartmail_sentiment_analysis_shortcode($atts
