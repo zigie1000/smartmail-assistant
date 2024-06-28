@@ -182,4 +182,13 @@ if (!function_exists('smartmail_email_templates')) {
         return "Email templates generated";
     }
 }
+
+// New AI function for forensic analysis of emails
+if (!function_exists('smartmail_forensic_analysis')) {
+    function smartmail_forensic_analysis($email_content) {
+        smartmail_log('Forensic analysis function called.');
+        // AI logic for forensic analysis
+        return "Forensic analysis result: Detailed analysis of email: $email_content";
+    }
+}
 ?>
