@@ -68,6 +68,7 @@ register_activation_hook(__FILE__, function() {
     try {
         update_option('smartmail_plugin_activated', true);
         smartmail_log('SmartMail Assistant plugin activated successfully.');
+        smartmail_create_pages();
     } catch (Exception $e) {
         $error_message = 'SmartMail Assistant activation error: ' . $e->getMessage();
         smartmail_log($error_message);
@@ -124,4 +125,43 @@ function smartmail_admin_page() {
 require_once SMARTMAIL_PLUGIN_PATH . 'includes/ai-functions.php';
 
 // Shortcodes are registered in the shortcodes.php file to avoid duplication
+
+// Function to create pages automatically
+function smartmail_create_pages() {
+    $pages = [
+        'SmartMail Dashboard' => [
+            'post_content' => '[smartmail_dashboard]',
+            'post_title' => 'SmartMail Dashboard',
+            'post_type' => 'page',
+            'post_status' => 'publish',
+            'post_name' => 'smartmail-dashboard'
+        ],
+        'SmartMail Page' => [
+            'post_content' => '[smartmail_page]',
+            'post_title' => 'SmartMail Page',
+            'post_type' => 'page',
+            'post_status' => 'publish',
+            'post_name' => 'smartmail-page'
+        ]
+    ];
+
+    foreach ($pages as $slug => $page) {
+        if (!get_page_by_path($slug)) {
+            wp_insert_post($page);
+        }
+    }
+}
+
+// Register shortcodes for the pages
+add_shortcode('smartmail_dashboard', function() {
+    ob_start();
+    include SMARTMAIL_PLUGIN_PATH . 'includes/templates/admin-dashboard.php';
+    return ob_get_clean();
+});
+
+add_shortcode('smartmail_page', function() {
+    ob_start();
+    include SMARTMAIL_PLUGIN_PATH . 'includes/templates/smartmail-page.php';
+    return ob_get_clean();
+});
 ?>
