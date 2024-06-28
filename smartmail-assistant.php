@@ -85,3 +85,4 @@ register_deactivation_hook(__FILE__, function() {
         wp_die($error_message);
     }
 });
+?>
