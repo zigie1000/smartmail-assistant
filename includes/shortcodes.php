@@ -1,6 +1,5 @@
 <?php
-
-// Shortcodes for displaying content
+// Shortcodes to use AI functions in posts or pages
 
 if (!function_exists('smartmail_register_shortcodes')) {
     function smartmail_register_shortcodes() {
@@ -13,7 +12,6 @@ if (!function_exists('smartmail_register_shortcodes')) {
         add_shortcode('sma_sentiment_analysis', 'smartmail_sentiment_analysis_shortcode');
         add_shortcode('sma_email_templates', 'smartmail_email_templates_shortcode');
         add_shortcode('sma_forensic_analysis', 'smartmail_forensic_analysis_shortcode');
-        add_shortcode('smartmail_settings', 'smartmail_settings_shortcode');
     }
 }
 add_action('init', 'smartmail_register_shortcodes');
@@ -52,19 +50,5 @@ function smartmail_email_templates_shortcode($atts, $content = null) {
 
 function smartmail_forensic_analysis_shortcode($atts, $content = null) {
     return smartmail_forensic_analysis($content);
-}
-
-function smartmail_settings_shortcode($atts, $content = null) {
-    ob_start();
-    ?>
-    <form method="post" action="options.php">
-        <?php
-        settings_fields('smartmail_options_group');
-        do_settings_sections('smartmail');
-        submit_button();
-        ?>
-    </form>
-    <?php
-    return ob_get_clean();
 }
 ?>
