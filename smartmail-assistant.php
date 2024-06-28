@@ -63,6 +63,39 @@ foreach ($files as $file) {
     }
 }
 
+// Manually include the OpenAI PHP client
+require_once SMARTMAIL_PLUGIN_PATH . 'Vendor/Client.php';
+require_once SMARTMAIL_PLUGIN_PATH . 'Vendor/Exceptions/OpenAIException.php';
+
+use OpenAI\Client as OpenAIClient;
+
+function get_openai_client() {
+    static $client = null;
+    if ($client === null) {
+        $api_key = get_option('smartmail_openai_api_key');
+        if (!$api_key) {
+            wp_die('OpenAI API key is missing. Please configure it in the SmartMail settings.');
+        }
+        $client = new OpenAIClient($api_key);
+    }
+    return $client;
+}
+
+function smartmail_forensic_analysis($email_content) {
+    $client = get_openai_client();
+    try {
+        $response = $client->completions()->create([
+            'model' => 'text-davinci-003',
+            'prompt' => "Perform a forensic analysis of the following email content:\n\n" . $email_content,
+            'max_tokens' => 150
+        ]);
+        return trim($response['choices'][0]['text']);
+    } catch (Exception $e) {
+        smartmail_log('OpenAI error: ' . $e->getMessage());
+        return 'Error performing forensic analysis.';
+    }
+}
+
 // Activation and deactivation hooks
 register_activation_hook(__FILE__, function() {
     try {
@@ -80,7 +113,7 @@ register_deactivation_hook(__FILE__, function() {
         delete_option('smartmail_plugin_activated');
         smartmail_log('SmartMail Assistant plugin deactivated successfully.');
     } catch (Exception $e) {
-        $error_message = 'SmartMail Assistant deactivation error: ' . $e->getMessage());
+        $error_message = 'SmartMail Assistant deactivation error: ' . $e->getMessage();
         smartmail_log($error_message);
         wp_die($error_message);
     }
@@ -118,36 +151,218 @@ function smartmail_admin_page() {
     <?php
 }
 
-// Manually include the OpenAI PHP client
-require_once SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php';
-require_once SMARTMAIL_PLUGIN_PATH . 'vendor/OpenAI/Client.php';
-
-use OpenAI\Client as OpenAIClient;
-
-function get_openai_client() {
-    static $client = null;
-    if ($client === null) {
-        $api_key = get_option('smartmail_openai_api_key');
-        if (!$api_key) {
-            wp_die('OpenAI API key is missing. Please configure it in the SmartMail settings.');
+// Ensure the AI functions are included
+if (!function_exists('smartmail_email_categorization')) {
+    function smartmail_email_categorization($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Categorize the following email content:\n\n" . $email_content,
+                'max_tokens' => 50
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error categorizing email content.';
         }
-        $client = new OpenAIClient($api_key);
     }
-    return $client;
 }
 
-function smartmail_forensic_analysis($email_content) {
-    $client = get_openai_client();
-    try {
-        $response = $client->completions()->create([
-            'model' => 'text-davinci-003',
-            'prompt' => "Perform a forensic analysis of the following email content:\n\n" . $email_content,
-            'max_tokens' => 150
-        ]);
-        return trim($response['choices'][0]['text']);
-    } catch (Exception $e) {
-        smartmail_log('OpenAI error: ' . $e->getMessage());
-        return 'Error performing forensic analysis.';
+if (!function_exists('smartmail_priority_inbox')) {
+    function smartmail_priority_inbox($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Determine the priority of the following email content:\n\n" . $email_content,
+                'max_tokens' => 50
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error determining priority.';
+        }
     }
 }
-?>
+
+if (!function_exists('smartmail_automated_responses')) {
+    function smartmail_automated_responses($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Generate an automated response for the following email content:\n\n" . $email_content,
+                'max_tokens' => 100
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error generating automated response.';
+        }
+    }
+}
+
+if (!function_exists('smartmail_email_summarization')) {
+    function smartmail_email_summarization($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Summarize the following email content:\n\n" . $email_content,
+                'max_tokens' => 100
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error summarizing email content.';
+        }
+    }
+}
+
+if (!function_exists('smartmail_meeting_scheduler')) {
+    function smartmail_meeting_scheduler($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Schedule a meeting based on the following email content:\n\n" . $email_content,
+                'max_tokens' => 100
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error scheduling meeting.';
+        }
+    }
+}
+
+if (!function_exists('smartmail_follow_up_reminders')) {
+    function smartmail_follow_up_reminders($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Generate follow-up reminders for the following email content:\n\n" . $email_content,
+                'max_tokens' => 100
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error generating follow-up reminders.';
+        }
+    }
+}
+
+if (!function_exists('smartmail_sentiment_analysis')) {
+    function smartmail_sentiment_analysis($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Perform sentiment analysis on the following email content:\n\n" . $email_content,
+                'max_tokens' => 50
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error performing sentiment analysis.';
+        }
+    }
+}
+
+if (!function_exists('smartmail_email_templates')) {
+    function smartmail_email_templates() {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Generate a custom email template.",
+                'max_tokens' => 150
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error generating email templates.';
+        }
+    }
+}
+
+if (!function_exists('smartmail_forensic_analysis')) {
+    function smartmail_forensic_analysis($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Perform a forensic analysis of the following email content:\n\n" . $email_content,
+                'max_tokens' => 150
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error performing forensic analysis.';
+        }
+    }
+}
+
+// Shortcodes to use AI functions in posts or pages
+if (!function_exists('smartmail_register_shortcodes')) {
+    function smartmail_register_shortcodes() {
+        add_shortcode('sma_email_categorization', 'smartmail_email_categorization_shortcode');
+        add_shortcode('sma_priority_inbox', 'smartmail_priority_inbox_shortcode');
+        add_shortcode('sma_automated_responses', 'smartmail_automated_responses_shortcode');
+        add_shortcode('sma_email_summarization', 'smartmail_email_summarization_shortcode');
+        add_shortcode('sma_meeting_scheduler', 'smartmail_meeting_scheduler_shortcode');
+        add_shortcode('sma_follow_up_reminders', 'smartmail_follow_up_reminders_shortcode');
+        add_shortcode('sma_sentiment_analysis', 'smartmail_sentiment_analysis_shortcode');
+        add_shortcode('sma_email_templates', 'smartmail_email_templates_shortcode');
+        add_shortcode('sma_forensic_analysis', 'smartmail_forensic_analysis_shortcode');
+    }
+}
+add_action('init', 'smartmail_register_shortcodes');
+
+function smartmail_email_categorization_shortcode($atts, $content = null) {
+    smartmail_log('Email categorization shortcode called.');
+    return smartmail_email_categorization($content);
+}
+
+function smartmail_priority_inbox_shortcode($atts, $content = null) {
+    smartmail_log('Priority inbox shortcode called.');
+    return smartmail_priority_inbox($content);
+}
+
+function smartmail_automated_responses_shortcode($atts, $content = null) {
+    smartmail_log('Automated responses shortcode called.');
+    return smartmail_automated_responses($content);
+}
+
+function smartmail_email_summarization_shortcode($atts, $content = null) {
+    smartmail_log('Email summarization shortcode called.');
+    return smartmail_email_summarization($content);
+}
+
+function smartmail_meeting_scheduler_shortcode($atts, $content = null) {
+    smartmail_log('Meeting scheduler shortcode called.');
+    return smartmail_meeting_scheduler($content);
+}
+
+function smartmail_follow_up_reminders_shortcode($atts, $content = null) {
+    smartmail_log('Follow-up reminders shortcode called.');
+    return smartmail_follow_up_reminders($content);
+}
+
+function smartmail_sentiment_analysis_shortcode($atts, $content = null) {
+    smartmail_log('Sentiment analysis shortcode called.');
+    return smartmail_sentiment_analysis($content);
+}
+
+function smartmail_email_templates_shortcode($atts, $content = null) {
+    smartmail_log('Email templates shortcode called.');
+    return smartmail_email_templates();
+}
+
+function smartmail_forensic_analysis_shortcode($atts, $content = null) {
+    smartmail_log('Forensic analysis shortcode called.');
+    return smartmail_forensic_analysis($content);
+}
+?>            
