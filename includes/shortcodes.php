@@ -1,61 +1,4 @@
 <?php
-// Shortcodes for displaying content
-
-if (!function_exists('smartmail_email_categorization_shortcode')) {
-    function smartmail_email_categorization_shortcode($atts, $content = null) {
-        return smartmail_email_categorization($content);
-    }
-}
-
-if (!function_exists('smartmail_priority_inbox_shortcode')) {
-    function smartmail_priority_inbox_shortcode($atts, $content = null) {
-        return smartmail_priority_inbox($content);
-    }
-}
-
-if (!function_exists('smartmail_automated_responses_shortcode')) {
-    function smartmail_automated_responses_shortcode($atts, $content = null) {
-        return smartmail_automated_responses($content);
-    }
-}
-
-if (!function_exists('smartmail_email_summarization_shortcode')) {
-    function smartmail_email_summarization_shortcode($atts, $content = null) {
-        return smartmail_email_summarization($content);
-    }
-}
-
-if (!function_exists('smartmail_meeting_scheduler_shortcode')) {
-    function smartmail_meeting_scheduler_shortcode($atts, $content = null) {
-        return smartmail_meeting_scheduler($content);
-    }
-}
-
-if (!function_exists('smartmail_follow_up_reminders_shortcode')) {
-    function smartmail_follow_up_reminders_shortcode($atts, $content = null) {
-        return smartmail_follow_up_reminders($content);
-    }
-}
-
-if (!function_exists('smartmail_sentiment_analysis_shortcode')) {
-    function smartmail_sentiment_analysis_shortcode($atts, $content = null) {
-        return smartmail_sentiment_analysis($content);
-    }
-}
-
-if (!function_exists('smartmail_email_templates_shortcode')) {
-    function smartmail_email_templates_shortcode($atts, $content = null) {
-        return smartmail_email_templates();
-    }
-}
-
-if (!function_exists('smartmail_forensic_analysis_shortcode')) {
-    function smartmail_forensic_analysis_shortcode($atts, $content = null) {
-        return smartmail_forensic_analysis($content);
-    }
-}
-
-// Register shortcodes
 if (!function_exists('smartmail_register_shortcodes')) {
     function smartmail_register_shortcodes() {
         add_shortcode('sma_email_categorization', 'smartmail_email_categorization_shortcode');
@@ -70,4 +13,40 @@ if (!function_exists('smartmail_register_shortcodes')) {
     }
 }
 add_action('init', 'smartmail_register_shortcodes');
-    
+
+function smartmail_email_categorization_shortcode($atts, $content = null) {
+    return smartmail_email_categorization($content);
+}
+
+function smartmail_priority_inbox_shortcode($atts, $content = null) {
+    return smartmail_priority_inbox($content);
+}
+
+function smartmail_automated_responses_shortcode($atts, $content = null) {
+    return smartmail_automated_responses($content);
+}
+
+function smartmail_email_summarization_shortcode($atts, $content = null) {
+    return smartmail_email_summarization($content);
+}
+
+function smartmail_meeting_scheduler_shortcode($atts, $content = null) {
+    return smartmail_meeting_scheduler($content);
+}
+
+function smartmail_follow_up_reminders_shortcode($atts, $content = null) {
+    return smartmail_follow_up_reminders($content);
+}
+
+function smartmail_sentiment_analysis_shortcode($atts, $content = null) {
+    return smartmail_sentiment_analysis($content);
+}
+
+function smartmail_email_templates_shortcode($atts, $content = null) {
+    return smartmail_email_templates();
+}
+
+function smartmail_forensic_analysis_shortcode($atts, $content = null) {
+    return smartmail_forensic_analysis($content);
+}
+?>
