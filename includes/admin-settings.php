@@ -15,18 +15,20 @@ if (!function_exists('smartmail_admin_menu')) {
 }
 add_action('admin_menu', 'smartmail_admin_menu');
 
-function smartmail_admin_page() {
-    ?>
-    <div class="wrap">
-        <h1>SmartMail Assistant Settings</h1>
-        <form method="post" action="options.php">
-            <?php
-            settings_fields('smartmail_options_group');
-            do_settings_sections('smartmail');
-            submit_button();
-            ?>
-        </form>
-    </div>
-    <?php
+if (!function_exists('smartmail_admin_page')) {
+    function smartmail_admin_page() {
+        ?>
+        <div class="wrap">
+            <h1>SmartMail Assistant Settings</h1>
+            <form method="post" action="options.php">
+                <?php
+                settings_fields('smartmail_options_group');
+                do_settings_sections('smartmail');
+                submit_button();
+                ?>
+            </form>
+        </div>
+        <?php
+    }
 }
 ?>
