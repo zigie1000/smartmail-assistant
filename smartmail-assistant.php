@@ -80,7 +80,7 @@ register_deactivation_hook(__FILE__, function() {
         delete_option('smartmail_plugin_activated');
         smartmail_log('SmartMail Assistant plugin deactivated successfully.');
     } catch (Exception $e) {
-        $error_message = 'SmartMail Assistant deactivation error: ' . $e->getMessage();
+        $error_message = 'SmartMail Assistant deactivation error: ' . $e->getMessage());
         smartmail_log($error_message);
         wp_die($error_message);
     }
@@ -125,7 +125,13 @@ require_once SMARTMAIL_PLUGIN_PATH . 'includes/ai-functions.php';
 require_once SMARTMAIL_PLUGIN_PATH . 'includes/shortcodes.php';
 
 // Include the OpenAI PHP Client via Composer
-require_once SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php';
+$autoload_path = SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php';
+if (file_exists($autoload_path)) {
+    require_once $autoload_path;
+} else {
+    wp_die('Composer dependencies are missing. Please run "composer install" in the plugin directory.');
+}
+
 use OpenAI\Client as OpenAIClient;
 
 function get_openai_client() {
