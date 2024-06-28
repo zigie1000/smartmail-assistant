@@ -49,7 +49,6 @@ $files = [
     'includes/class-wc-gateway-pi.php',
     'includes/functions.php',
     'includes/shortcodes.php',
-    'includes/subscription-functions.php',
     'includes/ai-functions.php'
 ];
 
@@ -68,6 +67,7 @@ register_activation_hook(__FILE__, function() {
     try {
         update_option('smartmail_plugin_activated', true);
         smartmail_log('SmartMail Assistant plugin activated successfully.');
+        smartmail_create_pages();
     } catch (Exception $e) {
         $error_message = 'SmartMail Assistant activation error: ' . $e->getMessage();
         smartmail_log($error_message);
@@ -118,23 +118,28 @@ function smartmail_admin_page() {
     <?php
 }
 
-// Include the OpenAI client if it exists
-if (file_exists(SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php')) {
-    require_once SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php';
-    smartmail_log('OpenAI client included.');
-} else {
-    smartmail_log('OpenAI client not found.');
-}
+// Create SmartMail Assistant pages on plugin activation
+function smartmail_create_pages() {
+    $pages = [
+        'smartmail-dashboard' => [
+            'post_title' => 'SmartMail Dashboard',
+            'post_content' => '[smartmail_dashboard]', // Use the appropriate shortcode or template
+            'post_status' => 'publish',
+            'post_type' => 'page'
+        ]
+    ];
 
-// Function to get the OpenAI client
-function get_openai_client() {
-    $api_key = get_option('smartmail_openai_api_key');
-    if (!$api_key) {
-        smartmail_log('OpenAI API key not found.');
-        return null;
+    foreach ($pages as $slug => $page_data) {
+        if (!get_page_by_path($slug)) {
+            wp_insert_post($page_data);
+        }
     }
-    return OpenAI::client($api_key);
 }
 
-// Remove duplicate shortcode registrations from this file
-?>
+// Shortcode to display SmartMail Assistant page template
+function smartmail_assistant_template_shortcode() {
+    ob_start();
+    include plugin_dir_path(__FILE__) . 'includes/templates/smartmail-page.php';
+    return ob_get_clean();
+}
+add_shortcode('smartmail_assistant_template', 'smartmail_assistant_template_shortcode');
