@@ -315,3 +315,25 @@ function smartmail_create_required_pages() {
     }
 }
 ?>          
+// Function to display the dashboard template
+function smartmail_dashboard_template() {
+    // Check if the user is logged in and has the required capability
+    if (is_user_logged_in() && current_user_can('manage_options')) {
+        include plugin_dir_path(__FILE__) . 'includes/templates/admin-dashboard.php';
+    } else {
+        wp_die('You do not have sufficient permissions to access this page.');
+    }
+}
+add_action('admin_menu', 'smartmail_dashboard_menu');
+
+function smartmail_dashboard_menu() {
+    add_submenu_page(
+        'smartmail',
+        'SmartMail Dashboard',
+        'Dashboard',
+        'manage_options',
+        'smartmail-dashboard',
+        'smartmail_dashboard_template'
+    );
+}
+?>
