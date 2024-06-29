@@ -18,7 +18,7 @@ define('SMARTMAIL_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('SMARTMAIL_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('SMARTMAIL_DEBUG_LOG', SMARTMAIL_PLUGIN_PATH . 'debug.log');
 
-// Include custom autoloader
+// Include Composer's autoloader
 require_once SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php';
 
 // Function to log messages
@@ -73,6 +73,7 @@ register_activation_hook(__FILE__, function() {
     try {
         update_option('smartmail_plugin_activated', true);
         smartmail_log('SmartMail Assistant plugin activated successfully.');
+        smartmail_create_pages();
     } catch (Exception $e) {
         $error_message = 'SmartMail Assistant activation error: ' . $e->getMessage();
         smartmail_log($error_message);
@@ -166,20 +167,6 @@ if (!function_exists('smartmail_dashboard_template')) {
         }
     }
 }
-add_action('admin_menu', 'smartmail_dashboard_menu');
-
-if (!function_exists('smartmail_dashboard_menu')) {
-    function smartmail_dashboard_menu() {
-        add_submenu_page(
-            'smartmail',
-            'SmartMail Dashboard',
-            'Dashboard',
-            'manage_options',
-            'smartmail-dashboard',
-            'smartmail_dashboard_template'
-        );
-    }
-}
 
 // Register settings
 if (!function_exists('smartmail_register_settings')) {
@@ -232,7 +219,7 @@ if (!function_exists('smartmail_create_pages')) {
             ],
         ];
 
-        foreach ($pages as $page) {
+        foreach ($ pages as $page) {
             if (!get_page_by_title($page['title'])) {
                 wp_insert_post([
                     'post_title' => $page['title'],
