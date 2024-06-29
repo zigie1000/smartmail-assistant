@@ -19,7 +19,14 @@ define('SMARTMAIL_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('SMARTMAIL_DEBUG_LOG', SMARTMAIL_PLUGIN_PATH . 'debug.log');
 
 // Include Composer's autoloader
-require_once SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php';
+if (file_exists(SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php')) {
+    require_once SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php';
+} else {
+    add_action('admin_notices', function() {
+        echo '<div class="notice notice-error"><p>Autoloader not found. Please run "composer install".</p></div>';
+    });
+    return; // Stop plugin execution if autoloader is missing
+}
 
 // Function to log messages
 if (!function_exists('smartmail_log')) {
@@ -72,6 +79,7 @@ foreach ($files as $file) {
 register_activation_hook(__FILE__, function() {
     try {
         update_option('smartmail_plugin_activated', true);
+        smartmail_create_pages(); // Ensure pages are created on activation
         smartmail_log('SmartMail Assistant plugin activated successfully.');
     } catch (Exception $e) {
         $error_message = 'SmartMail Assistant activation error: ' . $e->getMessage();
@@ -235,7 +243,7 @@ register_activation_hook(__FILE__, 'smartmail_create_pages');
 // Get OpenAI client
 if (!function_exists('get_openai_client')) {
     function get_openai_client() {
-        require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
+        require_once SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php';
         $api_key = get_option('smartmail_openai_api_key');
         if (!$api_key) {
             throw new Exception('OpenAI API key is missing.');
@@ -243,3 +251,4 @@ if (!function_exists('get_openai_client')) {
         return OpenAI\Client::factory(['api_key' => $api_key]);
     }
 }
+?>
