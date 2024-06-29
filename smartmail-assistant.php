@@ -219,7 +219,7 @@ if (!function_exists('smartmail_create_pages')) {
             ],
         ];
 
-        foreach ($ pages as $page) {
+        foreach ($pages as $page) {
             if (!get_page_by_title($page['title'])) {
                 wp_insert_post([
                     'post_title' => $page['title'],
@@ -244,3 +244,4 @@ if (!function_exists('get_openai_client')) {
         return OpenAI\Client::factory(['api_key' => $api_key]);
     }
 }
+?>
