@@ -3,7 +3,7 @@
     "description": "A description of your SmartMail Assistant plugin.",
     "type": "wordpress-plugin",
     "require": {
-        "openai/openai": "^3.0"
+        "openai/openai": "*"
     },
     "autoload": {
         "psr-4": {
