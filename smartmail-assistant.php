@@ -18,7 +18,7 @@ define('SMARTMAIL_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('SMARTMAIL_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('SMARTMAIL_DEBUG_LOG', SMARTMAIL_PLUGIN_PATH . 'debug.log');
 
-// Include Composer's autoloader
+// Include the custom autoloader
 require_once SMARTMAIL_PLUGIN_PATH . 'vendor/autoload.php';
 
 // Function to log messages
@@ -73,7 +73,6 @@ register_activation_hook(__FILE__, function() {
     try {
         update_option('smartmail_plugin_activated', true);
         smartmail_log('SmartMail Assistant plugin activated successfully.');
-        smartmail_create_pages();
     } catch (Exception $e) {
         $error_message = 'SmartMail Assistant activation error: ' . $e->getMessage();
         smartmail_log($error_message);
@@ -244,4 +243,3 @@ if (!function_exists('get_openai_client')) {
         return OpenAI\Client::factory(['api_key' => $api_key]);
     }
 }
-?>
