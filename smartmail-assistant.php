@@ -1,3 +1,4 @@
+<?php
 /**
  * Plugin Name: SmartMail Assistant
  * Plugin URI: https://smartmail.store
@@ -163,6 +164,20 @@ if (!function_exists('smartmail_dashboard_template')) {
         } else {
             wp_die('You do not have sufficient permissions to access this page.');
         }
+    }
+}
+add_action('admin_menu', 'smartmail_dashboard_menu');
+
+if (!function_exists('smartmail_dashboard_menu')) {
+    function smartmail_dashboard_menu() {
+        add_submenu_page(
+            'smartmail',
+            'SmartMail Dashboard',
+            'Dashboard',
+            'manage_options',
+            'smartmail-dashboard',
+            'smartmail_dashboard_template'
+        );
     }
 }
 
