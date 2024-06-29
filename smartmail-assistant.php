@@ -242,4 +242,4 @@ if (!function_exists('get_openai_client')) {
         }
         return OpenAI\Client::factory(['api_key' => $api_key]);
     }
-}
+}                              
