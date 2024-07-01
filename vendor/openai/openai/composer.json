@@ -1,0 +1,12 @@
+{
+    "name": "openai/openai",
+    "description": "ai integracao",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chico",
+            "email": "chico@chicodgtal.com.br"
+        }
+    ]
+}
