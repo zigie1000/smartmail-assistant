@@ -1,17 +1,23 @@
 <?php
-// API functions for interacting with external services
 
-// Example function to get data from an API
-if (!function_exists('smartmail_get_api_data')) {
-    function smartmail_get_api_data($url) {
-        $response = wp_remote_get($url);
+if (!defined('ABSPATH')) {
+    exit;
+}
 
-        if (is_wp_error($response)) {
-            return false;
-        }
+function smartmail_assistant_register_api_endpoints() {
+    register_rest_route(
+        'smartmail/v1',
+        '/data',
+        array(
+            'methods'  => 'GET',
+            'callback' => 'smartmail_assistant_get_data',
+        )
+    );
+}
 
-        $body = wp_remote_retrieve_body($response);
-        return json_decode($body, true);
-    }
+add_action('rest_api_init', 'smartmail_assistant_register_api_endpoints');
+
+function smartmail_assistant_get_data($request) {
+    return new WP_REST_Response(array('message' => 'SmartMail API is working'), 200);
 }
 ?>
