@@ -1,0 +1,14 @@
+{
+    "name": "your-vendor/smartmail-assistant",
+    "description": "A description of your SmartMail Assistant plugin.",
+    "type": "wordpress-plugin",
+    "require": {
+        "openai/openai": "^0.4 || ^0.3 || dev-main"
+    },
+    "autoload": {
+        "psr-4": {
+            "SmartMailAssistant\\": "includes/",
+            "OpenAI\\": "vendor/openai/openai/src/"
+        }
+    }
+}
