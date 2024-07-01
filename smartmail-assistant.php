@@ -287,10 +287,10 @@ set_exception_handler(function($exception) {
     smartmail_log($log_message);
     wp_die($log_message);
 });
-?>
+
 // Add WooCommerce settings page
 if (!function_exists('smartmail_add_woocommerce_settings_page')) {
-    function smartmail_add_woocommerce_settings_page($settings) {
+     function smartmail_add_woocommerce_settings_page($settings) {
         $settings[] = include 'includes/class-wc-settings-smartmail.php';
         return $settings;
     }
@@ -343,3 +343,4 @@ add_filter('woocommerce_get_settings_pages', function($settings) {
     $settings[] = include 'includes/class-wc-settings-smartmail.php';
     return $settings;
 });
+?>   
