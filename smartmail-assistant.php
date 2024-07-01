@@ -72,8 +72,7 @@ foreach ($files as $file) {
 register_activation_hook(__FILE__, function() {
     try {
         update_option('smartmail_plugin_activated', true);
-        smartmail_create_pages();
-        add_custom_woocommerce_capabilities();
+        smartmail_create_pages(); // Ensure pages are created during activation
         smartmail_log('SmartMail Assistant plugin activated successfully.');
     } catch (Exception $e) {
         $error_message = 'SmartMail Assistant activation error: ' . $e->getMessage();
@@ -85,7 +84,6 @@ register_activation_hook(__FILE__, function() {
 register_deactivation_hook(__FILE__, function() {
     try {
         delete_option('smartmail_plugin_activated');
-        remove_custom_woocommerce_capabilities();
         smartmail_log('SmartMail Assistant plugin deactivated successfully.');
     } catch (Exception $e) {
         $error_message = 'SmartMail Assistant deactivation error: ' . $e->getMessage();
@@ -93,55 +91,6 @@ register_deactivation_hook(__FILE__, function() {
         wp_die($error_message);
     }
 });
-
-// Add custom capabilities for WooCommerce
-function add_custom_woocommerce_capabilities() {
-    $role = get_role('shop_manager');
-    if ($role) {
-        $role->add_cap('manage_woocommerce');
-        $role->add_cap('edit_shop_orders');
-        $role->add_cap('read_shop_orders');
-        $role->add_cap('edit_products');
-        $role->add_cap('publish_products');
-        $role->add_cap('edit_others_shop_orders');
-        $role->add_cap('view_woocommerce_reports');
-    }
-
-    $admin_role = get_role('administrator');
-    if ($admin_role) {
-        $admin_role->add_cap('manage_woocommerce');
-        $admin_role->add_cap('edit_shop_orders');
-        $admin_role->add_cap('read_shop_orders');
-        $admin_role->add_cap('edit_products');
-        $admin_role->add_cap('publish_products');
-        $admin_role->add_cap('edit_others_shop_orders');
-        $admin_role->add_cap('view_woocommerce_reports');
-    }
-}
-
-function remove_custom_woocommerce_capabilities() {
-    $role = get_role('shop_manager');
-    if ($role) {
-        $role->remove_cap('manage_woocommerce');
-        $role->remove_cap('edit_shop_orders');
-        $role->remove_cap('read_shop_orders');
-        $role->remove_cap('edit_products');
-        $role->remove_cap('publish_products');
-        $role->remove_cap('edit_others_shop_orders');
-        $role->remove_cap('view_woocommerce_reports');
-    }
-
-    $admin_role = get_role('administrator');
-    if ($admin_role) {
-        $admin_role->remove_cap('manage_woocommerce');
-        $admin_role->remove_cap('edit_shop_orders');
-        $admin_role->remove_cap('read_shop_orders');
-        $admin_role->remove_cap('edit_products');
-        $admin_role->remove_cap('publish_products');
-        $admin_role->remove_cap('edit_others_shop_orders');
-        $admin_role->remove_cap('view_woocommerce_reports');
-    }
-}
 
 // Add admin menu for user settings
 if (!function_exists('smartmail_admin_menu')) {
@@ -296,76 +245,39 @@ if (!function_exists('get_openai_client')) {
     }
 }
 
-// Add custom WooCommerce settings
+// Add WooCommerce settings
 if (!function_exists('smartmail_add_woocommerce_settings')) {
-    function smartmail_add_woocommerce_settings() {
-        add_option('smartmail_woocommerce_setting', 'default_value');
+    function smartmail_add_woocommerce_settings($settings) {
+        $settings[] = [
+            'title' => __('SmartMail Assistant Settings', 'woocommerce'),
+            'type' => 'title',
+            'desc' => '',
+            'id' => 'smartmail_assistant_settings'
+        ];
 
-        register_setting('woocommerce', 'smartmail_woocommerce_setting', [
-            'type' => 'string',
-            'description' => 'A custom setting for WooCommerce.',
-            'sanitize_callback' => 'sanitize_text_field',
-            'default' => 'default_value'
-        ]);
+        $settings[] = [
+            'title' => __('OpenAI API Key', 'woocommerce'),
+            'desc' => __('Enter your OpenAI API key to enable AI features.', 'woocommerce'),
+            'id' => 'smartmail_openai_api_key',
+            'type' => 'text',
+            'desc_tip' => true,
+            'default' => get_option('smartmail_openai_api_key'),
+            'autoload' => false,
+        ];
 
-        add_settings_section(
-            'smartmail_woocommerce_settings_section',
-            'SmartMail WooCommerce Settings',
-            null,
-            'woocommerce'
-        );
+        $settings[] = [
+            'type' => 'sectionend',
+            'id' => 'smartmail_assistant_settings'
+        ];
 
-        add_settings_field(
-            'smartmail_woocommerce_setting',
-            'Custom WooCommerce Setting',
-            'smartmail_woocommerce_setting_render',
-            'woocommerce',
-            'smartmail_woocommerce_settings_section'
-        );
+        return $settings;
     }
 }
-add_action('admin_init', 'smartmail_add_woocommerce_settings');
-
-if (!function_exists('smartmail_woocommerce_setting_render')) {
-    function smartmail_woocommerce_setting_render() {
-        $value = get_option('smartmail_woocommerce_setting');
-        ?>
-        <input type="text" name="smartmail_woocommerce_setting" value="<?php echo esc_attr($value); ?>" />
-        <?php
-    }
-}
-
-// WooCommerce hooks for additional functionality
-if (!function_exists('smartmail_woocommerce_hooks')) {
-    function smartmail_woocommerce_hooks() {
-        // Example: Add a custom field to WooCommerce product edit page
-        add_action('woocommerce_product_options_general_product_data', 'smartmail_add_custom_field');
-        add_action('woocommerce_process_product_meta', 'smartmail_save_custom_field');
-    }
-}
-add_action('admin_init', 'smartmail_woocommerce_hooks');
-
-if (!function_exists('smartmail_add_custom_field')) {
-    function smartmail_add_custom_field() {
-        woocommerce_wp_text_input([
-            'id' => 'smartmail_custom_field',
-            'label' => __('SmartMail Custom Field', 'woocommerce'),
-            'desc_tip' => 'true',
-            'description' => __('Enter a custom value for SmartMail.', 'woocommerce'),
-        ]);
-    }
-}
-
-if (!function_exists('smartmail_save_custom_field')) {
-    function smartmail_save_custom_field($post_id) {
-        $custom_field_value = isset($_POST['smartmail_custom_field']) ? sanitize_text_field($_POST['smartmail_custom_field']) : '';
-        update_post_meta($post_id, 'smartmail_custom_field', $custom_field_value);
-    }
-}
+add_filter('woocommerce_get_settings_pages', 'smartmail_add_woocommerce_settings');
 
 // Handle errors and logging
 set_error_handler(function($errno, $errstr, $errfile, $errline) {
-    $log_message = "Error [$errno]: $errstr in $errfile on line $errline";
+    $log_message = "Error [{$errno}]: {$errstr} in {$errfile} on line {$errline}";
     smartmail_log($log_message);
     return false; // Let the normal error handler run as well
 });
@@ -374,4 +286,60 @@ set_exception_handler(function($exception) {
     $log_message = "Exception: " . $exception->getMessage();
     smartmail_log($log_message);
     wp_die($log_message);
+});
+?>
+// Add WooCommerce settings page
+if (!function_exists('smartmail_add_woocommerce_settings_page')) {
+    function smartmail_add_woocommerce_settings_page($settings) {
+        $settings[] = include 'includes/class-wc-settings-smartmail.php';
+        return $settings;
+    }
+}
+add_filter('woocommerce_get_settings_pages', 'smartmail_add_woocommerce_settings_page');
+
+// Includes for WooCommerce settings
+if (!class_exists('WC_Settings_SmartMail')) {
+    class WC_Settings_SmartMail extends WC_Settings_Page {
+        public function __construct() {
+            $this->id = 'smartmail';
+            $this->label = __('SmartMail Assistant', 'woocommerce');
+            parent::__construct();
+        }
+
+        public function get_settings() {
+            return apply_filters('woocommerce_smartmail_settings', [
+                [
+                    'title' => __('SmartMail Assistant Settings', 'woocommerce'),
+                    'type' => 'title',
+                    'desc' => '',
+                    'id' => 'smartmail_assistant_settings'
+                ],
+                [
+                    'title' => __('OpenAI API Key', 'woocommerce'),
+                    'desc' => __('Enter your OpenAI API key to enable AI features.', 'woocommerce'),
+                    'id' => 'smartmail_openai_api_key',
+                    'type' => 'text',
+                    'desc_tip' => true,
+                    'default' => get_option('smartmail_openai_api_key'),
+                    'autoload' => false,
+                ],
+                [
+                    'type' => 'sectionend',
+                    'id' => 'smartmail_assistant_settings'
+                ],
+            ]);
+        }
+
+        public function save() {
+            $settings = $this->get_settings();
+            WC_Admin_Settings::save_fields($settings);
+        }
+    }
+    new WC_Settings_SmartMail();
+}
+
+// Register custom WooCommerce settings
+add_filter('woocommerce_get_settings_pages', function($settings) {
+    $settings[] = include 'includes/class-wc-settings-smartmail.php';
+    return $settings;
 });
