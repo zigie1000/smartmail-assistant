@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/digistas/public_html/smartmail.store/wp-content/plugins/smartmail-assistant
+    - /bin/cp -R * $DEPLOYPATH
