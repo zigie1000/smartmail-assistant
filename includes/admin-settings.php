@@ -1,113 +1,85 @@
 <?php
-// Add admin menu for user settings
-if (!function_exists('smartmail_admin_menu')) {
-    function smartmail_admin_menu() {
-        add_menu_page(
-            'SmartMail Assistant',
-            'SmartMail',
-            'manage_options',
-            'smartmail',
-            'smartmail_admin_page',
-            'dashicons-email-alt2',
-            6
-        );
-        add_submenu_page(
-            'smartmail',
-            'Settings',
-            'Settings',
-            'manage_options',
-            'smartmail-settings',
-            'smartmail_settings_page'
-        );
-        add_submenu_page(
-            'smartmail',
-            'Dashboard',
-            'Dashboard',
-            'manage_options',
-            'smartmail-dashboard',
-            'smartmail_dashboard_template'
-        );
-    }
-}
-add_action('admin_menu', 'smartmail_admin_menu');
 
-if (!function_exists('smartmail_admin_page')) {
-    function smartmail_admin_page() {
-        ?>
-        <div class="wrap">
-            <h1>SmartMail Assistant Settings</h1>
-            <form method="post" action="options.php">
-                <?php
-                settings_fields('smartmail_options_group');
-                do_settings_sections('smartmail');
-                submit_button();
-                ?>
-            </form>
-        </div>
-        <?php
-    }
+if (!defined('ABSPATH')) {
+    exit;
 }
 
-if (!function_exists('smartmail_settings_page')) {
-    function smartmail_settings_page() {
-        ?>
-        <div class="wrap">
-            <h1>SmartMail Assistant API Settings</h1>
-            <form method="post" action="options.php">
-                <?php
-                settings_fields('smartmail_options_group');
-                do_settings_sections('smartmail');
-                submit_button();
-                ?>
-            </form>
-        </div>
-        <?php
-    }
-}
+class WC_Gateway_Pi extends WC_Payment_Gateway {
+    public function __construct() {
+        $this->id                 = 'pi';
+        $this->icon               = apply_filters('woocommerce_gateway_icon', '');
+        $this->has_fields         = false;
+        $this->method_title       = __('Pi Gateway', 'woocommerce');
+        $this->method_description = __('Allows payments with Pi.', 'woocommerce');
+        
+        $this->init_form_fields();
+        $this->init_settings();
 
-if (!function_exists('smartmail_dashboard_template')) {
-    function smartmail_dashboard_template() {
-        if (is_user_logged_in() && current_user_can('manage_options')) {
-            include plugin_dir_path(__FILE__) . 'templates/admin-dashboard.php';
-        } else {
-            wp_die('You do not have sufficient permissions to access this page.');
+        $this->title        = $this->get_option('title');
+        $this->description  = $this->get_option('description');
+        $this->enabled      = $this->get_option('enabled');
+
+        add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
+        add_action('woocommerce_receipt_' . $this->id, array($this, 'receipt_page'));
+        add_action('woocommerce_api_wc_gateway_' . $this->id, array($this, 'check_response'));
+    }
+
+    public function init_form_fields() {
+        $this->form_fields = array(
+            'enabled' => array(
+                'title'   => __('Enable/Disable', 'woocommerce'),
+                'type'    => 'checkbox',
+                'label'   => __('Enable Pi Payment', 'woocommerce'),
+                'default' => 'yes'
+            ),
+            'title' => array(
+                'title'       => __('Title', 'woocommerce'),
+                'type'        => 'text',
+                'description' => __('This controls the title which the user sees during checkout.', 'woocommerce'),
+                'default'     => __('Pi Payment', 'woocommerce'),
+                'desc_tip'    => true,
+            ),
+            'description' => array(
+                'title'       => __('Description', 'woocommerce'),
+                'type'        => 'textarea',
+                'description' => __('This controls the description which the user sees during checkout.', 'woocommerce'),
+                'default'     => __('Pay with Pi', 'woocommerce'),
+            ),
+        );
+    }
+
+    public function process_payment($order_id) {
+        $order = wc_get_order($order_id);
+        $order->update_status('on-hold', __('Awaiting Pi payment', 'woocommerce'));
+        $order->reduce_order_stock();
+        WC()->cart->empty_cart();
+        return array(
+            'result'   => 'success',
+            'redirect' => $this->get_return_url($order)
+        );
+    }
+
+    public function receipt_page($order) {
+        echo '<p>' . __('Thank you for your order, please make your payment using Pi.', 'woocommerce') . '</p>';
+    }
+
+    public function check_response() {
+        @ob_clean();
+        $response = json_decode(file_get_contents('php://input'), true);
+        if ($response['status'] == 'success') {
+            $order = wc_get_order($response['order_id']);
+            $order->payment_complete();
+            $order->add_order_note(__('Pi payment completed', 'woocommerce'));
         }
+        http_response_code(200);
+        exit();
     }
 }
 
-// Register settings
-if (!function_exists('smartmail_register_settings')) {
-    function smartmail_register_settings() {
-        register_setting('smartmail_options_group', 'smartmail_openai_api_key', [
-            'type' => 'string',
-            'description' => 'OpenAI API Key',
-            'sanitize_callback' => 'sanitize_text_field',
-            'default' => ''
-        ]);
-
-        add_settings_section(
-            'smartmail_settings_section',
-            'SmartMail Assistant Settings',
-            null,
-            'smartmail'
-        );
-
-        add_settings_field(
-            'smartmail_openai_api_key',
-            'OpenAI API Key',
-            'smartmail_openai_api_key_render',
-            'smartmail',
-            'smartmail_settings_section'
-        );
-    }
+function add_pi_gateway($methods) {
+    $methods[] = 'WC_Gateway_Pi';
+    return $methods;
 }
-add_action('admin_init', 'smartmail_register_settings');
 
-if (!function_exists('smartmail_openai_api_key_render')) {
-    function smartmail_openai_api_key_render() {
-        $value = get_option('smartmail_openai_api_key');
-        ?>
-        <input type="text" name="smartmail_openai_api_key" value="<?php echo esc_attr($value); ?>" />
-        <?php
-    }
-}
+add_filter('woocommerce_payment_gateways', 'add_pi_gateway');
+?>
