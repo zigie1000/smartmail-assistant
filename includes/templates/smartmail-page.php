@@ -1,9 +1,3 @@
-<?php
-/*
-Template Name: SmartMail Page
-*/
-get_header(); ?>
-
 <div class="smartmail-container">
     <div class="smartmail-header">
         <h1>SmartMail Assistant</h1>
@@ -73,5 +67,3 @@ get_header(); ?>
         </div>
     </div>
 </div>
-
-<?php get_footer(); ?>
