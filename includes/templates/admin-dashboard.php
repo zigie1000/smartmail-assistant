@@ -1,21 +1,35 @@
+<?php
+/*
+Template Name: Admin Dashboard
+*/
+get_header(); ?>
+
 <div class="wrap">
-    <h1>SmartMail Dashboard</h1>
-    <div id="smartmail-dashboard-content">
-        <p>Welcome to the SmartMail Dashboard. Use the sidebar to navigate through different AI-powered features.</p>
+    <h1>Admin Dashboard</h1>
+    <div id="dashboard-widgets-wrap">
+        <div id="dashboard-widgets" class="metabox-holder">
+            <div class="postbox-container">
+                <div class="meta-box-sortables">
+                    <div class="postbox">
+                        <h2 class="hndle">Widget Title</h2>
+                        <div class="inside">
+                            <p>Content for the widget.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="postbox-container">
+                <div class="meta-box-sortables">
+                    <div class="postbox">
+                        <h2 class="hndle">Another Widget</h2>
+                        <div class="inside">
+                            <p>More content for another widget.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const links = document.querySelectorAll('.smartmail-sidebar ul li a');
-    links.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                document.querySelector('#smartmail-dashboard-content').innerHTML = target.innerHTML;
-            }
-        });
-    });
-});
-</script>
+<?php get_footer(); ?>
