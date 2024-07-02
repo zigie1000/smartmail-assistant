@@ -1,7 +1,6 @@
 <?php
-
 if (!defined('ABSPATH')) {
-    exit;
+    exit; // Exit if accessed directly
 }
 
 if (!class_exists('WC_Payment_Gateway')) {
@@ -86,3 +85,4 @@ function add_pi_gateway($methods) {
 }
 
 add_filter('woocommerce_payment_gateways', 'add_pi_gateway');
+?>
