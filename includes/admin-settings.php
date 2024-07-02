@@ -4,6 +4,14 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Ensure WooCommerce is active before including the file
+if (!class_exists('WooCommerce')) {
+    add_action('admin_notices', function() {
+        echo '<div class="error"><p><strong>SmartMail Assistant</strong> requires WooCommerce to be installed and active.</p></div>';
+    });
+    return;
+}
+
 if (!class_exists('WC_Gateway_Pi')) {
     class WC_Gateway_Pi extends WC_Payment_Gateway {
         public function __construct() {
