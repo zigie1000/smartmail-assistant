@@ -1,3 +1,9 @@
+<?php
+/*
+Template Name: SmartMail Dashboard
+*/
+get_header(); ?>
+
 <div class="smartmail-dashboard">
     <div class="smartmail-sidebar">
         <h2>SmartMail Assistant</h2>
@@ -124,3 +130,5 @@
     padding-bottom: 10px;
 }
 </style>
+
+<?php get_footer(); ?>
