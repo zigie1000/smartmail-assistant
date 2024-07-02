@@ -288,59 +288,158 @@ set_exception_handler(function($exception) {
     wp_die($log_message);
 });
 
-// Add WooCommerce settings page
-if (!function_exists('smartmail_add_woocommerce_settings_page')) {
-    function smartmail_add_woocommerce_settings_page($settings) {
-        $settings[] = include 'includes/class-wc-settings-smartmail.php';
-        return $settings;
-    }
-}
-add_filter('woocommerce_get_settings_pages', 'smartmail_add_woocommerce_settings_page');
+// AI functions for various services
 
-// Includes for WooCommerce settings
-if (!class_exists('WC_Settings_SmartMail')) {
-    class WC_Settings_SmartMail extends WC_Settings_Page {
-        public function __construct() {
-            $this->id = 'smartmail';
-            $this->label = __('SmartMail Assistant', 'woocommerce');
-            parent::__construct();
-        }
-
-        public function get_settings() {
-            return apply_filters('woocommerce_smartmail_settings', [
-                [
-                    'title' => __('SmartMail Assistant Settings', 'woocommerce'),
-                    'type' => 'title',
-                    'desc' => '',
-                    'id' => 'smartmail_assistant_settings'
-                ],
-                [
-                    'title' => __('OpenAI API Key', 'woocommerce'),
-                    'desc' => __('Enter your OpenAI API key to enable AI features.', 'woocommerce'),
-                    'id' => 'smartmail_openai_api_key',
-                    'type' => 'text',
-                    'desc_tip' => true,
-                    'default' => get_option('smartmail_openai_api_key'),
-                    'autoload' => false,
-                ],
-                [
-                    'type' => 'sectionend',
-                    'id' => 'smartmail_assistant_settings'
-                ],
+if (!function_exists('smartmail_email_categorization')) {
+    function smartmail_email_categorization($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Categorize the following email content:\n\n" . $email_content,
+                'max_tokens' => 150
             ]);
-        }
-
-        public function save() {
-            $settings = $this->get_settings();
-            WC_Admin_Settings::save_fields($settings);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error categorizing email.';
         }
     }
-    new WC_Settings_SmartMail();
 }
 
-// Register custom WooCommerce settings
-add_filter('woocommerce_get_settings_pages', function($settings) {
-    $settings[] = include 'includes/class-wc-settings-smartmail.php';
-    return $settings;
-});
-?>    
+if (!function_exists('smartmail_priority_inbox')) {
+    function smartmail_priority_inbox($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Determine the priority of the following email content:\n\n" . $email_content,
+                'max_tokens' => 150
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error determining priority.';
+        }
+    }
+}
+
+if (!function_exists('smartmail_automated_responses')) {
+    function smartmail_automated_responses($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Generate an automated response for the following email content:\n\n" . $email_content,
+                'max_tokens' => 150
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error generating automated response.';
+        }
+    }
+}
+
+if (!function_exists('smartmail_email_summarization')) {
+    function smartmail_email_summarization($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Summarize the following email content:\n\n" . $email_content,
+                'max_tokens' => 150
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error summarizing email.';
+        }
+    }
+}
+
+if (!function_exists('smartmail_meeting_scheduler')) {
+    function smartmail_meeting_scheduler($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Schedule a meeting based on the following email content:\n\n" . $email_content,
+                'max_tokens' => 150
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error scheduling meeting.';
+        }
+    }
+}
+
+if (!function_exists('smartmail_follow_up_reminders')) {
+    function smartmail_follow_up_reminders($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Generate follow-up reminders for the following email content:\n\n" . $email_content,
+                'max_tokens' => 150
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error generating follow-up reminders.';
+        }
+    }
+}
+
+if (!function_exists('smartmail_sentiment_analysis')) {
+    function smartmail_sentiment_analysis($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Analyze the sentiment of the following email content:\n\n" . $email_content,
+                'max_tokens' => 150
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error analyzing sentiment.';
+        }
+    }
+}
+
+if (!function_exists('smartmail_email_templates')) {
+    function smartmail_email_templates() {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Generate an email template.",
+                'max_tokens' => 150
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error generating email template.';
+        }
+    }
+}
+
+if (!function_exists('smartmail_forensic_analysis')) {
+    function smartmail_forensic_analysis($email_content) {
+        $client = get_openai_client();
+        try {
+            $response = $client->completions()->create([
+                'model' => 'text-davinci-003',
+                'prompt' => "Perform a forensic analysis of the following email content:\n\n" . $email_content,
+                'max_tokens' => 150
+            ]);
+            return trim($response['choices'][0]['text']);
+        } catch (Exception $e) {
+            smartmail_log('OpenAI error: ' . $e->getMessage());
+            return 'Error performing forensic analysis.';
+        }
+    }
+}
+?>
