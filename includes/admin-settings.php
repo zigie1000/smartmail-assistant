@@ -3,7 +3,6 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-// Ensure functions are not redeclared
 if (!function_exists('smartmail_settings_page')) {
     function smartmail_settings_page() {
         ?>
