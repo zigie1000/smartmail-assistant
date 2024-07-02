@@ -1,5 +1,4 @@
 <?php
-// AI functions for various services
 
 if (!function_exists('smartmail_email_categorization')) {
     function smartmail_email_categorization($email_content) {
@@ -153,4 +152,4 @@ if (!function_exists('smartmail_forensic_analysis')) {
         }
     }
 }
-?>
+?>                          
