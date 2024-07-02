@@ -31,7 +31,7 @@ function smartmail_create_pages() {
         'post_status'   => 'publish',
         'post_type'     => 'page',
         'post_author'   => 1,
-        'page_template' => 'includes/templates/smartmail-dashboard.php'
+        'page_template' => 'templates/smartmail-dashboard.php'
     );
 
     // Create SmartMail Page
@@ -41,7 +41,7 @@ function smartmail_create_pages() {
         'post_status'   => 'publish',
         'post_type'     => 'page',
         'post_author'   => 1,
-        'page_template' => 'includes/templates/smartmail-page.php'
+        'page_template' => 'templates/smartmail-page.php'
     );
 
     // Insert the pages into the database
@@ -73,3 +73,15 @@ add_action('wp_ajax_smartmail_follow_up_reminders', 'smartmail_follow_up_reminde
 add_action('wp_ajax_smartmail_sentiment_analysis', 'smartmail_sentiment_analysis');
 add_action('wp_ajax_smartmail_email_templates', 'smartmail_email_templates');
 add_action('wp_ajax_smartmail_forensic_analysis', 'smartmail_forensic_analysis');
+
+// Ensure templates are recognized
+add_filter('page_template', 'smartmail_custom_page_templates');
+function smartmail_custom_page_templates($page_template) {
+    if (is_page_template('templates/smartmail-dashboard.php')) {
+        $page_template = dirname(__FILE__) . '/includes/templates/smartmail-dashboard.php';
+    }
+    if (is_page_template('templates/smartmail-page.php')) {
+        $page_template = dirname(__FILE__) . '/includes/templates/smartmail-page.php';
+    }
+    return $page_template;
+}
