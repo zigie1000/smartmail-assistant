@@ -6,10 +6,6 @@ if (!defined('ABSPATH')) {
 
 // Function to add settings page
 function smartmail_settings_init() {
-    if (!current_user_can('manage_options')) {
-        return;
-    }
-    
     add_options_page(
         'SmartMail Assistant Settings',
         'SmartMail Assistant',
@@ -21,7 +17,9 @@ function smartmail_settings_init() {
 
 add_action('admin_menu', 'smartmail_settings_init');
 
-function smartmail_settings_page() {
-    // Content of the settings page
-    include plugin_dir_path(__FILE__) . 'templates/admin-settings-template.php';
+if (!function_exists('smartmail_settings_page')) {
+    function smartmail_settings_page() {
+        // Content of the settings page
+        include plugin_dir_path(__FILE__) . 'templates/admin-settings-template.php';
+    }
 }
