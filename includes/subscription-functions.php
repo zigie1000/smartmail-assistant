@@ -1,18 +1,23 @@
 <?php
-// Functions for managing subscriptions
-
-if (!function_exists('smartmail_handle_subscription')) {
-    function smartmail_handle_subscription($user_id, $plan) {
-        // Handle subscription logic here
-        update_user_meta($user_id, 'smartmail_subscription_plan', $plan);
-    }
+if (!defined('ABSPATH')) {
+    exit;
 }
 
-if (!function_exists('smartmail_check_subscription_status')) {
-    function smartmail_check_subscription_status($user_id) {
-        // Check subscription status logic here
-        $plan = get_user_meta($user_id, 'smartmail_subscription_plan', true);
-        return $plan ? $plan : 'free';
+// Subscription functions
+
+function smartmail_handle_subscriptions() {
+    // Add subscription handling logic here
+}
+
+function smartmail_add_subscription_cron() {
+    if (!wp_next_scheduled('smartmail_daily_subscription_event')) {
+        wp_schedule_event(time(), 'daily', 'smartmail_daily_subscription_event');
     }
 }
+add_action('wp', 'smartmail_add_subscription_cron');
+
+function smartmail_daily_subscription_task() {
+    // Add daily subscription task logic here
+}
+add_action('smartmail_daily_subscription_event', 'smartmail_daily_subscription_task');
 ?>
