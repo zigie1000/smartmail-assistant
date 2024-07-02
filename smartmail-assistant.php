@@ -194,7 +194,8 @@ if (!function_exists('smartmail_register_settings')) {
         );
     }
 }
-add_action('admin_init', 'smartmail_register_settings
+add_action('admin_init', 'smartmail_register_settings');
+
 if (!function_exists('smartmail_openai_api_key_render')) {
     function smartmail_openai_api_key_render() {
         $value = get_option('smartmail_openai_api_key');
@@ -286,4 +287,3 @@ set_exception_handler(function($exception) {
     smartmail_log($log_message);
     wp_die($log_message);
 });
-?>
