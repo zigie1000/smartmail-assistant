@@ -281,8 +281,9 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
     smartmail_log($log_message);
     return false; // Let the normal error handler run as well
 });
+
 set_exception_handler(function($exception) {
-    $log_message = "Exception: " . $exception->getMessage();
+    $log_message = "Exception:" . $exception->getMessage();
     smartmail_log($log_message);
     wp_die($log_message);
 });
@@ -498,5 +499,3 @@ if (!function_exists('smartmail_forensic_analysis')) {
     }
 }
 ?>
-    
-    
