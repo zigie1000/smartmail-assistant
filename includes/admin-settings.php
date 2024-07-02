@@ -3,6 +3,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
+// Ensure WooCommerce is active
 if (!class_exists('WC_Payment_Gateway')) {
     return;
 }
@@ -85,4 +86,3 @@ function add_pi_gateway($methods) {
 }
 
 add_filter('woocommerce_payment_gateways', 'add_pi_gateway');
-?>
