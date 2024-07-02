@@ -1,9 +1,3 @@
-or fatal errors. The interaction between the frontend forms and backend processing ensures that user inputs are handled efficiently and securely, utilizing OpenAI's powerful capabilities to deliver meaningful results.
-
-### Full Plugin File List
-
-#### Main Plugin File (smartmail-assistant.php)
-```php
 <?php
 /**
  * Plugin Name: SmartMail Assistant
@@ -293,58 +287,4 @@ set_exception_handler(function($exception) {
     smartmail_log($log_message);
     wp_die($log_message);
 });
-// Add WooCommerce settings page
-if (!function_exists('smartmail_add_woocommerce_settings_page')) {
-    function smartmail_add_woocommerce_settings_page($settings) {
-        $settings[] = include 'includes/class-wc-settings-smartmail.php';
-        return $settings;
-    }
-}
-add_filter('woocommerce_get_settings_pages', 'smartmail_add_woocommerce_settings_page');
-
-// Includes for WooCommerce settings
-if (!class_exists('WC_Settings_SmartMail')) {
-    class WC_Settings_SmartMail extends WC_Settings_Page {
-        public function __construct() {
-            $this->id = 'smartmail';
-            $this->label = __('SmartMail Assistant', 'woocommerce');
-            parent::__construct();
-        }
-
-        public function get_settings() {
-            return apply_filters('woocommerce_smartmail_settings', [
-                [
-                    'title' => __('SmartMail Assistant Settings', 'woocommerce'),
-                    'type' => 'title',
-                    'desc' => '',
-                    'id' => 'smartmail_assistant_settings'
-                ],
-                [
-                    'title' => __('OpenAI API Key', 'woocommerce'),
-                    'desc' => __('Enter your OpenAI API key to enable AI features.', 'woocommerce'),
-                    'id' => 'smartmail_openai_api_key',
-                    'type' => 'text',
-                    'desc_tip' => true,
-                    'default' => get_option('smartmail_openai_api_key'),
-                    'autoload' => false,
-                ],
-                [
-                    'type' => 'sectionend',
-                    'id' => 'smartmail_assistant_settings'
-                ],
-            ]);
-        }
-
-        public function save() {
-            $settings = $this->get_settings();
-            WC_Admin_Settings::save_fields($settings);
-        }
-    }
-    new WC_Settings_SmartMail();
-}
-
-// Register custom WooCommerce settings
-add_filter('woocommerce_get_settings_pages', function($settings) {
-    $settings[] = include 'includes/class-wc-settings-smartmail.php';
-    return $settings;
-});
+?>
