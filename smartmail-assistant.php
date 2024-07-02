@@ -18,8 +18,6 @@ include_once SMARTMAIL_PLUGIN_PATH . 'includes/ai-functions.php';
 include_once SMARTMAIL_PLUGIN_PATH . 'includes/api-functions.php';
 include_once SMARTMAIL_PLUGIN_PATH . 'includes/class-wc-gateway-pi.php';
 include_once SMARTMAIL_PLUGIN_PATH . 'includes/functions.php';
-include_once SMARTMAIL_PLUGIN_PATH . 'includes/templates/smartmail-dashboard.php';
-include_once SMARTMAIL_PLUGIN_PATH . 'includes/templates/smartmail-page.php';
 
 // Register activation and deactivation hooks
 register_activation_hook(__FILE__, 'smartmail_activate');
@@ -28,18 +26,18 @@ register_deactivation_hook(__FILE__, 'smartmail_deactivate');
 function smartmail_activate() {
     // Create required pages
     $pages = [
-        'SmartMail Dashboard' => 'smartmail-dashboard',
-        'SmartMail Page' => 'smartmail-page'
+        'SmartMail Dashboard' => 'smartmail-dashboard.php',
+        'SmartMail Page' => 'smartmail-page.php'
     ];
     
-    foreach ($pages as $title => $slug) {
-        if (!get_page_by_path($slug)) {
+    foreach ($pages as $title => $template) {
+        if (!get_page_by_path($title)) {
             wp_insert_post([
                 'post_title' => $title,
-                'post_name' => $slug,
+                'post_name' => sanitize_title($title),
                 'post_status' => 'publish',
                 'post_type' => 'page',
-                'page_template' => $slug . '.php'
+                'page_template' => $template
             ]);
         }
     }
@@ -81,4 +79,15 @@ add_action('admin_init', 'smartmail_settings');
 function smartmail_settings() {
     register_setting('smartmail-settings-group', 'smartmail_openai_api_key');
 }
+
+// Load template for custom pages
+function smartmail_page_template($page_template) {
+    if (is_page('SmartMail Dashboard')) {
+        $page_template = SMARTMAIL_PLUGIN_PATH . 'includes/templates/smartmail-dashboard.php';
+    } elseif (is_page('SmartMail Page')) {
+        $page_template = SMARTMAIL_PLUGIN_PATH . 'includes/templates/smartmail-page.php';
+    }
+    return $page_template;
+}
+add_filter('page_template', 'smartmail_page_template');
 ?>
