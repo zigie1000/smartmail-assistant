@@ -4,10 +4,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if (!class_exists('WC_Payment_Gateway')) {
-    return; // Exit if WooCommerce is not active
-}
-
 class WC_Gateway_Pi extends WC_Payment_Gateway {
     public function __construct() {
         $this->id                 = 'pi';
@@ -86,3 +82,5 @@ function add_pi_gateway($methods) {
 }
 
 add_filter('woocommerce_payment_gateways', 'add_pi_gateway');
+
+?>
