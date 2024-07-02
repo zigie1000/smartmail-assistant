@@ -224,7 +224,8 @@ if (!function_exists('smartmail_sentiment_analysis_shortcode')) {
         </form>
         <div id="sentiment-analysis-result"></div>
         <script>
-            jQuery(document).ready(function($) {
+            jQuery(document).
+            ready(function($) {
                 $('#sentiment-analysis-form').on('submit', function(event) {
                     event.preventDefault();
                     var emailContent = $(this).find('textarea[name="email_content"]').val();
