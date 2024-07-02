@@ -1,156 +1,45 @@
 <?php
-// AI functions for various services
+if (!defined('ABSPATH')) {
+    exit;
+}
 
-if (!function_exists('smartmail_email_categorization')) {
-    function smartmail_email_categorization($email_content) {
-        $client = get_openai_client();
-        try {
-            $response = $client->completions()->create([
-                'model' => 'text-davinci-003',
-                'prompt' => "Categorize the following email content:\n\n" . $email_content,
-                'max_tokens' => 150
-            ]);
-            return trim($response['choices'][0]['text']);
-        } catch (Exception $e) {
-            smartmail_log('OpenAI error: ' . $e->getMessage());
-            return 'Error categorizing email.';
-        }
+// General functions
+
+function smartmail_log($message) {
+    if (defined('SMARTMAIL_DEBUG_LOG')) {
+        error_log($message . PHP_EOL, 3, SMARTMAIL_DEBUG_LOG);
     }
 }
 
-if (!function_exists('smartmail_priority_inbox')) {
-    function smartmail_priority_inbox($email_content) {
-        $client = get_openai_client();
-        try {
-            $response = $client->completions()->create([
-                'model' => 'text-davinci-003',
-                'prompt' => "Determine the priority of the following email content:\n\n" . $email_content,
-                'max_tokens' => 150
-            ]);
-            return trim($response['choices'][0]['text']);
-        } catch (Exception $e) {
-            smartmail_log('OpenAI error: ' . $e->getMessage());
-            return 'Error determining priority.';
-        }
-    }
-}
+function smartmail_register_settings() {
+    register_setting('smartmail_options_group', 'smartmail_openai_api_key', [
+        'type' => 'string',
+        'description' => 'OpenAI API Key',
+        'sanitize_callback' => 'sanitize_text_field',
+        'default' => ''
+    ]);
 
-if (!function_exists('smartmail_automated_responses')) {
-    function smartmail_automated_responses($email_content) {
-        $client = get_openai_client();
-        try {
-            $response = $client->completions()->create([
-                'model' => 'text-davinci-003',
-                'prompt' => "Generate an automated response for the following email content:\n\n" . $email_content,
-                'max_tokens' => 150
-            ]);
-            return trim($response['choices'][0]['text']);
-        } catch (Exception $e) {
-            smartmail_log('OpenAI error: ' . $e->getMessage());
-            return 'Error generating automated response.';
-        }
-    }
-}
+    add_settings_section(
+        'smartmail_settings_section',
+        'SmartMail Assistant Settings',
+        null,
+        'smartmail'
+    );
 
-if (!function_exists('smartmail_email_summarization')) {
-    function smartmail_email_summarization($email_content) {
-        $client = get_openai_client();
-        try {
-            $response = $client->completions()->create([
-                'model' => 'text-davinci-003',
-                'prompt' => "Summarize the following email content:\n\n" . $email_content,
-                'max_tokens' => 150
-            ]);
-            return trim($response['choices'][0]['text']);
-        } catch (Exception $e) {
-            smartmail_log('OpenAI error: ' . $e->getMessage());
-            return 'Error summarizing email.';
-        }
-    }
+    add_settings_field(
+        'smartmail_openai_api_key',
+        'OpenAI API Key',
+        'smartmail_openai_api_key_render',
+        'smartmail',
+        'smartmail_settings_section'
+    );
 }
+add_action('admin_init', 'smartmail_register_settings');
 
-if (!function_exists('smartmail_meeting_scheduler')) {
-    function smartmail_meeting_scheduler($email_content) {
-        $client = get_openai_client();
-        try {
-            $response = $client->completions()->create([
-                'model' => 'text-davinci-003',
-                'prompt' => "Schedule a meeting based on the following email content:\n\n" . $email_content,
-                'max_tokens' => 150
-            ]);
-            return trim($response['choices'][0]['text']);
-        } catch (Exception $e) {
-            smartmail_log('OpenAI error: ' . $e->getMessage());
-            return 'Error scheduling meeting.';
-        }
-    }
-}
-
-if (!function_exists('smartmail_follow_up_reminders')) {
-    function smartmail_follow_up_reminders($email_content) {
-        $client = get_openai_client();
-        try {
-            $response = $client->completions()->create([
-                'model' => 'text-davinci-003',
-                'prompt' => "Generate follow-up reminders for the following email content:\n\n" . $email_content,
-                'max_tokens' => 150
-            ]);
-            return trim($response['choices'][0]['text']);
-        } catch (Exception $e) {
-            smartmail_log('OpenAI error: ' . $e->getMessage());
-            return 'Error generating follow-up reminders.';
-        }
-    }
-}
-
-if (!function_exists('smartmail_sentiment_analysis')) {
-    function smartmail_sentiment_analysis($email_content) {
-        $client = get_openai_client();
-        try {
-            $response = $client->completions()->create([
-                'model' => 'text-davinci-003',
-                'prompt' => "Analyze the sentiment of the following email content:\n\n" . $email_content,
-                'max_tokens' => 150
-            ]);
-            return trim($response['choices'][0]['text']);
-        } catch (Exception $e) {
-            smartmail_log('OpenAI error: ' . $e->getMessage());
-            return 'Error analyzing sentiment.';
-        }
-    }
-}
-
-if (!function_exists('smartmail_email_templates')) {
-    function smartmail_email_templates() {
-        $client = get_openai_client();
-        try {
-            $response = $client->completions()->create([
-                'model' => 'text-davinci-003',
-                'prompt' => "Generate an email template.",
-                'max_tokens' => 150
-            ]);
-            return trim($response['choices'][0]['text']);
-        } catch (Exception $e) {
-            smartmail_log('OpenAI error: ' . $e->getMessage());
-            return 'Error generating email template.';
-        }
-    }
-}
-
-if (!function_exists('smartmail_forensic_analysis')) {
-    function smartmail_forensic_analysis($email_content) {
-        $client = get_openai_client();
-        try {
-            $response = $client->completions()->create([
-                'model' => 'text-davinci-003',
-                'prompt' => "Perform a forensic analysis of the following email content:\n\n" . $email_content,
-                'max_tokens' => 150
-            ]);
-            return trim($response['choices'][0]['text']);
-        } catch (Exception $e) {
-            smartmail_log('OpenAI error: ' . $e->getMessage());
-            return 'Error performing forensic analysis.';
-        }
-    }
+function smartmail_openai_api_key_render() {
+    $value = get_option('smartmail_openai_api_key');
+    ?>
+    <input type="text" name="smartmail_openai_api_key" value="<?php echo esc_attr($value); ?>" />
+    <?php
 }
 ?>
