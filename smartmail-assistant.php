@@ -220,7 +220,13 @@ if (!function_exists('smartmail_create_pages')) {
         ];
 
         foreach ($pages as $page) {
-            if (!get_page_by_title($page['title'])) {
+            $existing_page = new WP_Query([
+                'post_type' => 'page',
+                'post_status' => 'publish',
+                'title' => $page['title'],
+            ]);
+
+            if (!$existing_page->have_posts()) {
                 wp_insert_post([
                     'post_title' => $page['title'],
                     'post_content' => $page['content'],
@@ -279,7 +285,7 @@ add_filter('woocommerce_get_settings_pages', 'smartmail_add_woocommerce_settings
 set_error_handler(function($errno, $errstr, $errfile, $errline) {
     $log_message = "Error [{$errno}]: {$errstr} in {$errfile} on line {$errline}";
     smartmail_log($log_message);
-    return false; // Let the normal error handler run as well
+                      return false; // Let the normal error handler run as well
 });
 
 set_exception_handler(function($exception) {
@@ -288,9 +294,49 @@ set_exception_handler(function($exception) {
     wp_die($log_message);
 });
 
+// Includes for WooCommerce settings
+if (!class_exists('WC_Settings_SmartMail')) {
+    class WC_Settings_SmartMail extends WC_Settings_Page {
+        public function __construct() {
+            $this->id = 'smartmail';
+            $this->label = __('SmartMail Assistant', 'woocommerce');
+            parent::__construct();
+        }
+
+        public function get_settings() {
+            return apply_filters('woocommerce_smartmail_settings', [
+                [
+                    'title' => __('SmartMail Assistant Settings', 'woocommerce'),
+                    'type' => 'title',
+                    'desc' => '',
+                    'id' => 'smartmail_assistant_settings'
+                ],
+                [
+                    'title' => __('OpenAI API Key', 'woocommerce'),
+                    'desc' => __('Enter your OpenAI API key to enable AI features.', 'woocommerce'),
+                    'id' => 'smartmail_openai_api_key',
+                    'type' => 'text',
+                    'desc_tip' => true,
+                    'default' => get_option('smartmail_openai_api_key'),
+                    'autoload' => false,
+                ],
+                [
+                    'type' => 'sectionend',
+                    'id' => 'smartmail_assistant_settings'
+                ],
+            ]);
+        }
+
+        public function save() {
+            $settings = $this->get_settings();
+            WC_Admin_Settings::save_fields($settings);
+        }
+    }
+    new WC_Settings_SmartMail();
+}
+
 // Register custom WooCommerce settings
 add_filter('woocommerce_get_settings_pages', function($settings) {
     $settings[] = include 'includes/class-wc-settings-smartmail.php';
     return $settings;
 });
-?>
