@@ -161,7 +161,7 @@ if (!function_exists('smartmail_settings_page')) {
 if (!function_exists('smartmail_dashboard_template')) {
     function smartmail_dashboard_template() {
         if (is_user_logged_in() && current_user_can('manage_options')) {
-            include plugin_dir_path(__FILE__) . 'includes/templates/admin-dashboard.php';
+            include plugin_dir_path(__FILE__) . 'includes/templates/smartmail-dashboard.php';
         } else {
             wp_die('You do not have sufficient permissions to access this page.');
         }
@@ -277,7 +277,7 @@ add_filter('woocommerce_get_settings_pages', 'smartmail_add_woocommerce_settings
 
 // Handle errors and logging
 set_error_handler(function($errno, $errstr, $errfile, $errline) {
-    $log_message = "Error [{$errno}]: {$errstr} in {$errfile} on line {$errline}";
+     $log_message = "Error [{$errno}]: {$errstr} in {$errfile} on line {$errline}";
     smartmail_log($log_message);
     return false; // Let the normal error handler run as well
 });
