@@ -1,193 +1,150 @@
 <?php
-if (!defined('ABSPATH')) {
-    exit;
-}
 
-// Email Categorization shortcode
-function sma_email_categorization_shortcode($atts) {
+// Register shortcodes for AI functions
+function smartmail_register_shortcodes() {
+    add_shortcode('sma_email_categorization', 'smartmail_email_categorization_shortcode');
+    add_shortcode('sma_priority_inbox', 'smartmail_priority_inbox_shortcode');
+    add_shortcode('sma_automated_responses', 'smartmail_automated_responses_shortcode');
+    add_shortcode('sma_email_summarization', 'smartmail_email_summarization_shortcode');
+    add_shortcode('sma_meeting_scheduler', 'smartmail_meeting_scheduler_shortcode');
+    add_shortcode('sma_follow_up_reminders', 'smartmail_follow_up_reminders_shortcode');
+    add_shortcode('sma_sentiment_analysis', 'smartmail_sentiment_analysis_shortcode');
+    add_shortcode('sma_email_templates', 'smartmail_email_templates_shortcode');
+    add_shortcode('sma_forensic_analysis', 'smartmail_forensic_analysis_shortcode');
+}
+add_action('init', 'smartmail_register_shortcodes');
+
+function smartmail_email_categorization_shortcode($atts, $content = null) {
     ob_start();
-    if (is_user_logged_in()) {
-        ?>
-        <div class="smartmail-email-categorization">
-            <h3>Email Categorization</h3>
-            <form id="smartmail-email-categorization-form">
-                <textarea name="email_content" placeholder="Paste your email content here..." required></textarea>
-                <button type="submit">Categorize</button>
-            </form>
-            <div id="smartmail-email-categorization-result"></div>
-        </div>
-        <?php
-    } else {
-        echo '<p>Please log in to use this feature.</p>';
+    ?>
+    <form method="post" action="">
+        <textarea name="email_content" rows="10" cols="50"></textarea>
+        <button type="submit" name="categorize_email">Categorize Email</button>
+    </form>
+    <?php
+    if (isset($_POST['categorize_email'])) {
+        $result = smartmail_email_categorization(sanitize_text_field($_POST['email_content']));
+        echo '<pre>' . esc_html($result) . '</pre>';
     }
     return ob_get_clean();
 }
-add_shortcode('sma_email_categorization', 'sma_email_categorization_shortcode');
 
-// Priority Inbox shortcode
-function sma_priority_inbox_shortcode($atts) {
+function smartmail_priority_inbox_shortcode($atts, $content = null) {
     ob_start();
-    if (is_user_logged_in()) {
-        ?>
-        <div class="smartmail-priority-inbox">
-            <h3>Priority Inbox</h3>
-            <form id="smartmail-priority-inbox-form">
-                <textarea name="email_content" placeholder="Paste your email content here..." required></textarea>
-                <button type="submit">Determine Priority</button>
-            </form>
-            <div id="smartmail-priority-inbox-result"></div>
-        </div>
-        <?php
-    } else {
-        echo '<p>Please log in to use this feature.</p>';
+    ?>
+    <form method="post" action="">
+        <textarea name="email_content" rows="10" cols="50"></textarea>
+        <button type="submit" name="priority_email">Determine Priority</button>
+    </form>
+    <?php
+    if (isset($_POST['priority_email'])) {
+        $result = smartmail_priority_inbox(sanitize_text_field($_POST['email_content']));
+        echo '<pre>' . esc_html($result) . '</pre>';
     }
     return ob_get_clean();
 }
-add_shortcode('sma_priority_inbox', 'sma_priority_inbox_shortcode');
 
-// Automated Responses shortcode
-function sma_automated_responses_shortcode($atts) {
+function smartmail_automated_responses_shortcode($atts, $content = null) {
     ob_start();
-    if (is_user_logged_in()) {
-        ?>
-        <div class="smartmail-automated-responses">
-            <h3>Automated Responses</h3>
-            <form id="smartmail-automated-responses-form">
-                <textarea name="email_content" placeholder="Paste your email content here..." required></textarea>
-                <button type="submit">Generate Response</button>
-            </form>
-            <div id="smartmail-automated-responses-result"></div>
-        </div>
-        <?php
-    } else {
-        echo '<p>Please log in to use this feature.</p>';
+    ?>
+    <form method="post" action="">
+        <textarea name="email_content" rows="10" cols="50"></textarea>
+        <button type="submit" name="automated_response">Generate Response</button>
+    </form>
+    <?php
+    if (isset($_POST['automated_response'])) {
+        $result = smartmail_automated_responses(sanitize_text_field($_POST['email_content']));
+        echo '<pre>' . esc_html($result) . '</pre>';
     }
     return ob_get_clean();
 }
-add_shortcode('sma_automated_responses', 'sma_automated_responses_shortcode');
 
-// Email Summarization shortcode
-function sma_email_summarization_shortcode($atts) {
+function smartmail_email_summarization_shortcode($atts, $content = null) {
     ob_start();
-    if (is_user_logged_in()) {
-        ?>
-        <div class="smartmail-email-summarization">
-            <h3>Email Summarization</h3>
-            <form id="smartmail-email-summarization-form">
-                <textarea name="email_content" placeholder="Paste your email content here..." required></textarea>
-                <button type="submit">Summarize</button>
-            </form>
-            <div id="smartmail-email-summarization-result"></div>
-        </div>
-        <?php
-    } else {
-        echo '<p>Please log in to use this feature.</p>';
+    ?>
+    <form method="post" action="">
+        <textarea name="email_content" rows="10" cols="50"></textarea>
+        <button type="submit" name="summarize_email">Summarize Email</button>
+    </form>
+    <?php
+    if (isset($_POST['summarize_email'])) {
+        $result = smartmail_email_summarization(sanitize_text_field($_POST['email_content']));
+        echo '<pre>' . esc_html($result) . '</pre>';
     }
     return ob_get_clean();
 }
-add_shortcode('sma_email_summarization', 'sma_email_summarization_shortcode');
 
-// Meeting Scheduler shortcode
-function sma_meeting_scheduler_shortcode($atts) {
+function smartmail_meeting_scheduler_shortcode($atts, $content = null) {
     ob_start();
-    if (is_user_logged_in()) {
-        ?>
-        <div class="smartmail-meeting-scheduler">
-            <h3>Meeting Scheduler</h3>
-            <form id="smartmail-meeting-scheduler-form">
-                <textarea name="email_content" placeholder="Paste your email content here..." required></textarea>
-                <button type="submit">Schedule Meeting</button>
-            </form>
-            <div id="smartmail-meeting-scheduler-result"></div>
-        </div>
-        <?php
-    } else {
-        echo '<p>Please log in to use this feature.</p>';
+    ?>
+    <form method="post" action="">
+        <textarea name="email_content" rows="10" cols="50"></textarea>
+        <button type="submit" name="schedule_meeting">Schedule Meeting</button>
+    </form>
+    <?php
+    if (isset($_POST['schedule_meeting'])) {
+        $result = smartmail_meeting_scheduler(sanitize_text_field($_POST['email_content']));
+        echo '<pre>' . esc_html($result) . '</pre>';
     }
     return ob_get_clean();
 }
-add_shortcode('sma_meeting_scheduler', 'sma_meeting_scheduler_shortcode');
 
-// Follow-up Reminders shortcode
-function sma_follow_up_reminders_shortcode($atts) {
+function smartmail_follow_up_reminders_shortcode($atts, $content = null) {
     ob_start();
-    if (is_user_logged_in()) {
-        ?>
-        <div class="smartmail-follow-up-reminders">
-            <h3>Follow-up Reminders</h3>
-            <form id="smartmail-follow-up-reminders-form">
-                <textarea name="email_content" placeholder="Paste your email content here..." required></textarea>
-                <button type="submit">Generate Reminders</button>
-            </form>
-            <div id="smartmail-follow-up-reminders-result"></div>
-        </div>
-        <?php
-    } else {
-        echo '<p>Please log in to use this feature.</p>';
+    ?>
+    <form method="post" action="">
+        <textarea name="email_content" rows="10" cols="50"></textarea>
+        <button type="submit" name="follow_up_reminders">Generate Follow-up Reminders</button>
+    </form>
+    <?php
+    if (isset($_POST['follow_up_reminders'])) {
+        $result = smartmail_follow_up_reminders(sanitize_text_field($_POST['email_content']));
+        echo '<pre>' . esc_html($result) . '</pre>';
     }
     return ob_get_clean();
 }
-add_shortcode('sma_follow_up_reminders', 'sma_follow_up_reminders_shortcode');
 
-// Sentiment Analysis shortcode
-function sma_sentiment_analysis_shortcode($atts) {
+function smartmail_sentiment_analysis_shortcode($atts, $content = null) {
     ob_start();
-    if (is_user_logged_in()) {
-        ?>
-        <div class="smartmail-sentiment-analysis">
-            <h3>Sentiment Analysis</h3>
-            <form id="smartmail-sentiment-analysis-form">
-                <textarea name="email_content" placeholder="Paste your email content here..." required></textarea>
-                <button type="submit">Analyze Sentiment</button>
-            </form>
-            <div id="smartmail-sentiment-analysis-result"></div>
-        </div>
-        <?php
-    } else {
-        echo '<p>Please log in to use this feature.</p>';
+    ?>
+    <form method="post" action="">
+        <textarea name="email_content" rows="10" cols="50"></textarea>
+        <button type="submit" name="analyze_sentiment">Analyze Sentiment</button>
+    </form>
+    <?php
+    if (isset($_POST['analyze_sentiment'])) {
+        $result = smartmail_sentiment_analysis(sanitize_text_field($_POST['email_content']));
+        echo '<pre>' . esc_html($result) . '</pre>';
     }
     return ob_get_clean();
 }
-add_shortcode('sma_sentiment_analysis', 'sma_sentiment_analysis_shortcode');
 
-// Email Templates shortcode
-function sma_email_templates_shortcode($atts) {
+function smartmail_email_templates_shortcode($atts, $content = null) {
     ob_start();
-    if (is_user_logged_in()) {
-        ?>
-        <div class="smartmail-email-templates">
-            <h3>Email Templates</h3>
-            <form id="smartmail-email-templates-form">
-                <button type="submit">Generate Template</button>
-            </form>
-            <div id="smartmail-email-templates-result"></div>
-        </div>
-        <?php
-    } else {
-        echo '<p>Please log in to use this feature.</p>';
+    ?>
+    <form method="post" action="">
+        <textarea name="email_content" rows="10" cols="50"></textarea>
+        <button type="submit" name="generate_template">Generate Template</button>
+    </form>
+    <?php
+    if (isset($_POST['generate_template'])) {
+        $result = smartmail_email_templates();
+        echo '<pre>' . esc_html($result) . '</pre>';
     }
     return ob_get_clean();
 }
-add_shortcode('sma_email_templates', 'sma_email_templates_shortcode');
 
-// Forensic Analysis shortcode
-function sma_forensic_analysis_shortcode($atts) {
+function smartmail_forensic_analysis_shortcode($atts, $content = null) {
     ob_start();
-    if (is_user_logged_in()) {
-        ?>
-        <div class="smartmail-forensic-analysis">
-            <h3>Forensic Analysis</h3>
-            <form id="smartmail-forensic-analysis-form">
-                <textarea name="email_content" placeholder="Paste your email content here..." required></textarea>
-                <button type="submit">Perform Analysis</button>
-            </form>
-            <div id="smartmail-forensic-analysis-result"></div>
-        </div>
-        <?php
-    } else {
-        echo '<p>Please log in to use this feature.</p>';
+    ?>
+    <form method="post" action="">
+        <textarea name="email_content" rows="10" cols="50"></textarea>
+        <button type="submit" name="forensic_analysis">Perform Forensic Analysis</button>
+    </form>
+    <?php
+    if (isset($_POST['forensic_analysis'])) {
+        $result = smartmail_forensic_analysis(sanitize_text_field($_POST['email_content']));
+        echo '<pre>' . esc_html($result) . '</pre>';
     }
     return ob_get_clean();
 }
-add_shortcode('sma_forensic_analysis', 'sma_forensic_analysis_shortcode');
-?>
