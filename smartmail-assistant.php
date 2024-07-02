@@ -220,13 +220,7 @@ if (!function_exists('smartmail_create_pages')) {
         ];
 
         foreach ($pages as $page) {
-            $existing_page = new WP_Query([
-                'post_type' => 'page',
-                'post_status' => 'publish',
-                'title' => $page['title'],
-            ]);
-
-            if (!$existing_page->have_posts()) {
+            if (!get_page_by_title($page['title'])) {
                 wp_insert_post([
                     'post_title' => $page['title'],
                     'post_content' => $page['content'],
@@ -285,7 +279,7 @@ add_filter('woocommerce_get_settings_pages', 'smartmail_add_woocommerce_settings
 set_error_handler(function($errno, $errstr, $errfile, $errline) {
     $log_message = "Error [{$errno}]: {$errstr} in {$errfile} on line {$errline}";
     smartmail_log($log_message);
-                      return false; // Let the normal error handler run as well
+    return false; // Let the normal error handler run as well
 });
 
 set_exception_handler(function($exception) {
@@ -293,6 +287,15 @@ set_exception_handler(function($exception) {
     smartmail_log($log_message);
     wp_die($log_message);
 });
+
+// Add WooCommerce settings page
+if (!function_exists('smartmail_add_woocommerce_settings_page')) {
+    function smartmail_add_woocommerce_settings_page($settings) {
+        $settings[] = include 'includes/class-wc-settings-smartmail.php';
+        return $settings;
+    }
+}
+add_filter('woocommerce_get_settings_pages', 'smartmail_add_woocommerce_settings_page');
 
 // Includes for WooCommerce settings
 if (!class_exists('WC_Settings_SmartMail')) {
@@ -340,3 +343,4 @@ add_filter('woocommerce_get_settings_pages', function($settings) {
     $settings[] = include 'includes/class-wc-settings-smartmail.php';
     return $settings;
 });
+?>    
