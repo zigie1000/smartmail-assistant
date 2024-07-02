@@ -11,11 +11,14 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-// Include necessary files
-include_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
-include_once plugin_dir_path(__FILE__) . 'includes/api-functions.php';
-include_once plugin_dir_path(__FILE__) . 'includes/ai-functions.php';
-include_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
+// Include necessary files only after WordPress is fully loaded
+add_action('plugins_loaded', 'smartmail_include_files');
+function smartmail_include_files() {
+    include_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
+    include_once plugin_dir_path(__FILE__) . 'includes/api-functions.php';
+    include_once plugin_dir_path(__FILE__) . 'includes/ai-functions.php';
+    include_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
+}
 
 // Register the activation hook to create necessary pages
 register_activation_hook(__FILE__, 'smartmail_create_pages');
