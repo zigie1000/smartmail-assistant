@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -85,6 +86,3 @@ function add_pi_gateway($methods) {
 }
 
 add_filter('woocommerce_payment_gateways', 'add_pi_gateway');
-
-
-    
