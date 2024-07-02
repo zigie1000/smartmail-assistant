@@ -8,8 +8,6 @@ if (!class_exists('WC_Payment_Gateway')) {
     return; // Exit if WooCommerce is not active
 }
 
-// Your admin settings logic here
-
 // Add additional admin settings for SmartMail
 function smartmail_additional_settings() {
     // Register settings, add sections, fields, etc.
