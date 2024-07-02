@@ -1,3 +1,9 @@
+<?php
+/*
+Template Name: SmartMail Admin Settings
+*/
+get_header(); ?>
+
 <div class="wrap">
     <h1>SmartMail Assistant Settings</h1>
     <form method="post" action="options.php">
@@ -8,3 +14,5 @@
         ?>
     </form>
 </div>
+
+<?php get_footer(); ?>
