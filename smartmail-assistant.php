@@ -45,28 +45,31 @@ function smartmail_check_dependencies() {
     }
     smartmail_log('All dependencies are met.');
 }
-add_action('admin_init', 'smartmail_check_dependencies');
+add_action('plugins_loaded', 'smartmail_check_dependencies');
 
 // Include necessary files
-$files = [
-    'includes/admin-settings.php',
-    'includes/api-functions.php',
-    'includes/class-wc-gateway-pi.php',
-    'includes/functions.php',
-    'includes/shortcodes.php',
-    'includes/subscription-functions.php',
-    'includes/ai-functions.php'
-];
+function smartmail_include_files() {
+    $files = [
+        'includes/admin-settings.php',
+        'includes/api-functions.php',
+        'includes/class-wc-gateway-pi.php',
+        'includes/functions.php',
+        'includes/shortcodes.php',
+        'includes/subscription-functions.php',
+        'includes/ai-functions.php'
+    ];
 
-foreach ($files as $file) {
-    $file_path = SMARTMAIL_PLUGIN_PATH . $file;
-    if (file_exists($file_path)) {
-        require_once $file_path;
-        smartmail_log("Included file: $file");
-    } else {
-        smartmail_log("Missing file: $file");
+    foreach ($files as $file) {
+        $file_path = SMARTMAIL_PLUGIN_PATH . $file;
+        if (file_exists($file_path)) {
+            require_once $file_path;
+            smartmail_log("Included file: $file");
+        } else {
+            smartmail_log("Missing file: $file");
+        }
     }
 }
+add_action('plugins_loaded', 'smartmail_include_files', 20);
 
 // Activation and deactivation hooks
 register_activation_hook(__FILE__, function() {
@@ -286,5 +289,4 @@ set_exception_handler(function($exception) {
     $log_message = "Exception: " . $exception->getMessage();
     smartmail_log($log_message);
     wp_die($log_message);
-});
-?>
+});                             
