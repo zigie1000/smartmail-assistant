@@ -1,6 +1,6 @@
 <?php
 /*
-Template Name: SmartMail Admin Settings
+Template Name: Admin Settings Template
 */
 get_header(); ?>
 
