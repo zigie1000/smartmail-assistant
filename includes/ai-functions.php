@@ -1,5 +1,24 @@
 <?php
 
+if (!function_exists('get_openai_client')) {
+    function get_openai_client() {
+        $api_key = get_option('smartmail_openai_api_key');
+        if (!$api_key) {
+            throw new Exception('OpenAI API key is missing.');
+        }
+        return OpenAI\Client::factory(['api_key' => $api_key]);
+    }
+}
+
+if (!function_exists('smartmail_log')) {
+    function smartmail_log($message) {
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log($message);
+        }
+    }
+}
+
+// AI functions for various services
 if (!function_exists('smartmail_email_categorization')) {
     function smartmail_email_categorization($email_content) {
         $client = get_openai_client();
@@ -152,4 +171,4 @@ if (!function_exists('smartmail_forensic_analysis')) {
         }
     }
 }
-?>                          
+?>
