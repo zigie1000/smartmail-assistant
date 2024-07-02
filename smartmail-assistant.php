@@ -56,8 +56,11 @@ function smartmail_admin_menu() {
     add_menu_page('SmartMail Assistant', 'SmartMail Assistant', 'manage_options', 'smartmail-assistant', 'smartmail_settings_page', 'dashicons-email-alt2');
 }
 
-function smartmail_settings_page() {
-    include plugin_dir_path(__FILE__) . 'includes/templates/admin-settings-template.php';
+// Prevent function redeclaration
+if (!function_exists('smartmail_settings_page')) {
+    function smartmail_settings_page() {
+        include plugin_dir_path(__FILE__) . 'includes/templates/admin-settings-template.php';
+    }
 }
 
 // Add AJAX actions
