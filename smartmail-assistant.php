@@ -1,111 +1,81 @@
 <?php
-/**
- * Plugin Name: SmartMail Assistant
- * Description: A WordPress plugin integrating OpenAI for various email-related functions.
- * Version: 1.0
- * Author: Marco Zagato
- * Author URI: https://smartmail.store
- */
+/*
+Plugin Name: SmartMail Assistant
+Description: Provides AI-powered email features.
+Version: 1.0
+Author: Marco Zagato
+Author URI: https://smartmail.store
+*/
 
+// Ensure the file is not accessed directly
 if (!defined('ABSPATH')) {
     exit;
 }
 
-// Load dependencies
-require_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
-require_once plugin_dir_path(__FILE__) . 'includes/ai-functions.php';
-require_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
+// Include necessary files
+include_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
+include_once plugin_dir_path(__FILE__) . 'includes/ai-functions.php';
+include_once plugin_dir_path(__FILE__) . 'includes/api-functions.php';
+include_once plugin_dir_path(__FILE__) . 'includes/class-wc-gateway-pi.php';
+include_once plugin_dir_path(__FILE__) . 'includes/functions.php';
 
-// Create pages upon activation
-function smartmail_create_pages() {
-    $pages = [
-        'smartmail-dashboard' => [
-            'title' => 'SmartMail Dashboard',
-            'content' => '[smartmail_dashboard]',
-            'template' => 'smartmail-dashboard.php'
-        ],
-        'smartmail-settings' => [
-            'title' => 'SmartMail Settings',
-            'content' => '[smartmail_settings]',
-            'template' => 'smartmail-settings.php'
-        ],
-        'smartmail-page' => [
-            'title' => 'SmartMail Page',
-            'content' => '[smartmail_page]',
-            'template' => 'smartmail-page.php'
-        ]
-    ];
+// Register activation hook
+register_activation_hook(__FILE__, 'smartmail_activate');
+function smartmail_activate() {
+    // Code to run on activation
+    // Create required pages
+    if (!get_option('smartmail_pages_created')) {
+        $pages = [
+            'SmartMail Dashboard' => 'smartmail-dashboard',
+            'SmartMail Ebooks' => 'smartmail-ebooks',
+            'SmartMail Software' => 'smartmail-software',
+            'SmartMail Subscription' => 'smartmail-subscription',
+            'Subscribe' => 'subscribe'
+        ];
 
-    foreach ($pages as $slug => $page) {
-        $existing_page = get_page_by_path($slug);
-        if (!$existing_page) {
-            wp_insert_post([
-                'post_title' => $page['title'],
-                'post_content' => $page['content'],
-                'post_status' => 'publish',
-                'post_type' => 'page',
-                'post_name' => $slug,
-                'page_template' => $page['template']
-            ]);
+        foreach ($pages as $title => $slug) {
+            if (!get_page_by_path($slug)) {
+                wp_insert_post([
+                    'post_title' => $title,
+                    'post_name' => $slug,
+                    'post_status' => 'publish',
+                    'post_type' => 'page',
+                    'page_template' => 'templates/smartmail-page.php'
+                ]);
+            }
         }
-    }
-}
-register_activation_hook(__FILE__, 'smartmail_create_pages');
 
-// Include templates
-function smartmail_load_templates($template) {
-    if (is_page_template('smartmail-dashboard.php')) {
-        $template = plugin_dir_path(__FILE__) . 'templates/smartmail-dashboard.php';
-    } elseif (is_page_template('smartmail-settings.php')) {
-        $template = plugin_dir_path(__FILE__) . 'templates/smartmail-settings.php';
-    } elseif (is_page_template('smartmail-page.php')) {
-        $template = plugin_dir_path(__FILE__) . 'templates/smartmail-page.php';
+        update_option('smartmail_pages_created', 1);
     }
-    return $template;
 }
-add_filter('template_include', 'smartmail_load_templates');
 
 // Admin menu
 function smartmail_admin_menu() {
-    add_menu_page(
-        'SmartMail Assistant',
-        'SmartMail Assistant',
-        'manage_options',
-        'smartmail-assistant',
-        'smartmail_admin_page',
-        'dashicons-email-alt',
-        6
-    );
+    add_menu_page('SmartMail Assistant', 'SmartMail Assistant', 'manage_options', 'smartmail-assistant', 'smartmail_admin_dashboard', 'dashicons-email-alt', 6);
 }
 add_action('admin_menu', 'smartmail_admin_menu');
 
-// Admin page content
-function smartmail_admin_page() {
-    ?>
-    <div class="wrap">
-        <h1>SmartMail Assistant Settings</h1>
-        <form method="post" action="options.php">
-            <?php
-            settings_fields('smartmail_options_group');
-            do_settings_sections('smartmail');
-            submit_button();
-            ?>
-        </form>
-    </div>
-    <?php
+function smartmail_admin_dashboard() {
+    echo '<div class="wrap"><h1>SmartMail Assistant</h1></div>';
 }
 
-// Register settings
-function smartmail_register_settings() {
-    register_setting('smartmail_options_group', 'smartmail_openai_api_key');
-    add_settings_section('smartmail_section', 'API Settings', null, 'smartmail');
-    add_settings_field('smartmail_openai_api_key', 'OpenAI API Key', 'smartmail_openai_api_key_render', 'smartmail', 'smartmail_section');
+// Enqueue scripts and styles
+function smartmail_enqueue_scripts() {
+    wp_enqueue_script('jquery');
+    wp_enqueue_script('smartmail-ajax', plugins_url('assets/js/smartmail.js', __FILE__), array('jquery'), null, true);
 }
-add_action('admin_init', 'smartmail_register_settings');
+add_action('wp_enqueue_scripts', 'smartmail_enqueue_scripts');
 
-function smartmail_openai_api_key_render() {
-    ?>
-    <input type='text' name='smartmail_openai_api_key' value='<?php echo get_option('smartmail_openai_api_key'); ?>'>
-    <?php
+// AJAX handler functions
+add_action('wp_ajax_smartmail_email_categorization', 'smartmail_email_categorization_handler');
+add_action('wp_ajax_nopriv_smartmail_email_categorization', 'smartmail_email_categorization_handler');
+
+function smartmail_email_categorization_handler() {
+    if (isset($_POST['content'])) {
+        $result = smartmail_email_categorization(sanitize_text_field($_POST['content']));
+        echo $result;
+    }
+    wp_die();
 }
-?>
+
+// Repeat for other AJAX actions...
