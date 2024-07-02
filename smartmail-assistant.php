@@ -59,8 +59,50 @@ function smartmail_admin_menu() {
 // Prevent function redeclaration
 if (!function_exists('smartmail_settings_page')) {
     function smartmail_settings_page() {
-        include plugin_dir_path(__FILE__) . 'includes/templates/admin-settings-template.php';
+        ?>
+        <div class="wrap">
+            <h1>SmartMail Assistant Settings</h1>
+            <form method="post" action="options.php">
+                <?php
+                settings_fields('smartmail_settings_group');
+                do_settings_sections('smartmail-settings-admin');
+                submit_button();
+                ?>
+            </form>
+        </div>
+        <?php
     }
+}
+
+// Register and add settings
+add_action('admin_init', 'smartmail_register_settings');
+
+function smartmail_register_settings() {
+    register_setting('smartmail_settings_group', 'smartmail_openai_api_key');
+
+    add_settings_section(
+        'smartmail_settings_section',
+        'OpenAI API Settings',
+        'smartmail_settings_section_callback',
+        'smartmail-settings-admin'
+    );
+
+    add_settings_field(
+        'smartmail_openai_api_key',
+        'OpenAI API Key',
+        'smartmail_openai_api_key_callback',
+        'smartmail-settings-admin',
+        'smartmail_settings_section'
+    );
+}
+
+function smartmail_settings_section_callback() {
+    echo 'Enter your OpenAI API key below:';
+}
+
+function smartmail_openai_api_key_callback() {
+    $api_key = get_option('smartmail_openai_api_key');
+    echo '<input type="text" id="smartmail_openai_api_key" name="smartmail_openai_api_key" value="' . esc_attr($api_key) . '" />';
 }
 
 // Add AJAX actions
