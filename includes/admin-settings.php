@@ -1,33 +1,27 @@
 <?php
-/*
-Template Name: Admin Settings
-*/
 
-if (!current_user_can('manage_options')) {
-    return;
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
 }
 
-if (isset($_POST['smartmail_save_settings'])) {
-    update_option('smartmail_openai_api_key', sanitize_text_field($_POST['smartmail_openai_api_key']));
-    echo '<div id="message" class="updated notice is-dismissible"><p>Settings saved.</p></div>';
+// Function to add settings page
+function smartmail_settings_init() {
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+    
+    add_options_page(
+        'SmartMail Assistant Settings',
+        'SmartMail Assistant',
+        'manage_options',
+        'smartmail-assistant-settings',
+        'smartmail_settings_page'
+    );
 }
 
-$api_key = get_option('smartmail_openai_api_key', '');
-?>
+add_action('admin_menu', 'smartmail_settings_init');
 
-<div class="wrap">
-    <h1>SmartMail Assistant Settings</h1>
-    <form method="post" action="">
-        <table class="form-table">
-            <tr>
-                <th scope="row">OpenAI API Key</th>
-                <td>
-                    <input type="text" name="smartmail_openai_api_key" value="<?php echo esc_attr($api_key); ?>" class="regular-text" />
-                </td>
-            </tr>
-        </table>
-        <p class="submit">
-            <input type="submit" name="smartmail_save_settings" class="button-primary" value="Save Settings" />
-        </p>
-    </form>
-</div>
+function smartmail_settings_page() {
+    // Content of the settings page
+    include plugin_dir_path(__FILE__) . 'templates/admin-settings-template.php';
+}
