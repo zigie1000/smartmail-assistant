@@ -96,7 +96,7 @@ get_header(); ?>
     padding: 20px;
 }
 
-smartmail-sidebar h2 {
+.smartmail-sidebar h2 {
     margin: 0;
     padding: 0 0 20px 0;
     border-bottom: 1px solid #ccc;
