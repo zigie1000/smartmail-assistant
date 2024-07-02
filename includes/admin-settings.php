@@ -1,13 +1,10 @@
 <?php
+
 if (!defined('ABSPATH')) {
     exit;
 }
 
-// Ensure WooCommerce is active
-if (!class_exists('WooCommerce')) {
-    add_action('admin_notices', function() {
-        echo '<div class="error"><p><strong>SmartMail Assistant</strong> requires WooCommerce to be installed and active.</p></div>';
-    });
+if (!class_exists('WC_Payment_Gateway')) {
     return;
 }
 
@@ -67,4 +64,25 @@ class WC_Gateway_Pi extends WC_Payment_Gateway {
     }
 
     public function receipt_page($order) {
-        echo '<p>' . __('Thank you for your order, please make your payment using Pi.',​⬤
+        echo '<p>' . __('Thank you for your order, please make your payment using Pi.', 'woocommerce') . '</p>';
+    }
+
+    public function check_response() {
+        @ob_clean();
+        $response = json_decode(file_get_contents('php://input'), true);
+        if ($response['status'] == 'success') {
+            $order = wc_get_order($response['order_id']);
+            $order->payment_complete();
+            $order->add_order_note(__('Pi payment completed', 'woocommerce'));
+        }
+        http_response_code(200);
+        exit();
+    }
+}
+
+function add_pi_gateway($methods) {
+    $methods[] = 'WC_Gateway_Pi';
+    return $methods;
+}
+
+add_filter('woocommerce_payment_gateways', 'add_pi_gateway');
