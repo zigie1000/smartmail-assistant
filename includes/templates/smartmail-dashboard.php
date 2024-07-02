@@ -112,7 +112,8 @@ get_header(); ?>
 }
 
 .smartmail-sidebar ul li a {
-    text-decoration: none;
+    text-decoration:
+    none;
     color: #333;
 }
 
