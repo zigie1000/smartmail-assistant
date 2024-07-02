@@ -5,7 +5,7 @@ Template Name: SmartMail Admin Settings
 get_header(); ?>
 
 <div class="wrap">
-    <h1>SmartMail Assistant Settings</h1>
+    <h1>SmartMail Assistant API Settings</h1>
     <form method="post" action="options.php">
         <?php
         settings_fields('smartmail_options_group');
