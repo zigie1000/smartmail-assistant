@@ -1,9 +1,3 @@
-<?php
-/*
-Template Name: SmartMail Page
-*/
-get_header(); ?>
-
 <div class="smartmail-container">
     <div class="smartmail-header">
         <h1>SmartMail Assistant</h1>
@@ -103,10 +97,15 @@ get_header(); ?>
                     type: 'POST',
                     data: {
                         action: action,
-                        content: content
+                        content: content,
+                        security: '<?php echo wp_create_nonce('smartmail_nonce'); ?>'
                     },
                     success: function(response) {
-                        $(resultId).text(response);
+                        if (response.success) {
+                            $(resultId).text(response.data);
+                        } else {
+                            $(resultId).text('An error occurred: ' + response.data);
+                        }
                     },
                     error: function() {
                         $(resultId).text('An error occurred.');
@@ -127,4 +126,59 @@ get_header(); ?>
     });
 </script>
 
-<?php get_footer(); ?>
+<style>
+.smartmail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.smartmail-header h1 {
+    text-align: center;
+}
+
+.smartmail-section {
+    margin-bottom: 30px;
+}
+
+.smartmail-section h2 {
+    margin-bottom: 10px;
+}
+
+.smartmail-section form {
+    display: flex;
+    flex-direction: column;
+}
+
+.smartmail-section textarea {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+.smartmail-section button {
+    padding: 10px;
+    background-color: #0073aa;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.smartmail-section button:hover {
+    background-color: #005177;
+}
+
+.smartmail-section div {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+</style>
