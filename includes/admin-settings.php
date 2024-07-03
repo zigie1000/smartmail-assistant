@@ -1,11 +1,19 @@
 <?php
+
 if (!defined('ABSPATH')) {
-    exit;
+    exit; // Exit if accessed directly.
 }
 
-function smartmail_register_settings() {
-    register_setting('smartmail-settings-group', 'smartmail_openai_api_key');
+function smartmail_admin_menu() {
+    add_menu_page(
+        'SmartMail Assistant Settings',
+        'SmartMail Assistant',
+        'manage_options',
+        'smartmail-assistant',
+        'smartmail_settings_page'
+    );
 }
+add_action('admin_menu', 'smartmail_admin_menu');
 
 function smartmail_settings_page() {
     ?>
@@ -13,8 +21,8 @@ function smartmail_settings_page() {
         <h1>SmartMail Assistant Settings</h1>
         <form method="post" action="options.php">
             <?php
-            settings_fields('smartmail-settings-group');
-            do_settings_sections('smartmail-settings-group');
+            settings_fields('smartmail_settings_group');
+            do_settings_sections('smartmail_settings_group');
             ?>
             <table class="form-table">
                 <tr valign="top">
@@ -28,7 +36,7 @@ function smartmail_settings_page() {
     <?php
 }
 
+function smartmail_register_settings() {
+    register_setting('smartmail_settings_group', 'smartmail_openai_api_key');
+}
 add_action('admin_init', 'smartmail_register_settings');
-add_action('admin_menu', function() {
-    add_menu_page('SmartMail Assistant', 'SmartMail Assistant', 'manage_options', 'smartmail-assistant', 'smartmail_settings_page');
-});
