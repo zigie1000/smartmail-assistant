@@ -99,7 +99,7 @@ get_header(); ?>
                 event.preventDefault();
                 var content = $(formId + ' textarea').val();
                 $.ajax({
-                    url: smartmail_ajax.ajax_url,
+                    url: '<?php echo admin_url('admin-ajax.php'); ?>',
                     type: 'POST',
                     data: {
                         action: action,
