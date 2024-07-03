@@ -1,5 +1,4 @@
 <?php
-
 if (!function_exists('get_openai_client')) {
     function get_openai_client() {
         $api_key = get_option('smartmail_openai_api_key');
@@ -10,7 +9,6 @@ if (!function_exists('get_openai_client')) {
     }
 }
 
-// AI functions for various services
 if (!function_exists('smartmail_email_categorization')) {
     function smartmail_email_categorization() {
         $email_content = sanitize_text_field($_POST['content']);
@@ -26,7 +24,7 @@ if (!function_exists('smartmail_email_categorization')) {
             smartmail_log('OpenAI error: ' . $e->getMessage());
             echo 'Error categorizing email.';
         }
-        wp_die(); // This is required to terminate immediately and return a proper response
+        wp_die();
     }
 }
 
@@ -43,9 +41,9 @@ if (!function_exists('smartmail_priority_inbox')) {
             echo trim($response['choices'][0]['text']);
         } catch (Exception $e) {
             smartmail_log('OpenAI error: ' . $e->getMessage());
-            echo 'Error determining priority.';
+            echo 'Error determining email priority.';
         }
-        wp_die(); // This is required to terminate immediately and return a proper response
+        wp_die();
     }
 }
 
@@ -56,15 +54,15 @@ if (!function_exists('smartmail_automated_responses')) {
         try {
             $response = $client->completions()->create([
                 'model' => 'text-davinci-003',
-                'prompt' => "Generate an automated response for the following email content:\n\n" . $email_content,
+                'prompt' => "Generate a response for the following email content:\n\n" . $email_content,
                 'max_tokens' => 150
             ]);
             echo trim($response['choices'][0]['text']);
         } catch (Exception $e) {
             smartmail_log('OpenAI error: ' . $e->getMessage());
-            echo 'Error generating automated response.';
+            echo 'Error generating response.';
         }
-        wp_die(); // This is required to terminate immediately and return a proper response
+        wp_die();
     }
 }
 
@@ -83,7 +81,7 @@ if (!function_exists('smartmail_email_summarization')) {
             smartmail_log('OpenAI error: ' . $e->getMessage());
             echo 'Error summarizing email.';
         }
-        wp_die(); // This is required to terminate immediately and return a proper response
+        wp_die();
     }
 }
 
@@ -94,7 +92,7 @@ if (!function_exists('smartmail_meeting_scheduler')) {
         try {
             $response = $client->completions()->create([
                 'model' => 'text-davinci-003',
-                'prompt' => "Schedule a meeting based on the following email content:\n\n" . $email_content,
+                'prompt' => "Schedule a meeting for the following email content:\n\n" . $email_content,
                 'max_tokens' => 150
             ]);
             echo trim($response['choices'][0]['text']);
@@ -102,7 +100,7 @@ if (!function_exists('smartmail_meeting_scheduler')) {
             smartmail_log('OpenAI error: ' . $e->getMessage());
             echo 'Error scheduling meeting.';
         }
-        wp_die(); // This is required to terminate immediately and return a proper response
+        wp_die();
     }
 }
 
@@ -113,15 +111,15 @@ if (!function_exists('smartmail_follow_up_reminders')) {
         try {
             $response = $client->completions()->create([
                 'model' => 'text-davinci-003',
-                'prompt' => "Generate follow-up reminders for the following email content:\n\n" . $email_content,
+                'prompt' => "Generate a follow-up reminder for the following email content:\n\n" . $email_content,
                 'max_tokens' => 150
             ]);
             echo trim($response['choices'][0]['text']);
         } catch (Exception $e) {
             smartmail_log('OpenAI error: ' . $e->getMessage());
-            echo 'Error generating follow-up reminders.';
+            echo 'Error generating follow-up reminder.';
         }
-        wp_die(); // This is required to terminate immediately and return a proper response
+        wp_die();
     }
 }
 
@@ -140,7 +138,7 @@ if (!function_exists('smartmail_sentiment_analysis')) {
             smartmail_log('OpenAI error: ' . $e->getMessage());
             echo 'Error analyzing sentiment.';
         }
-        wp_die(); // This is required to terminate immediately and return a proper response
+        wp_die();
     }
 }
 
@@ -151,7 +149,7 @@ if (!function_exists('smartmail_email_templates')) {
         try {
             $response = $client->completions()->create([
                 'model' => 'text-davinci-003',
-                'prompt' => "Generate an email template based on the following request:\n\n" . $request,
+                'prompt' => "Generate an email template for the following request:\n\n" . $request,
                 'max_tokens' => 150
             ]);
             echo trim($response['choices'][0]['text']);
@@ -159,7 +157,7 @@ if (!function_exists('smartmail_email_templates')) {
             smartmail_log('OpenAI error: ' . $e->getMessage());
             echo 'Error generating email template.';
         }
-        wp_die(); // This is required to terminate immediately and return a proper response
+        wp_die();
     }
 }
 
@@ -170,7 +168,7 @@ if (!function_exists('smartmail_forensic_analysis')) {
         try {
             $response = $client->completions()->create([
                 'model' => 'text-davinci-003',
-                'prompt' => "Perform a forensic analysis of the following email content:\n\n" . $email_content,
+                'prompt' => "Perform a forensic analysis on the following email content:\n\n" . $email_content,
                 'max_tokens' => 150
             ]);
             echo trim($response['choices'][0]['text']);
@@ -178,6 +176,6 @@ if (!function_exists('smartmail_forensic_analysis')) {
             smartmail_log('OpenAI error: ' . $e->getMessage());
             echo 'Error performing forensic analysis.';
         }
-        wp_die(); // This is required to terminate immediately and return a proper response
+        wp_die();
     }
-}                
+}
