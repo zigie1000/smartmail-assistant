@@ -6,7 +6,7 @@ get_header(); ?>
 
 <div class="smartmail-container">
     <div class="smartmail-header">
-<h1>SmartMail Assistant</h1>
+        <h1>SmartMail Assistant</h1>
         <p>Welcome to the SmartMail Assistant page. Here you can access all the features provided by SmartMail Assistant.</p>
     </div>
 
@@ -99,7 +99,7 @@ get_header(); ?>
                 event.preventDefault();
                 var content = $(formId + ' textarea').val();
                 $.ajax({
-                    url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                    url: smartmail_ajax.ajax_url,
                     type: 'POST',
                     data: {
                         action: action,
