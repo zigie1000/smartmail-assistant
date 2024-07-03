@@ -1,58 +1,38 @@
 <?php
 /*
 Plugin Name: SmartMail Assistant
-Description: A plugin that provides various email-related features using OpenAI.
+Description: AI-driven email management for categorization, prioritization, automated responses, summarization, and more.
+Version: 1.0
 Author: Marco Zagato
 Author URI: https://smartmail.store
-Version: 1.0.0
 */
 
-defined('ABSPATH') or die('No script kiddies please!');
-
-// Define plugin path
-define('SMARTMAIL_PLUGIN_PATH', plugin_dir_path(__FILE__));
-
-// Include required files
-include_once SMARTMAIL_PLUGIN_PATH . 'includes/admin-settings.php';
-include_once SMARTMAIL_PLUGIN_PATH . 'includes/ai-functions.php';
-include_once SMARTMAIL_PLUGIN_PATH . 'includes/api-functions.php';
-include_once SMARTMAIL_PLUGIN_PATH . 'includes/class-wc-gateway-pi.php';
-include_once SMARTMAIL_PLUGIN_PATH . 'includes/functions.php';
-
-// Register activation and deactivation hooks
-register_activation_hook(__FILE__, 'smartmail_activate');
-register_deactivation_hook(__FILE__, 'smartmail_deactivate');
-
-function smartmail_activate() {
-    // Create required pages
-    $pages = [
-        'SmartMail Dashboard' => 'smartmail-dashboard.php',
-        'SmartMail Page' => 'smartmail-page.php'
-    ];
-    
-    foreach ($pages as $title => $template) {
-        if (!get_page_by_path($title)) {
-            wp_insert_post([
-                'post_title' => $title,
-                'post_name' => sanitize_title($title),
-                'post_status' => 'publish',
-                'post_type' => 'page',
-                'page_template' => $template
-            ]);
-        }
-    }
+// Exit if accessed directly
+if (!defined('ABSPATH')) {
+    exit;
 }
 
-function smartmail_deactivate() {
-    // Optionally remove pages or other deactivation tasks
-}
+// Define constants
+define('SMARTMAIL_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
+// Include necessary files
+include_once SMARTMAIL_PLUGIN_DIR . 'includes/api-functions.php';
+include_once SMARTMAIL_PLUGIN_DIR . 'includes/ai-functions.php';
+include_once SMARTMAIL_PLUGIN_DIR . 'includes/admin-settings.php';
+
+// Add menu item
+function smartmail_admin_menu() {
+    add_menu_page(
+        'SmartMail Assistant',
+        'SmartMail Assistant',
+        'manage_options',
+        'smartmail-assistant',
+        'smartmail_settings_page'
+    );
+}
 add_action('admin_menu', 'smartmail_admin_menu');
 
-function smartmail_admin_menu() {
-    add_menu_page('SmartMail Assistant Settings', 'SmartMail Assistant', 'manage_options', 'smartmail-assistant', 'smartmail_settings_page');
-}
-
+// Settings page content
 function smartmail_settings_page() {
     ?>
     <div class="wrap">
@@ -74,20 +54,190 @@ function smartmail_settings_page() {
     <?php
 }
 
-add_action('admin_init', 'smartmail_settings');
-
-function smartmail_settings() {
+// Register settings
+function smartmail_register_settings() {
     register_setting('smartmail-settings-group', 'smartmail_openai_api_key');
 }
+add_action('admin_init', 'smartmail_register_settings');
 
-// Load template for custom pages
-function smartmail_page_template($page_template) {
-    if (is_page('SmartMail Dashboard')) {
-        $page_template = SMARTMAIL_PLUGIN_PATH . 'includes/templates/smartmail-dashboard.php';
-    } elseif (is_page('SmartMail Page')) {
-        $page_template = SMARTMAIL_PLUGIN_PATH . 'includes/templates/smartmail-page.php';
-    }
-    return $page_template;
+// Shortcode functions
+function smartmail_email_categorization_shortcode() {
+    ob_start();
+    ?>
+    <form id="smartmail-categorization-form">
+        <textarea id="categorization-email-content" placeholder="Enter email content here"></textarea>
+        <button type="submit">Categorize Email</button>
+    </form>
+    <div id="categorization-result"></div>
+    <?php
+    return ob_get_clean();
 }
-add_filter('page_template', 'smartmail_page_template');
+add_shortcode('sma_email_categorization', 'smartmail_email_categorization_shortcode');
+
+function smartmail_priority_inbox_shortcode() {
+    ob_start();
+    ?>
+    <form id="smartmail-priority-form">
+        <textarea id="priority-email-content" placeholder="Enter email content here"></textarea>
+        <button type="submit">Determine Priority</button>
+    </form>
+    <div id="priority-result"></div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sma_priority_inbox', 'smartmail_priority_inbox_shortcode');
+
+function smartmail_automated_responses_shortcode() {
+    ob_start();
+    ?>
+    <form id="smartmail-automated-responses-form">
+        <textarea id="automated-responses-email-content" placeholder="Enter email content here"></textarea>
+        <button type="submit">Generate Response</button>
+    </form>
+    <div id="automated-responses-result"></div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sma_automated_responses', 'smartmail_automated_responses_shortcode');
+
+function smartmail_email_summarization_shortcode() {
+    ob_start();
+    ?>
+    <form id="smartmail-summarization-form">
+        <textarea id="summarization-email-content" placeholder="Enter email content here"></textarea>
+        <button type="submit">Summarize Email</button>
+    </form>
+    <div id="summarization-result"></div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sma_email_summarization', 'smartmail_email_summarization_shortcode');
+
+function smartmail_meeting_scheduler_shortcode() {
+    ob_start();
+    ?>
+    <form id="smartmail-meeting-scheduler-form">
+        <textarea id="meeting-scheduler-email-content" placeholder="Enter email content here"></textarea>
+        <button type="submit">Schedule Meeting</button>
+    </form>
+    <div id="meeting-scheduler-result"></div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sma_meeting_scheduler', 'smartmail_meeting_scheduler_shortcode');
+
+function smartmail_follow_up_reminders_shortcode() {
+    ob_start();
+    ?>
+    <form id="smartmail-follow-up-reminders-form">
+        <textarea id="follow-up-reminders-email-content" placeholder="Enter email content here"></textarea>
+        <button type="submit">Generate Follow-up Reminder</button>
+    </form>
+    <div id="follow-up-reminders-result"></div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sma_follow_up_reminders', 'smartmail_follow_up_reminders_shortcode');
+
+function smartmail_sentiment_analysis_shortcode() {
+    ob_start();
+    ?>
+    <form id="smartmail-sentiment-analysis-form">
+        <textarea id="sentiment-analysis-email-content" placeholder="Enter email content here"></textarea>
+        <button type="submit">Analyze Sentiment</button>
+    </form>
+    <div id="sentiment-analysis-result"></div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sma_sentiment_analysis', 'smartmail_sentiment_analysis_shortcode');
+
+function smartmail_email_templates_shortcode() {
+    ob_start();
+    ?>
+    <form id="smartmail-email-templates-form">
+        <textarea id="email-templates-request" placeholder="Enter your request for an email template"></textarea>
+        <button type="submit">Generate Template</button>
+    </form>
+    <div id="email-templates-result"></div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sma_email_templates', 'smartmail_email_templates_shortcode');
+
+function smartmail_forensic_analysis_shortcode() {
+    ob_start();
+    ?>
+    <form id="smartmail-forensic-analysis-form">
+        <textarea id="forensic-analysis-email-content" placeholder="Enter email content here"></textarea>
+        <button type="submit">Perform Analysis</button>
+    </form>
+    <div id="forensic-analysis-result"></div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('sma_forensic_analysis', 'smartmail_forensic_analysis_shortcode');
+
+// Add template path
+function smartmail_template_include($template) {
+    if (is_page_template('smartmail-page.php')) {
+        $template = plugin_dir_path(__FILE__) . 'includes/templates/smartmail-page.php';
+    }
+    if (is_page_template('smartmail-dashboard.php')) {
+        $template = plugin_dir_path(__FILE__) . 'includes/templates/smartmail-dashboard.php';
+    }
+    return $template;
+}
+add_filter('template_include', 'smartmail_template_include');
+
+// Enqueue scripts for the frontend
+function smartmail_enqueue_scripts() {
+    wp_enqueue_script('jquery');
+    wp_enqueue_script('smartmail-ajax', plugin_dir_url(__FILE__) . 'assets/js/smartmail-ajax.js', array('jquery'), null, true);
+}
+add_action('wp_enqueue_scripts', 'smartmail_enqueue_scripts');
+
+// AJAX handlers for AI functions
+function smartmail_ajax_handler() {
+    $action = $_POST['action'];
+    $content = sanitize_text_field($_POST['content']);
+
+    switch ($action) {
+        case 'smartmail_email_categorization':
+            $result = smartmail_email_categorization($content);
+            break;
+        case 'smartmail_priority_inbox':
+            $result = smartmail_priority_inbox($content);
+            break;
+        case 'smartmail_automated_responses':
+            $result = smartmail_automated_responses($content);
+            break;
+        case 'smartmail_email_summarization':
+            $result = smartmail_email_summarization($content);
+            break;
+        case 'smartmail_meeting_scheduler':
+            $result = smartmail_meeting_scheduler($content);
+            break;
+        case 'smartmail_follow_up_reminders':
+            $result = smartmail_follow_up_reminders($content);
+            break;
+        case 'smartmail_sentiment_analysis':
+            $result = smartmail_sentiment_analysis($content);
+            break;
+        case 'smartmail_email_templates':
+            $result = smartmail_email_templates($content);
+            break;
+        case 'smartmail_forensic_analysis':
+            $result = smartmail_forensic_analysis($content);
+            break;
+        default:
+            $result = 'Invalid action';
+    }
+
+    echo $result;
+    wp_die();
+}
+add_action('wp_ajax_smartmail_ajax_handler', 'smartmail_ajax_handler');
+add_action('wp_ajax_nopriv_smartmail_ajax_handler', 'smartmail_ajax_handler');
+
 ?>
