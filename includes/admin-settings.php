@@ -10,7 +10,8 @@ function smartmail_admin_menu() {
         'SmartMail Assistant',
         'manage_options',
         'smartmail-assistant',
-        'smartmail_settings_page'
+        'smartmail_settings_page',
+        'dashicons-email-alt2'
     );
 }
 add_action('admin_menu', 'smartmail_admin_menu');
