@@ -1,131 +1,134 @@
 <?php
 /*
-Template Name: SmartMail Page
+Template Name: SmartMail Dashboard
 */
 get_header(); ?>
 
-<div class="smartmail-container">
-    <div class="smartmail-header">
-        <h1>SmartMail Assistant</h1>
-        <p>Welcome to the SmartMail Assistant page. Here you can access all the features provided by SmartMail Assistant.</p>
+<div class="smartmail-dashboard">
+    <div class="smartmail-sidebar">
+        <h2>SmartMail Assistant</h2>
+        <ul>
+            <li><a href="#email-categorization">Email Categorization</a></li>
+            <li><a href="#priority-inbox">Priority Inbox</a></li>
+            <li><a href="#automated-responses">Automated Responses</a></li>
+            <li><a href="#email-summarization">Email Summarization</a></li>
+            <li><a href="#meeting-scheduler">Meeting Scheduler</a></li>
+            <li><a href="#follow-up-reminders">Follow-up Reminders</a></li>
+            <li><a href="#sentiment-analysis">Sentiment Analysis</a></li>
+            <li><a href="#email-templates">Email Templates</a></li>
+            <li><a href="#forensic-analysis">Forensic Analysis</a></li>
+        </ul>
     </div>
+    <div class="smartmail-content">
+        <div id="email-categorization" class="smartmail-section">
+            <h2>Email Categorization</h2>
+            <div class="smartmail-feature">
+                <?php echo do_shortcode('[sma_email_categorization]'); ?>
+            </div>
+        </div>
 
-    <div class="smartmail-section">
-        <h2>Email Categorization</h2>
-        <form id="smartmail-categorization-form">
-            <textarea id="categorization-email-content" placeholder="Enter email content here"></textarea>
-            <button type="submit">Categorize Email</button>
-        </form>
-        <div id="categorization-result"></div>
-    </div>
+        <div id="priority-inbox" class="smartmail-section">
+            <h2>Priority Inbox</h2>
+            <div class="smartmail-feature">
+                <?php echo do_shortcode('[sma_priority_inbox]'); ?>
+            </div>
+        </div>
 
-    <div class="smartmail-section">
-        <h2>Priority Inbox</h2>
-        <form id="smartmail-priority-form">
-            <textarea id="priority-email-content" placeholder="Enter email content here"></textarea>
-            <button type="submit">Determine Priority</button>
-        </form>
-        <div id="priority-result"></div>
-    </div>
+        <div id="automated-responses" class="smartmail-section">
+            <h2>Automated Responses</h2>
+            <div class="smartmail-feature">
+                <?php echo do_shortcode('[sma_automated_responses]'); ?>
+            </div>
+        </div>
 
-    <div class="smartmail-section">
-        <h2>Automated Responses</h2>
-        <form id="smartmail-automated-responses-form">
-            <textarea id="automated-responses-email-content" placeholder="Enter email content here"></textarea>
-            <button type="submit">Generate Response</button>
-        </form>
-        <div id="automated-responses-result"></div>
-    </div>
+        <div id="email-summarization" class="smartmail-section">
+            <h2>Email Summarization</h2>
+            <div class="smartmail-feature">
+                <?php echo do_shortcode('[sma_email_summarization]'); ?>
+            </div>
+        </div>
 
-    <div class="smartmail-section">
-        <h2>Email Summarization</h2>
-        <form id="smartmail-summarization-form">
-            <textarea id="summarization-email-content" placeholder="Enter email content here"></textarea>
-            <button type="submit">Summarize Email</button>
-        </form>
-        <div id="summarization-result"></div>
-    </div>
+        <div id="meeting-scheduler" class="smartmail-section">
+            <h2>Meeting Scheduler</h2>
+            <div class="smartmail-feature">
+                <?php echo do_shortcode('[sma_meeting_scheduler]'); ?>
+            </div>
+        </div>
 
-    <div class="smartmail-section">
-        <h2>Meeting Scheduler</h2>
-        <form id="smartmail-meeting-scheduler-form">
-            <textarea id="meeting-scheduler-email-content" placeholder="Enter email content here"></textarea>
-            <button type="submit">Schedule Meeting</button>
-        </form>
-        <div id="meeting-scheduler-result"></div>
-    </div>
+        <div id="follow-up-reminders" class="smartmail-section">
+            <h2>Follow-up Reminders</h2>
+            <div class="smartmail-feature">
+                <?php echo do_shortcode('[sma_follow_up_reminders]'); ?>
+            </div>
+        </div>
 
-    <div class="smartmail-section">
-        <h2>Follow-up Reminders</h2>
-        <form id="smartmail-follow-up-reminders-form">
-            <textarea id="follow-up-reminders-email-content" placeholder="Enter email content here"></textarea>
-            <button type="submit">Generate Follow-up Reminder</button>
-        </form>
-        <div id="follow-up-reminders-result"></div>
-    </div>
+        <div id="sentiment-analysis" class="smartmail-section">
+            <h2>Sentiment Analysis</h2>
+            <div class="smartmail-feature">
+                <?php echo do_shortcode('[sma_sentiment_analysis]'); ?>
+            </div>
+        </div>
 
-    <div class="smartmail-section">
-        <h2>Sentiment Analysis</h2>
-        <form id="smartmail-sentiment-analysis-form">
-            <textarea id="sentiment-analysis-email-content" placeholder="Enter email content here"></textarea>
-            <button type="submit">Analyze Sentiment</button>
-        </form>
-        <div id="sentiment-analysis-result"></div>
-    </div>
+        <div id="email-templates" class="smartmail-section">
+            <h2>Email Templates</h2>
+            <div class="smartmail-feature">
+                <?php echo do_shortcode('[sma_email_templates]'); ?>
+            </div>
+        </div>
 
-    <div class="smartmail-section">
-        <h2>Email Templates</h2>
-        <form id="smartmail-email-templates-form">
-            <textarea id="email-templates-request" placeholder="Enter your request for an email template"></textarea>
-            <button type="submit">Generate Template</button>
-        </form>
-        <div id="email-templates-result"></div>
-    </div>
-
-    <div class="smartmail-section">
-        <h2>Forensic Analysis</h2>
-        <form id="smartmail-forensic-analysis-form">
-            <textarea id="forensic-analysis-email-content" placeholder="Enter email content here"></textarea>
-            <button type="submit">Perform Analysis</button>
-        </form>
-        <div id="forensic-analysis-result"></div>
+        <div id="forensic-analysis" class="smartmail-section">
+            <h2>Forensic Analysis</h2>
+            <div class="smartmail-feature">
+                <?php echo do_shortcode('[sma_forensic_analysis]'); ?>
+            </div>
+        </div>
     </div>
 </div>
 
-<script>
-    jQuery(document).ready(function($) {
-        function ajaxFormSubmit(formId, resultId, action) {
-            $(formId).on('submit', function(event) {
-                event.preventDefault();
-                var content = $(formId + ' textarea').val();
-                $.ajax
-                ({
-                    url: '<?php echo admin_url('admin-ajax.php'); ?>',
-                    type: 'POST',
-                    data: {
-                        action: action,
-                        content: content
-                    },
-                    success: function(response) {
-                        $(resultId).text(response);
-                    },
-                    error: function() {
-                        $(resultId).text('An error occurred.');
-                    }
-                });
-            });
-        }
+<style>
+.smartmail-dashboard {
+    display: flex;
+}
 
-        ajaxFormSubmit('#smartmail-categorization-form', '#categorization-result', 'smartmail_email_categorization');
-        ajaxFormSubmit('#smartmail-priority-form', '#priority-result', 'smartmail_priority_inbox');
-        ajaxFormSubmit('#smartmail-automated-responses-form', '#automated-responses-result', 'smartmail_automated_responses');
-        ajaxFormSubmit('#smartmail-summarization-form', '#summarization-result', 'smartmail_email_summarization');
-        ajaxFormSubmit('#smartmail-meeting-scheduler-form', '#meeting-scheduler-result', 'smartmail_meeting_scheduler');
-        ajaxFormSubmit('#smartmail-follow-up-reminders-form', '#follow-up-reminders-result', 'smartmail_follow_up_reminders');
-        ajaxFormSubmit('#smartmail-sentiment-analysis-form', '#sentiment-analysis-result', 'smartmail_sentiment_analysis');
-        ajaxFormSubmit('#smartmail-email-templates-form', '#email-templates-result', 'smartmail_email_templates');
-        ajaxFormSubmit('#smartmail-forensic-analysis-form', '#forensic-analysis-result', 'smartmail_forensic_analysis');
-    });
-</script>
+.smartmail-sidebar {
+    width: 200px;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+.smartmail-sidebar h2 {
+    margin: 0;
+    padding: 0 0 20px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.smartmail-sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.smartmail-sidebar ul li {
+    margin: 10px 0;
+}
+
+.smartmail-sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+.smartmail-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.smartmail-section {
+    margin-bottom: 40px;
+}
+
+.smartmail-section h2 {
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+}
+</style>
 
 <?php get_footer(); ?>
