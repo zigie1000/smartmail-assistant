@@ -85,4 +85,4 @@ function add_pi_gateway($methods) {
     return $methods;
 }
 
-add_filter('woocommerce_payment_gateways', 'add_pi_gateway');             
+add_filter('woocommerce_payment_gateways', 'add_pi_gateway');
