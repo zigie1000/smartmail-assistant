@@ -7,6 +7,8 @@ if (!defined('ABSPATH')) {
 if (!function_exists('smartmail_register_settings')) {
     function smartmail_register_settings() {
         register_setting('smartmail-settings-group', 'smartmail_openai_api_key');
+        register_setting('smartmail-settings-group', 'smartmail_email_username');
+        register_setting('smartmail-settings-group', 'smartmail_email_password');
     }
 }
 
@@ -28,6 +30,14 @@ if (!function_exists('smartmail_render_settings_page')) {
                     <tr valign="top">
                         <th scope="row">OpenAI API Key</th>
                         <td><input type="text" name="smartmail_openai_api_key" value="<?php echo esc_attr(get_option('smartmail_openai_api_key')); ?>" /></td>
+                    </tr>
+                    <tr valign="top">
+                        <th scope="row">Email Username</th>
+                        <td><input type="text" name="smartmail_email_username" value="<?php echo esc_attr(get_option('smartmail_email_username')); ?>" /></td>
+                    </tr>
+                    <tr valign="top">
+                        <th scope="row">Email Password</th>
+                        <td><input type="password" name="smartmail_email_password" value="<?php echo esc_attr(get_option('smartmail_email_password')); ?>" /></td>
                     </tr>
                 </table>
                 <?php submit_button(); ?>
