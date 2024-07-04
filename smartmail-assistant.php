@@ -67,3 +67,4 @@ function register_smartmail_settings() {
     register_setting('smartmail-settings-group', 'smartmail_openai_api_key');
 }
 add_action('admin_init', 'register_smartmail_settings');
+?>
