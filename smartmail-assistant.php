@@ -22,6 +22,10 @@ require_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
 // Activation hook
 register_activation_hook(__FILE__, 'smartmail_activate');
 function smartmail_activate() {
+    // Ensure Composer dependencies are loaded
+    if (!file_exists(plugin_dir_path(__FILE__) . 'vendor/autoload.php')) {
+        die('Composer dependencies not installed. Please run `composer install`.');
+    }
     // Add activation tasks if needed
 }
 
@@ -34,7 +38,6 @@ function smartmail_deactivate() {
 // Admin menu
 function smartmail_admin_menu() {
     add_menu_page(
-        'SmartMail Assistant',
         'SmartMail Assistant',
         'manage_options',
         'smartmail-assistant',
@@ -106,4 +109,4 @@ function smartmail_create_required_pages() {
         }
     }
 }
-add_action('after_switch_theme', 'smartmail_create_required_pages');
+add_action('after_switch_theme', 'smartmail_create_required_pages');    
