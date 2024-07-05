@@ -118,7 +118,7 @@ function smartmail_email_templates() {
         'model' => 'text-davinci-003',
         'prompt' => "Generate an email template based on this request:\n\n$content",
         'max_tokens' => 60,
-    ]);
+       ]);
     echo esc_html($response['choices'][0]['text']);
     wp_die();
 }
@@ -138,4 +138,4 @@ function smartmail_forensic_analysis() {
 }
 add_action('wp_ajax_smartmail_forensic_analysis', 'smartmail_forensic_analysis');
 add_action('wp_ajax_nopriv_smartmail_forensic_analysis', 'smartmail_forensic_analysis');
-?>
+?>                                            
