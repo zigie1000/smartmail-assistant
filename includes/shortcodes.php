@@ -261,8 +261,7 @@ function smartmail_email_templates_shortcode() {
         <textarea id="email-templates-request" placeholder="Enter your request for an email template"></textarea>
         <button type="submit">Generate Template</button>
     </form>
-    <div id="email-templates-result"></
-    </div>
+    <div id="email-templates-result"></div>
     <script>
         jQuery(document).ready(function($) {
             $('#smartmail-email-templates-form').on('submit', function(event) {
