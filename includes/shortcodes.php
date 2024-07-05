@@ -261,7 +261,8 @@ function smartmail_email_templates_shortcode() {
         <textarea id="email-templates-request" placeholder="Enter your request for an email template"></textarea>
         <button type="submit">Generate Template</button>
     </form>
-    <div id="email-templates-result"></div>
+    <div id="email-templates-result"></
+    </div>
     <script>
         jQuery(document).ready(function($) {
             $('#smartmail-email-templates-form').on('submit', function(event) {
@@ -276,7 +277,7 @@ function smartmail_email_templates_shortcode() {
                     },
                     success: function(response) {
                         $('#email-templates-result').text(response);
-                        },
+                    },
                     error: function() {
                         $('#email-templates-result').text('An error occurred.');
                     }
