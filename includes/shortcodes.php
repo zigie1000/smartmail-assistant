@@ -323,4 +323,50 @@ function smartmail_forensic_analysis_shortcode() {
 }
 
 add_action('init', 'smartmail_register_shortcodes');
-?>
+
+// Ensure necessary pages are created
+function smartmail_create_required_pages() {
+    // Create SmartMail Dashboard page
+    if (!get_page_by_path('smartmail-dashboard')) {
+        $dashboard_page = array(
+            'post_title'   => 'SmartMail Dashboard',
+            'post_name'    => 'smartmail-dashboard',
+            'post_content' => '[sma_dashboard]', // Ensure you have a shortcode or some content here
+            'post_status'  => 'publish',
+            'post_type'    => 'page',
+        );
+        wp_insert_post($dashboard_page);
+    }
+
+    // Create SmartMail Assistant page
+    if (!get_page_by_path('smartmail-assistant')) {
+        $assistant_page = array(
+            'post_title'   => 'SmartMail Assistant',
+            'post_name'    => 'smartmail-assistant',
+            'post_content' => '[sma_assistant]', // Ensure you have a shortcode or some content here
+            'post_status'  => 'publish',
+            'post_type'    => 'page',
+        );
+        wp_insert_post($assistant_page);
+    }
+}
+add_action('init', 'smartmail_create_required_pages');
+
+// Update existing pages if necessary
+function smartmail_update_required_pages() {
+    // Update SmartMail Dashboard page
+    $dashboard_page = get_page_by_path('smartmail-dashboard');
+    if ($dashboard_page) {
+        $dashboard_page->post_content = '[sma_dashboard]'; // Ensure this is the content you want
+        wp_update_post($dashboard_page);
+    }
+
+    // Update SmartMail Assistant page
+    $assistant_page = get_page_by_path('smartmail-assistant');
+    if ($assistant_page) {
+        $assistant_page->post_content = '[sma_assistant]'; // Ensure this is the content you want
+        wp_update_post($assistant_page);
+    }
+}
+add_action('admin_init', 'smartmail_update_required_pages');
+?>                                    
