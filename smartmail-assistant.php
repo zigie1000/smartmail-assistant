@@ -7,10 +7,6 @@ Author: Marco Zagato
 Author URI: https://smartmail.store
 */
 
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly.
-}
-
 // Ensure vendor autoload is available
 function sma_check_composer_install() {
     $vendor_dir = plugin_dir_path(__FILE__) . 'vendor';
@@ -72,30 +68,29 @@ function register_smartmail_settings() {
 }
 add_action('admin_init', 'register_smartmail_settings');
 
-// Ensure pages are created
-function sma_create_pages() {
-    $pages = [
-        'smartmail-assistant' => [
-            'title' => 'SmartMail Assistant',
-            'content' => '[sma_assistant]'
-        ],
-        'smartmail-dashboard' => [
-            'title' => 'SmartMail Dashboard',
-            'content' => '[sma_dashboard]'
-        ]
-    ];
+// Ensure SmartMail pages exist
+function sma_check_pages() {
+    // Create SmartMail Assistant page if it doesn't exist
+    if (!get_page_by_path('smartmail-assistant')) {
+        wp_insert_post([
+            'post_title' => 'SmartMail Assistant',
+            'post_name' => 'smartmail-assistant',
+            'post_status' => 'publish',
+            'post_type' => 'page',
+            'post_content' => '[sma_assistant]'
+        ]);
+    }
 
-    foreach ($pages as $slug => $page) {
-        if (!get_page_by_path($slug)) {
-            wp_insert_post([
-                'post_title' => $page['title'],
-                'post_name' => $slug,
-                'post_content' => $page['content'],
-                'post_status' => 'publish',
-                'post_type' => 'page'
-            ]);
-        }
+    // Create SmartMail Dashboard page if it doesn't exist
+    if (!get_page_by_path('smartmail-dashboard')) {
+        wp_insert_post([
+            'post_title' => 'SmartMail Dashboard',
+            'post_name' => 'smartmail-dashboard',
+            'post_status' => 'publish',
+            'post_type' => 'page',
+            'post_content' => '[sma_dashboard]'
+        ]);
     }
 }
-register_activation_hook(__FILE__, 'sma_create_pages');
+add_action('init', 'sma_check_pages');
 ?>
