@@ -7,6 +7,10 @@ Author: Marco Zagato
 Author URI: https://smartmail.store
 */
 
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
+}
+
 // Ensure vendor autoload is available
 function sma_check_composer_install() {
     $vendor_dir = plugin_dir_path(__FILE__) . 'vendor';
@@ -26,55 +30,6 @@ require plugin_dir_path(__FILE__) . 'vendor/autoload.php';
 include_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
 include_once plugin_dir_path(__FILE__) . 'includes/api-functions.php';
 include_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
-
-// Create or update the SmartMail Assistant page
-function create_or_update_smartmail_assistant_page() {
-    $page_title = 'SmartMail Assistant';
-    $page_content = '[smartmail_assistant_shortcode]';
-    $page_check = get_page_by_title($page_title);
-
-    $page = array(
-        'post_title'   => $page_title,
-        'post_content' => $page_content,
-        'post_status'  => 'publish',
-        'post_type'    => 'page',
-    );
-
-    if ($page_check) {
-        $page['ID'] = $page_check->ID;
-        wp_update_post($page);
-    } else {
-        wp_insert_post($page);
-    }
-}
-
-// Create or update the SmartMail Dashboard page
-function create_or_update_smartmail_dashboard_page() {
-    $page_title = 'SmartMail Dashboard';
-    $page_content = '[smartmail_dashboard_shortcode]';
-    $page_check = get_page_by_title($page_title);
-
-    $page = array(
-        'post_title'   => $page_title,
-        'post_content' => $page_content,
-        'post_status'  => 'publish',
-        'post_type'    => 'page',
-    );
-
-    if ($page_check) {
-        $page['ID'] = $page_check->ID;
-        wp_update_post($page);
-    } else {
-        wp_insert_post($page);
-    }
-}
-
-// Hook to create or update pages on plugin activation
-function smartmail_plugin_activate() {
-    create_or_update_smartmail_assistant_page();
-    create_or_update_smartmail_dashboard_page();
-}
-register_activation_hook(__FILE__, 'smartmail_plugin_activate');
 
 // Admin menu
 function smartmail_admin_menu() {
@@ -116,4 +71,31 @@ function register_smartmail_settings() {
     register_setting('smartmail-settings-group', 'smartmail_openai_api_key');
 }
 add_action('admin_init', 'register_smartmail_settings');
+
+// Ensure pages are created
+function sma_create_pages() {
+    $pages = [
+        'smartmail-assistant' => [
+            'title' => 'SmartMail Assistant',
+            'content' => '[sma_assistant]'
+        ],
+        'smartmail-dashboard' => [
+            'title' => 'SmartMail Dashboard',
+            'content' => '[sma_dashboard]'
+        ]
+    ];
+
+    foreach ($pages as $slug => $page) {
+        if (!get_page_by_path($slug)) {
+            wp_insert_post([
+                'post_title' => $page['title'],
+                'post_name' => $slug,
+                'post_content' => $page['content'],
+                'post_status' => 'publish',
+                'post_type' => 'page'
+            ]);
+        }
+    }
+}
+register_activation_hook(__FILE__, 'sma_create_pages');
 ?>
