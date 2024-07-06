@@ -27,32 +27,6 @@ include_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
 include_once plugin_dir_path(__FILE__) . 'includes/api-functions.php';
 include_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
 
-// Create pages if not exist
-function smartmail_create_pages() {
-    // Create SmartMail Dashboard page
-    if (get_page_by_path('smartmail-dashboard') === null) {
-        $dashboard_page_id = wp_insert_post(array(
-            'post_title' => 'SmartMail Dashboard',
-            'post_name' => 'smartmail-dashboard',
-            'post_status' => 'publish',
-            'post_type' => 'page',
-            'post_content' => '[smartmail_dashboard]'
-        ));
-    }
-
-    // Create SmartMail Assistant page
-    if (get_page_by_path('smartmail-assistant') === null) {
-        $assistant_page_id = wp_insert_post(array(
-            'post_title' => 'SmartMail Assistant',
-            'post_name' => 'smartmail-assistant',
-            'post_status' => 'publish',
-            'post_type' => 'page',
-            'post_content' => '[smartmail_assistant]'
-        ));
-    }
-}
-add_action('init', 'smartmail_create_pages');
-
 // Admin menu
 function smartmail_admin_menu() {
     add_menu_page(
@@ -93,3 +67,30 @@ function register_smartmail_settings() {
     register_setting('smartmail-settings-group', 'smartmail_openai_api_key');
 }
 add_action('admin_init', 'register_smartmail_settings');
+
+// Create necessary pages
+function create_smartmail_pages() {
+    $pages = [
+        'smartmail-assistant' => [
+            'title' => 'SmartMail Assistant',
+            'content' => '[smartmail_assistant]'
+        ],
+        'smartmail-dashboard' => [
+            'title' => 'SmartMail Dashboard',
+            'content' => '[smartmail_dashboard]'
+        ],
+    ];
+
+    foreach ($pages as $slug => $page) {
+        if (!get_page_by_path($slug)) {
+            wp_insert_post([
+                'post_title' => $page['title'],
+                'post_name' => $slug,
+                'post_content' => $page['content'],
+                'post_status' => 'publish',
+                'post_type' => 'page',
+            ]);
+        }
+    }
+}
+add_action('init', 'create_smartmail_pages');
