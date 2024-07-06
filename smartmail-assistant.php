@@ -1,72 +1,62 @@
 <?php
-/*
-Plugin Name: SmartMail Assistant
-Description: A comprehensive AI-driven assistant for managing emails and tasks.
-Version: 1.0
-Author: Marco Zagato
-Author URI: https://smartmail.store
-*/
+/**
+ * Plugin Name: SmartMail Assistant
+ * Description: An AI-driven email assistant providing various features such as email categorization, priority inbox, automated responses, and more.
+ * Version: 1.0.0
+ * Author: Marco Zagato
+ * Author URI: https://smartmail.store
+ */
 
-// Ensure vendor autoload is available
-function sma_check_composer_install() {
-    $vendor_dir = plugin_dir_path(__FILE__) . 'vendor';
-    if (!file_exists($vendor_dir . '/autoload.php')) {
-        $composer_json_path = plugin_dir_path(__FILE__) . 'composer.json';
-        if (file_exists($composer_json_path)) {
-            shell_exec('cd ' . escapeshellarg(plugin_dir_path(__FILE__)) . ' && composer install');
-        }
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
+}
+
+require_once plugin_dir_path(__FILE__) . 'smartmail-api-functions.php';
+require_once plugin_dir_path(__FILE__) . 'smartmail-shortcodes.php';
+
+function smartmail_activate() {
+    smartmail_create_page('SmartMail Assistant', 'smartmail-assistant', '[sma_assistant]');
+    smartmail_create_page('SmartMail Dashboard', 'smartmail-dashboard', '[sma_dashboard]');
+}
+register_activation_hook(__FILE__, 'smartmail_activate');
+
+function smartmail_create_page($title, $slug, $shortcode) {
+    $page = get_page_by_path($slug);
+    if (!$page) {
+        wp_insert_post([
+            'post_title' => $title,
+            'post_name' => $slug,
+            'post_content' => $shortcode,
+            'post_status' => 'publish',
+            'post_type' => 'page'
+        ]);
     }
 }
-add_action('admin_init', 'sma_check_composer_install');
 
-// Include Composer autoload
-require plugin_dir_path(__FILE__) . 'vendor/autoload.php';
-
-// Include necessary files
-include_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
-include_once plugin_dir_path(__FILE__) . 'includes/api-functions.php';
-include_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
-
-// Register shortcodes on init
-add_action('init', 'smartmail_register_shortcodes');
-
-// Admin menu
-function smartmail_admin_menu() {
-    add_menu_page(
-        'SmartMail Assistant Settings',
-        'SmartMail Assistant',
-        'manage_options',
-        'smartmail-assistant',
-        'smartmail_settings_page',
-        'dashicons-email-alt',
-        20
-    );
-}
-add_action('admin_menu', 'smartmail_admin_menu');
-
-// Settings page
-function smartmail_settings_page() {
-    ?>
-    <div class="wrap">
-        <h1>SmartMail Assistant Settings</h1>
-        <form method="post" action="options.php">
-            <?php
-            settings_fields('smartmail-settings-group');
-            do_settings_sections('smartmail-settings-group');
-            ?>
-            <table class="form-table">
-                <tr valign="top">
-                    <th scope="row">OpenAI API Key</th>
-                    <td><input type="text" name="smartmail_openai_api_key" value="<?php echo esc_attr(get_option('smartmail_openai_api_key')); ?>" /></td>
-                </tr>
-            </table>
-            <?php submit_button(); ?>
-        </form>
-    </div>
-    <?php
+add_action('admin_menu', 'smartmail_register_menu');
+function smartmail_register_menu() {
+    add_menu_page('SmartMail Assistant', 'SmartMail Assistant', 'manage_options', 'smartmail-assistant', 'smartmail_render_dashboard', 'dashicons-email-alt', 6);
+    add_submenu_page('smartmail-assistant', 'Dashboard', 'Dashboard', 'manage_options', 'smartmail-dashboard', 'smartmail_render_dashboard');
 }
 
-function register_smartmail_settings() {
-    register_setting('smartmail-settings-group', 'smartmail_openai_api_key');
+function smartmail_render_dashboard() {
+    echo '<div class="wrap"><h1>SmartMail Assistant Dashboard</h1></div>';
 }
-add_action('admin_init', 'register_smartmail_settings');
+
+add_action('wp_ajax_smartmail_email_categorization', 'smartmail_handle_email_categorization');
+add_action('wp_ajax_nopriv_smartmail_email_categorization', 'smartmail_handle_email_categorization');
+function smartmail_handle_email_categorization() {
+    // Your email categorization logic here
+    wp_send_json_success('Categorized email content');
+}
+
+add_action('wp_ajax_smartmail_priority_inbox', 'smartmail_handle_priority_inbox');
+add_action('wp_ajax_nopriv_smartmail_priority_inbox', 'smartmail_handle_priority_inbox');
+function smartmail_handle_priority_inbox() {
+    // Your priority inbox logic here
+    wp_send_json_success('Email priority determined');
+}
+
+// Repeat similar AJAX handlers for other features
+
+?>
