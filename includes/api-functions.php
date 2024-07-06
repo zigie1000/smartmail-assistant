@@ -138,4 +138,4 @@ function smartmail_forensic_analysis() {
 }
 add_action('wp_ajax_smartmail_forensic_analysis', 'smartmail_forensic_analysis');
 add_action('wp_ajax_nopriv_smartmail_forensic_analysis', 'smartmail_forensic_analysis');
-?>
+?>                  
