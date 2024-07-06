@@ -27,6 +27,32 @@ include_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
 include_once plugin_dir_path(__FILE__) . 'includes/api-functions.php';
 include_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
 
+// Create pages if not exist
+function smartmail_create_pages() {
+    // Create SmartMail Dashboard page
+    if (get_page_by_path('smartmail-dashboard') === null) {
+        $dashboard_page_id = wp_insert_post(array(
+            'post_title' => 'SmartMail Dashboard',
+            'post_name' => 'smartmail-dashboard',
+            'post_status' => 'publish',
+            'post_type' => 'page',
+            'post_content' => '[smartmail_dashboard]'
+        ));
+    }
+
+    // Create SmartMail Assistant page
+    if (get_page_by_path('smartmail-assistant') === null) {
+        $assistant_page_id = wp_insert_post(array(
+            'post_title' => 'SmartMail Assistant',
+            'post_name' => 'smartmail-assistant',
+            'post_status' => 'publish',
+            'post_type' => 'page',
+            'post_content' => '[smartmail_assistant]'
+        ));
+    }
+}
+add_action('init', 'smartmail_create_pages');
+
 // Admin menu
 function smartmail_admin_menu() {
     add_menu_page(
