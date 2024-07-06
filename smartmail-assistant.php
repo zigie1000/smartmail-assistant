@@ -27,6 +27,9 @@ include_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
 include_once plugin_dir_path(__FILE__) . 'includes/api-functions.php';
 include_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
 
+// Register shortcodes on init
+add_action('init', 'smartmail_register_shortcodes');
+
 // Admin menu
 function smartmail_admin_menu() {
     add_menu_page(
@@ -67,40 +70,3 @@ function register_smartmail_settings() {
     register_setting('smartmail-settings-group', 'smartmail_openai_api_key');
 }
 add_action('admin_init', 'register_smartmail_settings');
-
-// Ensure necessary pages are created or updated
-function smartmail_create_required_pages() {
-    $pages = [
-        'smartmail-dashboard' => [
-            'title' => 'SmartMail Dashboard',
-            'content' => '[sma_dashboard]'
-        ],
-        'smartmail-assistant' => [
-            'title' => 'SmartMail Assistant',
-            'content' => '[sma_assistant]'
-        ]
-    ];
-
-    foreach ($pages as $slug => $page) {
-        $existing_page = get_page_by_path($slug);
-
-        if ($existing_page) {
-            wp_update_post([
-                'ID' => $existing_page->ID,
-                'post_content' => $page['content'],
-                'post_status' => 'publish'
-            ]);
-        } else {
-            wp_insert_post([
-                'post_name' => $slug,
-                'post_title' => $page['title'],
-                'post_content' => $page['content'],
-                'post_status' => 'publish',
-                'post_type' => 'page'
-            ]);
-        }
-    }
-}
-register_activation_hook(__FILE__, 'smartmail_create_required_pages');
-add_action('admin_init', 'smartmail_create_required_pages');
-?>
