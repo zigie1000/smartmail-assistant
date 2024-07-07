@@ -1,11 +1,17 @@
 <?php
 /*
 Plugin Name: SmartMail Assistant
-Description: A comprehensive AI-driven assistant for managing emails and tasks.
-Version: 1.0
+Plugin URI: https://smartmail.store
+Description: A plugin to assist with SmartMail features.
+Version: 1.0.0
 Author: Marco Zagato
 Author URI: https://smartmail.store
+License: GPL2
 */
+
+if (!defined('WPINC')) {
+    die;
+}
 
 // Ensure vendor autoload is available
 function sma_check_composer_install() {
@@ -81,7 +87,7 @@ function create_smartmail_pages() {
         ],
     ];
 
-    foreach ($ pages as $slug => $page) {
+    foreach ($pages as $slug => $page) {
         if (!get_page_by_path($slug)) {
             wp_insert_post([
                 'post_title' => $page['title'],
