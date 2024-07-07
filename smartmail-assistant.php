@@ -81,7 +81,7 @@ function create_smartmail_pages() {
         ],
     ];
 
-    foreach ($pages as $slug => $page) {
+    foreach ($ pages as $slug => $page) {
         if (!get_page_by_path($slug)) {
             wp_insert_post([
                 'post_title' => $page['title'],
@@ -94,3 +94,4 @@ function create_smartmail_pages() {
     }
 }
 add_action('init', 'create_smartmail_pages');
+?>
