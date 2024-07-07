@@ -79,11 +79,11 @@ function create_smartmail_pages() {
     $pages = [
         'smartmail-assistant' => [
             'title' => 'SmartMail Assistant',
-            'content' => '[smartmail_assistant]'
+            'content' => '[sma_assistant]'
         ],
         'smartmail-dashboard' => [
             'title' => 'SmartMail Dashboard',
-            'content' => '[smartmail_dashboard]'
+            'content' => '[sma_dashboard]'
         ],
     ];
 
