@@ -107,7 +107,7 @@ get_header(); ?>
     padding: 0;
 }
 
-.smartmail-sidebar ul li {
+smartmail-sidebar ul li {
     margin: 10px 0;
 }
 
