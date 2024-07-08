@@ -6,7 +6,7 @@ get_header(); ?>
 
 <div class="smartmail-dashboard">
     <div class="smartmail-sidebar">
-        <h2>SmartMail Assistant</h2>
+        <h2>SmartMail Dashboard</h2>
         <ul>
             <li><a href="#email-categorization">Email Categorization</a></li>
             <li><a href="#priority-inbox">Priority Inbox</a></li>
@@ -111,7 +111,7 @@ get_header(); ?>
     margin: 10px 0;
 }
 
-.smartmail-sidebar ul li a {
+smartmail-sidebar ul li a {
     text-decoration: none;
     color: #333;
 }
