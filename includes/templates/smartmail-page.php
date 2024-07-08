@@ -111,7 +111,7 @@ get_header(); ?>
     margin: 10px 0;
 }
 
-smartmail-sidebar ul li a {
+.smartmail-sidebar ul li a {
     text-decoration: none;
     color: #333;
 }
