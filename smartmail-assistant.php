@@ -87,7 +87,7 @@ function create_smartmail_pages() {
         ],
     ];
 
-    foreach ($pages as $slug => $page) {
+    foreach ($ pages as $slug => $page) {
         if (!get_page_by_path($slug)) {
             wp_insert_post([
                 'post_title' => $page['title'],
@@ -100,19 +100,4 @@ function create_smartmail_pages() {
     }
 }
 add_action('init', 'create_smartmail_pages');
-
-// Ensure OpenAI API Key is set
-function ensure_openai_api_key() {
-    $api_key = get_option('smartmail_openai_api_key');
-    if (empty($api_key)) {
-        add_action('admin_notices', function() {
-            ?>
-            <div class="notice notice-warning">
-                <p><?php _e('Please set your OpenAI API Key in the SmartMail Assistant settings.', 'smartmail-assistant'); ?></p>
-            </div>
-            <?php
-        });
-    }
-}
-add_action('admin_init', 'ensure_openai_api_key');
 ?>
