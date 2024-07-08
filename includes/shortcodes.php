@@ -5,8 +5,6 @@ if (!defined('ABSPATH')) {
 }
 
 function smartmail_register_shortcodes() {
-    add_shortcode('sma_assistant', 'smartmail_assistant_shortcode');
-    add_shortcode('sma_dashboard', 'smartmail_dashboard_shortcode');
     add_shortcode('sma_email_categorization', 'smartmail_email_categorization_shortcode');
     add_shortcode('sma_priority_inbox', 'smartmail_priority_inbox_shortcode');
     add_shortcode('sma_automated_responses', 'smartmail_automated_responses_shortcode');
@@ -18,23 +16,6 @@ function smartmail_register_shortcodes() {
     add_shortcode('sma_forensic_analysis', 'smartmail_forensic_analysis_shortcode');
 }
 
-function smartmail_assistant_shortcode() {
-    ob_start();
-    ?>
-    <div>Your SmartMail Assistant Content Here</div>
-    <?php
-    return ob_get_clean();
-}
-
-function smartmail_dashboard_shortcode() {
-    ob_start();
-    ?>
-    <div>Your SmartMail Dashboard Content Here</div>
-    <?php
-    return ob_get_clean();
-}
-
-// Shortcode implementations
 function smartmail_email_categorization_shortcode() {
     ob_start();
     ?>
@@ -155,7 +136,7 @@ function smartmail_email_summarization_shortcode() {
                     type: 'POST',
                     data: {
                         action: 'smartmail_email_summarization',
-                        content: $content
+                        content: content
                     },
                     success: function(response) {
                         $('#summarization-result').text(response);
