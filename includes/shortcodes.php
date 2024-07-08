@@ -34,6 +34,7 @@ function smartmail_dashboard_shortcode() {
     return ob_get_clean();
 }
 
+// Shortcode implementations
 function smartmail_email_categorization_shortcode() {
     ob_start();
     ?>
@@ -154,7 +155,7 @@ function smartmail_email_summarization_shortcode() {
                     type: 'POST',
                     data: {
                         action: 'smartmail_email_summarization',
-                        content: content
+                        content: $content
                     },
                     success: function(response) {
                         $('#summarization-result').text(response);
@@ -267,8 +268,8 @@ function smartmail_sentiment_analysis_shortcode() {
                 });
             });
         });
-    </script
-       <?php
+    </script>
+    <?php
     return ob_get_clean();
 }
 
