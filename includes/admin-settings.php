@@ -149,4 +149,4 @@ function smartmail_render_settings_page() {
     </script>
     <?php
 }
-?>
+?>    
