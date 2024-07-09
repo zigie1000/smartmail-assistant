@@ -46,4 +46,58 @@ function smartmail_admin_menu() {
     );
 }
 add_action('admin_menu', 'smartmail_admin_menu');
+
+// Settings page
+function smartmail_settings_page() {
+    ?>
+    <div class="wrap">
+        <h1>SmartMail Assistant Settings</h1>
+        <form method="post" action="options.php">
+            <?php
+            settings_fields('smartmail-settings-group');
+            do_settings_sections('smartmail-settings-group');
+            ?>
+            <table class="form-table">
+                <tr valign="top">
+                    <th scope="row">OpenAI API Key</th>
+                    <td><input type="text" name="smartmail_openai_api_key" value="<?php echo esc_attr(get_option('smartmail_openai_api_key')); ?>" /></td>
+                </tr>
+            </table>
+            <?php submit_button(); ?>
+        </form>
+    </div>
+    <?php
+}
+
+function register_smartmail_settings() {
+    register_setting('smartmail-settings-group', 'smartmail_openai_api_key');
+}
+add_action('admin_init', 'register_smartmail_settings');
+
+// Create necessary pages
+function create_smartmail_pages() {
+    $pages = [
+        'smartmail-assistant' => [
+            'title' => 'SmartMail Assistant',
+            'content' => '[sma_assistant]'
+        ],
+        'smartmail-dashboard' => [
+            'title' => 'SmartMail Dashboard',
+            'content' => '[sma_dashboard]'
+        ],
+    ];
+
+    foreach ($ pages as $slug => $page) {
+        if (!get_page_by_path($slug)) {
+            wp_insert_post([
+                'post_title' => $page['title'],
+                'post_name' => $slug,
+                'post_content' => $page['content'],
+                'post_status' => 'publish',
+                'post_type' => 'page',
+            ]);
+        }
+    }
+}
+add_action('init', 'create_smartmail_pages');
 ?>
