@@ -26,11 +26,6 @@ function smartmail_register_settings() {
 add_action('admin_init', 'smartmail_register_settings');
 
 function smartmail_settings_page() {
-    add_options_page('SmartMail Settings', 'SmartMail', 'manage_options', 'smartmail-settings', 'smartmail_render_settings_page');
-}
-add_action('admin_menu', 'smartmail_settings_page');
-
-function smartmail_render_settings_page() {
     ?>
     <div class="wrap">
         <h1>SmartMail Settings</h1>
@@ -102,8 +97,8 @@ function smartmail_render_settings_page() {
                 <tr valign="top" class="imap-settings" <?php if(get_option('smartmail_email_protocol') !== 'imap') echo 'style="display:none;"'; ?>>
                     <th scope="row">IMAP Password</th>
                     <td><input type="password" name="smartmail_imap_password" value="<?php echo esc_attr(get_option('smartmail_imap_password')); ?>" /></td>
-                </tr>
-                <tr valign="top" class="pop3-settings" <?php if(get_option('smartmail_email_protocol') !== 'pop3') echo 'style="display:none;"'; ?>>
+                </tr
+                 <tr valign="top" class="pop3-settings" <?php if(get_option('smartmail_email_protocol') !== 'pop3') echo 'style="display:none;"'; ?>>
                     <th scope="row">POP3 Host</th>
                     <td><input type="text" name="smartmail_pop3_host" value="<?php echo esc_attr(get_option('smartmail_pop3_host')); ?>" /></td>
                 </tr>
@@ -149,4 +144,4 @@ function smartmail_render_settings_page() {
     </script>
     <?php
 }
-?>    
+?>   
