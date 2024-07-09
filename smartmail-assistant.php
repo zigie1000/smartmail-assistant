@@ -14,34 +14,43 @@ if (!defined('ABSPATH')) {
 
 define('SMARTMAIL_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-// Load Composer's autoload file
-require SMARTMAIL_PLUGIN_DIR . 'vendor/autoload.php';
+// Ensure vendor autoload is available
+function sma_check_composer_install() {
+    $vendor_dir = plugin_dir_path(__FILE__) . 'vendor';
+    if (!file_exists($vendor_dir . '/autoload.php')) {
+        $composer_json_path = plugin_dir_path(__FILE__) . 'composer.json';
+        if (file_exists($composer_json_path)) {
+            shell_exec('cd ' . escapeshellarg(plugin_dir_path(__FILE__)) . ' && composer install');
+        }
+    }
+}
+add_action('admin_init', 'sma_check_composer_install');
 
-// Load dependencies
-require_once SMARTMAIL_PLUGIN_DIR . 'includes/admin-settings.php';
-require_once SMARTMAIL_PLUGIN_DIR . 'includes/api-functions.php';
-require_once SMARTMAIL_PLUGIN_DIR . 'includes/shortcodes.php';
+// Include Composer autoload
+require plugin_dir_path(__FILE__) . 'vendor/autoload.php';
+
+// Include necessary files
+include_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
+include_once plugin_dir_path(__FILE__) . 'includes/api-functions.php';
+include_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
 
 // Register and enqueue scripts
 function smartmail_register_scripts() {
     wp_register_script('smartmail-assistant-script', plugins_url('assets/js/script.js', __FILE__), array('jquery'), '1.0.0', true);
     wp_enqueue_script('smartmail-assistant-script');
 }
-
 add_action('wp_enqueue_scripts', 'smartmail_register_scripts');
 
 function smartmail_admin_register_scripts() {
     wp_register_script('smartmail-assistant-admin-script', plugins_url('assets/js/admin-script.js', __FILE__), array('jquery'), '1.0.0', true);
     wp_enqueue_script('smartmail-assistant-admin-script');
 }
-
 add_action('admin_enqueue_scripts', 'smartmail_admin_register_scripts');
 
 // Create admin menu
 function smartmail_create_menu() {
     add_menu_page('SmartMail Assistant Settings', 'SmartMail Assistant', 'manage_options', 'smartmail-assistant', 'smartmail_settings_page', 'dashicons-email', 110);
 }
-
 add_action('admin_menu', 'smartmail_create_menu');
 
 // Create necessary pages
