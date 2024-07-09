@@ -1,5 +1,3 @@
-<?php
-
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
@@ -84,6 +82,7 @@ function smartmail_priority_inbox_shortcode() {
     return ob_get_clean();
 }
 
+// The same structure is repeated for other shortcodes
 function smartmail_automated_responses_shortcode() {
     ob_start();
     ?>
@@ -323,4 +322,5 @@ function smartmail_forensic_analysis_shortcode() {
 }
 
 add_action('init', 'smartmail_register_shortcodes');
-?> 
+?>
+    
