@@ -33,12 +33,6 @@ include_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
 include_once plugin_dir_path(__FILE__) . 'includes/api-functions.php';
 include_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
 
-// Enqueue JavaScript file
-function smartmail_enqueue_scripts() {
-    wp_enqueue_script('smartmail-script', plugin_dir_url(__FILE__) . 'assets/js/script.js', array('jquery'), null, true);
-}
-add_action('admin_enqueue_scripts', 'smartmail_enqueue_scripts');
-
 // Admin menu
 function smartmail_admin_menu() {
     add_menu_page(
@@ -52,31 +46,4 @@ function smartmail_admin_menu() {
     );
 }
 add_action('admin_menu', 'smartmail_admin_menu');
-
-// Create necessary pages
-function create_smartmail_pages() {
-    $pages = [
-        'smartmail-assistant' => [
-            'title' => 'SmartMail Assistant',
-            'content' => '[sma_assistant]'
-        ],
-        'smartmail-dashboard' => [
-            'title' => 'SmartMail Dashboard',
-            'content' => '[sma_dashboard]'
-        ],
-    ];
-
-    foreach ($pages as $slug => $page) {
-        if (!get_page_by_path($slug)) {
-            wp_insert_post([
-                'post_title' => $page['title'],
-                'post_name' => $slug,
-                'post_content' => $page['content'],
-                'post_status' => 'publish',
-                'post_type' => 'page',
-            ]);
-        }
-    }
-}
-add_action('init', 'create_smartmail_pages');
 ?>
