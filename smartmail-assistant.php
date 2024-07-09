@@ -1,76 +1,64 @@
 <?php
-/*
-Plugin Name: SmartMail Assistant
-Plugin URI: https://smartmail.store
-Description: A plugin to assist with SmartMail features.
-Version: 1.0.0
-Author: Marco Zagato
-Author URI: https://smartmail.store
-License: MIT
-*/
+/**
+ * Plugin Name: SmartMail Assistant
+ * Description: AI-powered email assistant for WordPress.
+ * Version: 1.0.0
+ * Author: Marco Zagato
+ * Author URI: https://smartmail.store
+ * License: MIT
+ */
 
-if (!defined('WPINC')) {
-    die;
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly.
 }
 
-// Ensure vendor autoload is available
-function sma_check_composer_install() {
-    $vendor_dir = plugin_dir_path(__FILE__) . 'vendor';
-    if (!file_exists($vendor_dir . '/autoload.php')) {
-        $composer_json_path = plugin_dir_path(__FILE__) . 'composer.json';
-        if (file_exists($composer_json_path)) {
-            shell_exec('cd ' . escapeshellarg(plugin_dir_path(__FILE__)) . ' && composer install');
-        }
-    }
+define('SMARTMAIL_PLUGIN_DIR', plugin_dir_path(__FILE__));
+
+require_once SMARTMAIL_PLUGIN_DIR . 'includes/admin-settings.php';
+require_once SMARTMAIL_PLUGIN_DIR . 'includes/shortcodes.php';
+
+function smartmail_register_scripts() {
+    wp_register_script('smartmail-assistant-script', plugins_url('assets/js/script.js', __FILE__), array('jquery'), '1.0.0', true);
+    wp_enqueue_script('smartmail-assistant-script');
 }
-add_action('admin_init', 'sma_check_composer_install');
 
-// Include Composer autoload
-require plugin_dir_path(__FILE__) . 'vendor/autoload.php';
+add_action('wp_enqueue_scripts', 'smartmail_register_scripts');
 
-// Include necessary files
-include_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
-include_once plugin_dir_path(__FILE__) . 'includes/api-functions.php';
-include_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
-
-// Admin menu
-function smartmail_admin_menu() {
-    add_menu_page(
-        'SmartMail Assistant Settings',
-        'SmartMail Assistant',
-        'manage_options',
-        'smartmail-assistant',
-        'smartmail_settings_page',
-        'dashicons-email-alt',
-        20
-    );
+function smartmail_admin_register_scripts() {
+    wp_register_script('smartmail-assistant-admin-script', plugins_url('assets/js/admin-script.js', __FILE__), array('jquery'), '1.0.0', true);
+    wp_enqueue_script('smartmail-assistant-admin-script');
 }
-add_action('admin_menu', 'smartmail_admin_menu');
 
-// Create necessary pages
-function create_smartmail_pages() {
-    $pages = [
-        'smartmail-assistant' => [
-            'title' => 'SmartMail Assistant',
-            'content' => '[sma_assistant]'
-        ],
-        'smartmail-dashboard' => [
-            'title' => 'SmartMail Dashboard',
-            'content' => '[sma_dashboard]'
-        ],
-    ];
+add_action('admin_enqueue_scripts', 'smartmail_admin_register_scripts');
 
-    foreach ($pages as $slug => $page) {
-        if (!get_page_by_path($slug)) {
-            wp_insert_post([
-                'post_title' => $page['title'],
-                'post_name' => $slug,
-                'post_content' => $page['content'],
-                'post_status' => 'publish',
-                'post_type' => 'page',
-            ]);
-        }
-    }
+function smartmail_create_menu() {
+    add_menu_page('SmartMail Assistant Settings', 'SmartMail Assistant', 'manage_options', 'smartmail-assistant', 'smartmail_settings_page', 'dashicons-email', 110);
 }
-add_action('init', 'create_smartmail_pages');
+
+add_action('admin_menu', 'smartmail_create_menu');
+
+function smartmail_settings_page() {
+    ?>
+    <div class="wrap">
+        <h1>SmartMail Assistant Settings</h1>
+        <form method="post" action="options.php">
+            <?php settings_fields('smartmail-settings-group'); ?>
+            <?php do_settings_sections('smartmail-settings-group'); ?>
+            <table class="form-table">
+                <tr valign="top">
+                    <th scope="row">OpenAI API Key</th>
+                    <td><input type="text" name="smartmail_openai_api_key" value="<?php echo esc_attr(get_option('smartmail_openai_api_key')); ?>" /></td>
+                </tr>
+            </table>
+            <?php submit_button(); ?>
+        </form>
+    </div>
+    <?php
+}
+
+add_action('admin_init', 'smartmail_register_settings');
+
+function smartmail_register_settings() {
+    register_setting('smartmail-settings-group', 'smartmail_openai_api_key');
+}
 ?>
