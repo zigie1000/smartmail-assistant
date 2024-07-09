@@ -113,7 +113,7 @@ add_action('wp_ajax_nopriv_smartmail_sentiment_analysis', 'smartmail_sentiment_a
 
 function smartmail_email_templates() {
     $content = sanitize_text_field($_POST['content']);
-    $client = get_openai_client();                                               
+    $client = get_openai_client();
     $response = $client->completions()->create([
         'model' => 'text-davinci-003',
         'prompt' => "Generate an email template based on this request:\n\n$content",
@@ -138,4 +138,4 @@ function smartmail_forensic_analysis() {
 }
 add_action('wp_ajax_smartmail_forensic_analysis', 'smartmail_forensic_analysis');
 add_action('wp_ajax_nopriv_smartmail_forensic_analysis', 'smartmail_forensic_analysis');
-?>
+?>    
