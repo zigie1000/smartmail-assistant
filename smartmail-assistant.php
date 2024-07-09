@@ -6,7 +6,7 @@ Description: A plugin to assist with SmartMail features.
 Version: 1.0.0
 Author: Marco Zagato
 Author URI: https://smartmail.store
-License: GPL2
+License: MIT
 */
 
 if (!defined('WPINC')) {
