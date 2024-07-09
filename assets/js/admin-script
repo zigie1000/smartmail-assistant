@@ -1,0 +1,10 @@
+// Add your custom admin scripts here
+jQuery(document).ready(function($) {
+    // Example script
+    console.log('SmartMail Assistant admin scripts loaded.');
+
+    // Add more interactivity as needed
+    $('.smartmail-admin-button').on('click', function() {
+        alert('Admin Button clicked!');
+    });
+});
