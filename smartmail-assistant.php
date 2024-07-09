@@ -33,6 +33,12 @@ include_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
 include_once plugin_dir_path(__FILE__) . 'includes/api-functions.php';
 include_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
 
+// Enqueue JavaScript file
+function smartmail_enqueue_scripts() {
+    wp_enqueue_script('smartmail-script', plugin_dir_url(__FILE__) . 'assets/js/script.js', array('jquery'), null, true);
+}
+add_action('admin_enqueue_scripts', 'smartmail_enqueue_scripts');
+
 // Admin menu
 function smartmail_admin_menu() {
     add_menu_page(
