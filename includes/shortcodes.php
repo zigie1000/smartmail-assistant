@@ -175,21 +175,21 @@ function smartmail_meeting_scheduler_shortcode() {
                     success: function(response) {
                         $('#meeting-scheduler-result').text(response);
                     },
-                        error: function() {
-                            $('#meeting-scheduler-result').text('An error occurred.');
-                        }
-                    });
+                    error: function() {
+                        $('#meeting-scheduler-result').text('An error occurred.');
+                    }
                 });
             });
-        </script>
-        <?php
-        return ob_get_clean();
-    }
+        });
+    </script>
+    <?php
+    return ob_get_clean();
+}
 
-    function smartmail_follow_up_reminders_shortcode() {
-        ob_start();
-        ?>
-        <form id="smartmail-follow-up-reminders-form">
+function smartmail_follow_up_reminders_shortcode() {
+    ob_start();
+    ?>
+    <form id="smartmail-follow-up-reminders-form">
         <textarea id="follow-up-reminders-email-content" placeholder="Enter email content here"></textarea>
         <button type="submit">Generate Follow-up Reminder</button>
     </form>
@@ -324,4 +324,3 @@ function smartmail_forensic_analysis_shortcode() {
 
 add_action('init', 'smartmail_register_shortcodes');
 ?>
-        
