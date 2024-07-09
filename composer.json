@@ -1,5 +1,5 @@
 {
-    "name": "your-vendor/smartmail-assistant",
+    "name": "marco/smartmail-assistant",
     "description": "A description of your SmartMail Assistant plugin.",
     "type": "wordpress-plugin",
     "require": {
