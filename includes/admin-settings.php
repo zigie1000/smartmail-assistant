@@ -47,6 +47,12 @@ if (!function_exists('smartmail_render_settings_page')) {
     }
 }
 
+// Enqueue admin scripts
+function smartmail_admin_scripts() {
+    wp_enqueue_script('smartmail-admin-script', plugin_dir_url(__FILE__) . 'js/smartmail-admin.js', ['jquery'], null, true);
+}
+add_action('admin_enqueue_scripts', 'smartmail_admin_scripts');
+
 add_action('admin_init', 'smartmail_register_settings');
 add_action('admin_menu', 'smartmail_settings_page');
 ?>
