@@ -52,5 +52,3 @@ function smartmail_settings_page() {
     </div>
     <?php
 }
-add_action('admin_menu', 'smartmail_settings_page');
-?>
