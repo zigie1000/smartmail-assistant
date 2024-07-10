@@ -52,3 +52,4 @@ function smartmail_settings_page() {
     </div>
     <?php
 }
+?>
