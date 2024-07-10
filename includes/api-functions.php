@@ -78,16 +78,7 @@ function smartmail_meeting_scheduler() {
     echo esc_html($response['choices'][0]['text']);
     wp_die();
 }
-add_action('wp_ajax_smartmail_meeting_scheduler', 'smartmail
-
-
-
-
-
-
-
-
-  _meeting_scheduler');
+add_action('wp_ajax_smartmail_meeting_scheduler', 'smartmail_meeting_scheduler');
 add_action('wp_ajax_nopriv_smartmail_meeting_scheduler', 'smartmail_meeting_scheduler');
 
 function smartmail_follow_up_reminders() {
