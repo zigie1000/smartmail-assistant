@@ -79,3 +79,4 @@ function create_smartmail_pages() {
     }
 }
 add_action('init', 'create_smartmail_pages');
+?>
