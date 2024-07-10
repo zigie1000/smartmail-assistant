@@ -1,3 +1,5 @@
+<?php
+
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
@@ -75,34 +77,3 @@ function smartmail_meeting_scheduler() {
     ]);
     echo esc_html($response['choices'][0]['text']);
     wp_die();
-}
-add_action('wp_ajax_smartmail_meeting_scheduler', 'smartmail_meeting_scheduler');
-add_action('wp_ajax_nopriv_smartmail_meeting_scheduler', 'smartmail_meeting_scheduler');
-
-function smartmail_follow_up_reminders() {
-    $content = sanitize_text_field($_POST['content']);
-    $client = get_openai_client();
-    $response = $client->completions()->create([
-        'model' => 'text-davinci-003',
-        'prompt' => "Generate a follow-up reminder for this email content:\n\n$content",
-        'max_tokens' => 60,
-    ]);
-    echo esc_html($response['choices'][0]['text']);
-    wp_die();
-}
-add_action('wp_ajax_smartmail_follow_up_reminders', 'smartmail_follow_up_reminders');
-add_action('wp_ajax_nopriv_smartmail_follow_up_reminders', 'smartmail_follow_up_reminders');
-
-function smartmail_sentiment_analysis() {
-    $content = sanitize_text_field($_POST['content']);
-    $client = get_openai_client();
-    $response = $client->completions()->create([
-        'model' => 'text-davinci-003',
-        'prompt' => "Analyze the sentiment of this email content:\n\n$content",
-        'max_tokens' => 60,
-    ]);
-    echo esc_html($response['choices'][0]['text']);
-    wp_die();
-}
-add_action('wp_ajax_smartmail_sentiment_analysis', 'smartmail_sentiment_analysis');
-add_action('wp_ajax_nopriv_smartmail_sentiment_analysis', 'smartmail_sentiment_analysis');
