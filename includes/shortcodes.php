@@ -190,8 +190,8 @@ function smartmail_follow_up_reminders_shortcode() {
     ob_start();
     ?>
     <form id="smartmail-follow-up-reminders-form">
-        <textarea id="follow-up-reminders-email-content" placeholder="Enter email content here"></textarea
-            <button type="submit">Generate Follow-up Reminder</button>
+        <textarea id="follow-up-reminders-email-content" placeholder="Enter email content here"></textarea>
+        <button type="submit">Generate Follow-up Reminder</button>
     </form>
     <div id="follow-up-reminders-result"></div>
     <script>
@@ -323,5 +323,4 @@ function smartmail_forensic_analysis_shortcode() {
 }
 
 add_action('init', 'smartmail_register_shortcodes');
-?>
-    
+?>  
