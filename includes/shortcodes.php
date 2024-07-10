@@ -15,6 +15,7 @@ function smartmail_register_shortcodes() {
     add_shortcode('sma_email_templates', 'smartmail_email_templates_shortcode');
     add_shortcode('sma_forensic_analysis', 'smartmail_forensic_analysis_shortcode');
 }
+add_action('init', 'smartmail_register_shortcodes');
 
 function smartmail_email_categorization_shortcode() {
     ob_start();
@@ -227,7 +228,7 @@ function smartmail_sentiment_analysis_shortcode() {
         <textarea id="sentiment-analysis-email-content" placeholder="Enter email content here"></textarea>
         <button type="submit">Analyze Sentiment</button>
     </form>
-    <div id="sentiment-analysis-result"></div>
+        <div id="sentiment-analysis-result"></div>
     <script>
         jQuery(document).ready(function($) {
             $('#smartmail-sentiment-analysis-form').on('submit', function(event) {
@@ -323,3 +324,4 @@ function smartmail_forensic_analysis_shortcode() {
 }
 
 add_action('init', 'smartmail_register_shortcodes');
+?>
