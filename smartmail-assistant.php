@@ -53,8 +53,8 @@ function smartmail_create_menu() {
 }
 add_action('admin_menu', 'smartmail_create_menu');
 
-// Create or update necessary pages
-function create_or_update_smartmail_pages() {
+// Create necessary pages
+function create_smartmail_pages() {
     $pages = [
         'smartmail-assistant' => [
             'title' => 'SmartMail Assistant',
@@ -66,12 +66,8 @@ function create_or_update_smartmail_pages() {
         ],
     ];
 
-    foreach ($pages as $slug => $page) {
-        $existing_page = get_page_by_path($slug);
-        if ($existing_page) {
-            $existing_page->post_content = $page['content'];
-            wp_update_post($existing_page);
-        } else {
+    foreach ($ pages as $slug => $page) {
+        if (!get_page_by_path($slug)) {
             wp_insert_post([
                 'post_title' => $page['title'],
                 'post_name' => $slug,
@@ -82,5 +78,5 @@ function create_or_update_smartmail_pages() {
         }
     }
 }
-register_activation_hook(__FILE__, 'create_or_update_smartmail_pages');
+add_action('init', 'create_smartmail_pages');
 ?>
