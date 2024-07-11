@@ -108,4 +108,4 @@ function smartmail_sentiment_analysis() {
 }
 add_action('wp_ajax_smartmail_sentiment_analysis', 'smartmail_sentiment_analysis');
 add_action('wp_ajax_nopriv_smartmail_sentiment_analysis', 'smartmail_sentiment_analysis');
-?>           
+?>
