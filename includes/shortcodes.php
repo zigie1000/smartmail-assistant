@@ -15,6 +15,7 @@ function smartmail_register_shortcodes() {
     add_shortcode('sma_email_templates', 'smartmail_email_templates_shortcode');
     add_shortcode('sma_forensic_analysis', 'smartmail_forensic_analysis_shortcode');
 }
+
 add_action('init', 'smartmail_register_shortcodes');
 
 function smartmail_email_categorization_shortcode() {
@@ -276,15 +277,15 @@ function smartmail_email_templates_shortcode() {
                         content: content
                     },
                     success: function(response) {
-                        $('#email-templates-result').text(response);
-                    },
-                    error: function() {
-                        $('#email-templates-result').text('An error occurred.');
-                    }
+                            $('#email-templates-result').text(response);
+                        },
+                        error: function() {
+                            $('#email-templates-result').text('An error occurred.');
+                        }
+                    });
                 });
             });
-        });
-    </script>
+        </script>
     <?php
     return ob_get_clean();
 }
@@ -324,4 +325,4 @@ function smartmail_forensic_analysis_shortcode() {
 }
 
 add_action('init', 'smartmail_register_shortcodes');
-?>    
+?>
