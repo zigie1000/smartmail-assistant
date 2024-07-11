@@ -123,33 +123,35 @@ function smartmail_email_summarization_shortcode() {
     ?>
     <form id="smartmail-summarization-form">
         <textarea id="summarization-email-content" placeholder="Enter email content here"></textarea>
-        <button type="submit">Summarize Email</button>
-    </form>
-    <div id="summarization-result"></div>
-    <script>
-        jQuery(document).ready(function($) {
-            $('#smartmail-summarization-form').on('submit', function(event) {
-                event.preventDefault();
-                var content = $('#summarization-email-content').val();
-                $.ajax({
-                    url: '<?php echo admin_url('admin-ajax.php'); ?>',
-                    type: 'POST',
-                    data: {
-                        action: 'smartmail_email_summarization',
-                        content: content
-                    },
-                    success: function(response) {
-                        $('#summarization-result').text(response);
-                    },
-                    error: function() {
-                        $('#summarization-result').text('An error occurred.');
-                    }
-                });
+        <form id="smartmail-summarization-form">
+    <textarea id="summarization-email-content" placeholder="Enter email content here"></textarea>
+    <button type="submit">Summarize Email</button>
+</form>
+<div id="summarization-result"></div>
+<script>
+    jQuery(document).ready(function($) {
+        $('#smartmail-summarization-form').on('submit', function(event) {
+            event.preventDefault();
+            var content = $('#summarization-email-content').val();
+            $.ajax({
+                url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                type: 'POST',
+                data: {
+                    action: 'smartmail_email_summarization',
+                    content: content
+                },
+                success: function(response) {
+                    $('#summarization-result').text(response);
+                },
+                error: function() {
+                    $('#summarization-result').text('An error occurred.');
+                }
             });
         });
-    </script>
-    <?php
-    return ob_get_clean();
+    });
+</script>
+<?php
+return ob_get_clean();
 }
 
 function smartmail_meeting_scheduler_shortcode() {
@@ -323,3 +325,4 @@ function smartmail_forensic_analysis_shortcode() {
 }
 
 add_action('init', 'smartmail_register_shortcodes');
+?>
