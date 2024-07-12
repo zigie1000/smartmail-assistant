@@ -79,4 +79,24 @@ function create_smartmail_pages() {
     }
 }
 add_action('init', 'create_smartmail_pages');
+
+// Shortcode functions
+function sma_assistant_shortcode() {
+    ob_start();
+    include plugin_dir_path(__FILE__) . 'templates/smartmail-page.php';
+    return ob_get_clean();
+}
+add_shortcode('sma_assistant', 'sma_assistant_shortcode');
+
+function sma_dashboard_shortcode() {
+    ob_start();
+    include plugin_dir_path(__FILE__) . 'templates/smartmail-dashboard.php';
+    return ob_get_clean();
+}
+add_shortcode('sma_dashboard', 'sma_dashboard_shortcode');
+
+// Admin settings page callback
+function smartmail_settings_page() {
+    include plugin_dir_path(__FILE__) . 'templates/smartmail-admin-settings.php';
+}
 ?>
