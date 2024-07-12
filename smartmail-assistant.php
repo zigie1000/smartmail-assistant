@@ -53,40 +53,66 @@ function smartmail_create_menu() {
 }
 add_action('admin_menu', 'smartmail_create_menu');
 
-// Create or update necessary pages
-function create_or_update_smartmail_pages() {
+// Create or update necessary pages and assign templates
+function create_smartmail_pages() {
     $pages = [
         'smartmail-assistant' => [
             'title' => 'SmartMail Assistant',
-            'content' => '[sma_assistant]'
+            'content' => '[sma_assistant]',
+            'template' => 'smartmail-page.php'
         ],
         'smartmail-dashboard' => [
             'title' => 'SmartMail Dashboard',
-            'content' => '[sma_dashboard]'
+            'content' => '[sma_dashboard]',
+            'template' => 'smartmail-dashboard.php'
         ],
     ];
 
     foreach ($pages as $slug => $page) {
-        $page_id = get_page_by_path($slug);
-        if ($page_id) {
-            // Update existing page
-            wp_update_post([
-                'ID' => $page_id->ID,
-                'post_title' => $page['title'],
-                'post_content' => $page['content'],
-                'post_status' => 'publish'
-            ]);
-        } else {
-            // Create new page
-            wp_insert_post([
+        $existing_page = get_page_by_path($slug);
+        if (!$existing_page) {
+            $page_id = wp_insert_post([
                 'post_title' => $page['title'],
                 'post_name' => $slug,
                 'post_content' => $page['content'],
                 'post_status' => 'publish',
-                'post_type' => 'page'
+                'post_type' => 'page',
             ]);
+
+            if ($page_id && !is_wp_error($page_id)) {
+                update_post_meta($page_id, '_wp_page_template', $page['template']);
+            }
+        } else {
+            // Update the template of the existing page
+            update_post_meta($existing_page->ID, '_wp_page_template', $page['template']);
         }
     }
 }
-register_activation_hook(__FILE__, 'create_or_update_smartmail_pages');
+add_action('init', 'create_smartmail_pages');
+
+// Register custom templates
+function smartmail_register_templates($templates) {
+    $templates['smartmail-page.php'] = 'SmartMail Assistant';
+    $templates['smartmail-dashboard.php'] = 'SmartMail Dashboard';
+    return $templates;
+}
+add_filter('theme_page_templates', 'smartmail_register_templates');
+
+// Load custom templates
+function smartmail_load_template($template) {
+    global $post;
+
+    if (!$post) return $template;
+
+    $custom_template = get_post_meta($post->ID, '_wp_page_template', true);
+    if (in_array($custom_template, ['smartmail-page.php', 'smartmail-dashboard.php'])) {
+        $template_path = SMARTMAIL_PLUGIN_DIR . 'templates/' . $custom_template;
+        if (file_exists($template_path)) {
+            return $template_path;
+        }
+    }
+
+    return $template;
+}
+add_filter('template_include', 'smartmail_load_template');
 ?>
