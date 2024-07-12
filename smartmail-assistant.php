@@ -30,9 +30,9 @@ add_action('admin_init', 'sma_check_composer_install');
 require plugin_dir_path(__FILE__) . 'vendor/autoload.php';
 
 // Include necessary files
-include_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
 include_once plugin_dir_path(__FILE__) . 'includes/api-functions.php';
 include_once plugin_dir_path(__FILE__) . 'includes/shortcodes.php';
+include_once plugin_dir_path(__FILE__) . 'includes/admin-settings.php';
 
 // Register and enqueue scripts
 function smartmail_register_scripts() {
@@ -79,5 +79,4 @@ function create_smartmail_pages() {
     }
 }
 add_action('init', 'create_smartmail_pages');
-
 ?>
