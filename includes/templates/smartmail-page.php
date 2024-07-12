@@ -96,7 +96,7 @@ get_header(); ?>
     padding: 20px;
 }
 
-.smartmail-sidebar h2 {
+smartmail-sidebar h2 {
     margin: 0;
     padding: 0 0 20px 0;
     border-bottom: 1px solid #ccc;
@@ -107,7 +107,7 @@ get_header(); ?>
     padding: 0;
 }
 
-smartmail-sidebar ul li {
+.smartmail-sidebar ul li {
     margin: 10px 0;
 }
 
@@ -125,7 +125,7 @@ smartmail-sidebar ul li {
     margin-bottom: 40px;
 }
 
-.smartmail-section h2 {
+smartmail-section h2 {
     border-bottom: 2px solid #333;
     padding-bottom: 10px;
 }
