@@ -8,6 +8,9 @@ use OpenAI\OpenAI;
 
 function get_openai_client() {
     $api_key = get_option('smartmail_openai_api_key');
+    if (!$api_key) {
+        throw new Exception('OpenAI API key is missing.');
+    }
     return OpenAI::client($api_key);
 }
 
@@ -108,4 +111,32 @@ function smartmail_sentiment_analysis() {
 }
 add_action('wp_ajax_smartmail_sentiment_analysis', 'smartmail_sentiment_analysis');
 add_action('wp_ajax_nopriv_smartmail_sentiment_analysis', 'smartmail_sentiment_analysis');
-?>
+
+function smartmail_email_templates() {
+    $content = sanitize_text_field($_POST['content']);
+    $client = get_openai_client();
+    $response = $client->completions()->create([
+        'model' => 'text-davinci-003',
+        'prompt' => "Generate an email template based on this request:\n\n$content",
+        'max_tokens' => 60,
+    ]);
+    echo esc_html($response['choices'][0]['text']);
+    wp_die();
+}
+add_action('wp_ajax_smartmail_email_templates', 'smartmail_email_templates');
+add_action('wp_ajax_nopriv_smartmail_email_templates', 'smartmail_email_templates');
+
+function smartmail_forensic_analysis() {
+    $content = sanitize_text_field($_POST['content']);
+    $client = get_openai_client();
+    $response = $client->completions()->create([
+        'model' => 'text-davinci-003',
+        'prompt' => "Perform a forensic analysis on this email content:\n\n$content",
+        'max_tokens' => 60,
+    ]);
+    echo esc_html($response['choices'][0]['text']);
+    wp_die();
+}
+add_action('wp_ajax_smartmail_forensic_analysis', 'smartmail_forensic_analysis');
+add_action('wp_ajax_nopriv_smartmail_forensic_analysis', 'smartmail_forensic_analysis');
+?>           
